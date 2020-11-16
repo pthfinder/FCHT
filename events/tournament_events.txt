@@ -70,7 +70,7 @@ tournament.02 = {
 	theme = crown
 
 	left_portrait = {
-		character = scope:activity.activity.owner
+		character = scope:activity.activity_owner
 		animation = sadness
 	}
 	immediate = {
@@ -92,6 +92,11 @@ tournament.03 = {
 	title = tournament.03.title
 	desc = tournament.03.desc
 	theme = battle
+
+	left_portrait = {
+		character = scope:activity.activity_owner
+		animation = sadness
+	}
 	
 
 	option = {

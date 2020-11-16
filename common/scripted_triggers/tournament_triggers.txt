@@ -7,6 +7,11 @@ ai_consider_hosting_tournament = {
 	is_imprisoned = no
 	is_in_an_activity = no
 	is_incapable = no
+	is_clergy = no #au contraire, the clergy were against this sort of stuff.
+	NOT = {
+		has_trait = craven #Not really the sort of thing cowards go for.
+	} 
+
 }
 
 ai_consider_joining_tournament = {
@@ -15,6 +20,13 @@ ai_consider_joining_tournament = {
 	is_imprisoned = no
 	is_in_an_activity = no
 	is_incapable = no
+	is_clergy = no #au contraire, the clergy were against this sort of stuff.
+	
+
+	NOT = {
+		has_trait = craven #Not really the sort of thing cowards go for.
+	} 
+
 
 
 	# In male dominated societies, only men can participate.
@@ -38,7 +50,25 @@ ai_consider_joining_tournament = {
 		}
 	}
 
+	OR = { #Character is either a knight, or at the very least is a military oriented individual.
+		AND = {
+			is_knight = yes
+			is_landed = no
+		}
 
-	
-	is_knight = yes
+
+		AND = {
+			AND = {
+				is_landed = yes
+				has_government = feudal_government
+			}
+			OR = {
+				has_trait = education_martial_1
+				has_trait = education_martial_2
+				has_trait = education_martial_3
+				has_trait = education_martial_4
+
+			}
+		}
+	}
 }

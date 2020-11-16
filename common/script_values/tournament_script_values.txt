@@ -1,0 +1,56 @@
+tournament_invite_weight = {
+    base = 0
+    
+    if = {
+        limit = {
+            is_knight_of = root
+        }
+        add = 1000
+    }
+    if = {
+        limit = {
+            is_vassal_of = root
+        }
+        add = 500
+    }
+    if = {
+        limit = {
+            culture = root.culture
+        }
+        add = 400
+    }
+
+    if = {
+        limit = {
+            highest_held_title_tier <= highest_held_title_tier
+        }
+        add = 200
+    }
+    if = {
+        limit = {
+            is_liege_or_above_of = root
+        }
+        add = 200
+    }
+
+    if = {
+        limit = {
+            liege = root.liege
+        }
+        add = 100
+    }
+    
+    if = {
+        limit = {
+            is_extended_family_of = root
+        }
+        add = 50
+    }
+
+    if = {
+        limit = {
+            holds_landed_title = yes
+        }
+        add = 50
+    }
+}

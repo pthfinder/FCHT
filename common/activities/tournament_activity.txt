@@ -39,50 +39,137 @@ tournament = {
 	# with the tournament GUI.
 
 	on_spawn = {
+		invite_character_to_activity = activity_owner
+		accept_invitation_for_character = activity_owner
 
 		every_living_character = {
 			limit  = {
-				NOT = { 
+				NOR = { 
 					is_in_list = tournament_invite_list
+					has_character_flag = invited_to_tournament
+					has_character_flag = tournament_cooldown_human
 				}
 				is_ai = yes
 				ai_consider_joining_tournament = yes
+				faith = scope:activity.activity_owner.faith 
 				
 				realm_to_title_distance_squared = {
 					title = scope:activity.activity_owner.capital_county
-					value <= 125000 # Within "two Irelands" away
+					value <= 6250 # Within "one Ireland" away
 				}
 			}
 			add_to_temporary_list = tournament_invite_list
-			add_character_flag = INVITED_TO_TOURNAMNET
+			add_character_flag = invited_to_tournament
+
+			if = {
+				limit = {
+					is_ai = no
+				}
+				add_character_flag = {
+					flag = tournament_cooldown_human
+					years = 3
+				}
+			}
 			
+		}
+		ordered_in_list = {
+			max = 35
+			list = tournament_invite_list
+			order_by = tournament_invite_weight
+
+			scope:activity = {
+				invite_character_to_activity = prev
+			}
+			trigger_event = {
+				id = tournament.01
+				days = { 7 60 }
+			}
 		}
 
 		
 		
+
+
+	}
+
+
+	on_activate = {
+		# Remove the invitation flag from those who didnt get an invite after all.
 		every_in_list = {
 			list = tournament_invite_list
-			scope:activity = {
-				invite_character_to_activity = prev
+			limit = {
+				has_character_flag = invited_to_tournament
+			}
+			remove_character_flag = invited_to_tournament
+		}
+		if = {
+			limit = {
+				# Check that people other than the host have joined the tournament.
+				NOT = {
+					any_participant = {
+						NOT = {	this = scope:activity.activity_owner }
+					}
+				}
+			}
+			# If there are no other tournament-goers, cancel.
+			activity_owner = {
+				trigger_event = tournament.02
+			}
+		}
+		else = {
+			activity_owner = {
+				trigger_event = tournament.03
 			}
 		}
 
 	}
-	
 
-	#on_activate =
-	#on_complete remove_flag, send event
-	#on_expire = remove_flag, send event
-	#on_invalided = remove_flag, send event
+	on_complete = {
+		activity_owner = {
+			remove_character_flag =  holding_tournament
+		}
+		every_participant = {
+			remove_character_flag = invited_to_tournament
+		}
+	}
 
+	on_expire = {
 
+		activity_owner = {
+			remove_character_flag =  holding_tournament
+		}
+		every_participant = {
+			remove_character_flag = invited_to_tournament
+		}
 
+	}
+	on_invalidated = {
 
+		activity_owner = {
+			remove_character_flag = holding_tournament
+		}
+		every_participant = {
+			remove_character_flag = invited_to_tournament
+		}
 
-	# on_participant_death = {
+	}
+
+on_participant_death = { 	# on_participant_death = {
 	# 	trigger_event.. triggers within that event for if the participant was murdered, 
 	# died naturally, died fighting in the tournament
 	# }
+
+}
+
+	
+	
+
+
+
+
+
+
+
 
 	}
 

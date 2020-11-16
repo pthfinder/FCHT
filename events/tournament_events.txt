@@ -1,0 +1,100 @@
+namespace = tournament
+
+#  Character receives invitation to join a tournament.
+tournament.01 = {
+	type = letter_event
+	trigger = {
+		is_alive = yes
+		is_at_war = no
+		is_imprisoned = no
+		is_incapable = no
+		
+	}
+
+
+	option = {
+		scope:activity = {
+			accept_invitation_for_character = root
+		}
+		
+		ai_chance = {
+			base = 0
+			modifier = {
+				add = 25
+				has_trait = brave
+				has_trait = gallant
+			}
+			modifier = {
+				is_knight_of = scope:activity.activity_owner
+				add = 1000
+			}
+			modifier = {
+				is_vassal_or_below_of = scope:activity.activity_owner
+				add = 30
+
+			}
+			modifier = {
+				root.liege = scope:activity.activity_owner.liege
+				add = 10
+			}
+		}
+		
+	}
+	option = {
+		scope:activity = {
+			decline_invitation_for_character = root
+		}
+		remove_character_flag = invited_to_tournament
+		ai_chance = {
+			base = 0
+			modifier = {
+				root.highest_held_title_tier > scope:activity.activity_owner.highest_held_title_tier  # Not super prestigious is it?
+				add = -25
+			}
+
+			modifier = {
+				NOT = {
+					root.culture_group = scope:activity.activity_owner.culture_group
+				}
+				add = -10
+			}
+		}
+	}
+}
+
+# Event for failed tournament, nobody showed up..
+tournament.02 = {
+	type = character_event
+	title = tournament.02.title
+	desc = tournament.02.desc
+	theme = crown
+
+	left_portrait = {
+		character = scope:activity.activity.owner
+		animation = sadness
+	}
+	immediate = {
+		scope:activity = {
+			complete_activity = no
+		}
+	}
+
+	option = {
+		name = tournament.02.option
+		stress_impact = {
+			base = minor_stress_impact_gain
+		}
+	}
+}
+
+tournament.03 = {
+	type = character_event
+	title = tournament.03.title
+	desc = tournament.03.desc
+	theme = battle
+	
+
+	option = {
+		
+	}
+}

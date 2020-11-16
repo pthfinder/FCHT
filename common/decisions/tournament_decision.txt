@@ -64,7 +64,4 @@ host_tournament_decision = { #Probably want several different types of hastilude
 			}
 		}
 	}
-
-	
-	
 }

@@ -1,0 +1,31 @@
+parliament_button_toggle = {  #Displays the GUI when the player clicks the button.
+	scope = character
+	
+	is_shown = {
+		has_variable = parliament_button_toggled
+	}
+	effect = {
+
+
+		# If the player clicks the button, and they have the toggle, then remove the toggle(because in this case
+		# they would be closing the gui) Otherwise, give them the toggle, because they are attempting to open the gui.
+
+		if = {                   
+			limit = {
+				has_variable = parliament_button_toggled
+			}
+			remove_variable = parliament_button_toggled
+		}
+		else = {
+			set_variable = parliament_button_toggled
+		}	
+	}
+}
+
+
+
+
+
+parliament_enabled = {
+	
+}

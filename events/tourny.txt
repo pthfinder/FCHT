@@ -1,0 +1,12 @@
+namespace = tourney
+
+tourny.01 ={
+	hidden = yes
+
+	immediate = {
+
+		title:k_france.holder = {
+			set_variable = holding_tourny
+		}
+	}
+}

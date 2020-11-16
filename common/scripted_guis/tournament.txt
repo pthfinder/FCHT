@@ -1,0 +1,64 @@
+
+# Displays the tournament icon on the map if the owner is hosting a tournament there.
+
+is_holding_tournament = { 
+	scope =  character
+
+	is_shown = {
+		has_variable = holding_tourny
+	}
+}
+
+
+# Disables/Enables the tournament icon being shown on the map for players who aren't interest in seeing them. Also disables characters from receiving invitations.
+tourney_opt_out_button = {
+	scope = character
+
+	saved_scopes = {
+		tourney_opt_out_target
+	}
+	is_shown = {
+        is_ai = no
+        scope:tourney_opt_out_target = {
+            OR = {
+                this = root
+                father = root
+                mother = root
+                father.father = root
+                father.mother = root
+                mother.father = root
+                mother.mother = root
+                AND = {
+                    dynasty = root.dynasty
+                    is_courtier_of = root
+                }
+            }
+            NOT = { age < 16 }  #Children cannot participate in tournaments anyways.
+		}
+	}
+	effect = {
+		scope:tourney_opt_out_target = {
+			if = {
+				limit = {
+					has_variable = opted_out_of_tournaments
+				}
+				remove_variable = opted_out_of_tournaments
+			}
+			else = {
+				set_variable = opted_out_of_tournaments
+			}
+		}
+	}
+
+
+}
+
+
+tourney_opt_out = {
+	is_shown = {
+		NOT = {
+			has_variable = opted_out_of_tournaments
+		}
+	}
+}
+

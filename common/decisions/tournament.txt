@@ -1,0 +1,23 @@
+host_tournament_decision = {
+	picture = "gfx/interface/illustrations/decisions/decision_misc.dds"
+	ai_check_interval = 60
+
+
+
+	#cost = { gold = tournamentscriptedvalue }
+	cost = { gold = 5 } #testing purposes.
+
+	# cooldown = { days = tournamentscriptedvalue }
+	cooldown = { days = 5 } #testing purposes
+	desc = "test"
+	selection_tooltip = "selection tt test"
+
+	is_shown = { # Can tie this to culture, innovation , whatever.. Will do when im not tired.
+		is_landed = yes
+		highest_held_title_tier > tier_barony
+	}
+	is_valid_showing_failures_only = {
+		is_available_adult = yes
+	}
+	
+}

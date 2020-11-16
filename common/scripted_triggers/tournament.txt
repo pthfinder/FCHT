@@ -1,0 +1,44 @@
+
+ #
+ai_consider_hosting_tournament = {
+	is_adult = yes
+	is_landed = yes
+	is_at_war = no
+	is_imprisoned = no
+	is_in_an_activity = no
+	is_incapable = no
+}
+
+ai_consider_joining_tournament = {
+	is_adult = yes
+	is_at_war = no
+	is_imprisoned = no
+	is_in_an_activity = no
+	is_incapable = no
+
+
+	# In male dominated societies, only men can participate.
+	OR = {
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_male_dominated
+			}
+			is_male = yes
+		}
+		#In female dominated societies, only women can participate.
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_female_dominated
+			}
+			is_female = yes
+		}
+		#In equal gendered societies, anyone can participate.
+		faith = {
+			has_doctrine = doctrine_gender_equal
+		}
+	}
+
+
+	
+	is_knight = yes
+}

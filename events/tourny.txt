@@ -4,9 +4,15 @@ tourny.01 ={
 	hidden = yes
 
 	immediate = {
+		
+		add_character_flag = holding_tournament
 
-		title:k_france.holder = {
-			set_variable = holding_tourny
-		}
+
+	}
+}
+
+tourny.02 = {
+	option = {
+		
 	}
 }

@@ -5,7 +5,7 @@ is_holding_tournament = {
 	scope =  character
 
 	is_shown = {
-		has_variable = holding_tourny
+		has_variable = holding_tournament
 	}
 }
 

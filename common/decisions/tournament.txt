@@ -1,6 +1,6 @@
-host_tournament_decision = {
+host_tournament_decision = { #Probably want several different types of hastiludes, not all cultures did the same thing, and they changed through time.
 	picture = "gfx/interface/illustrations/decisions/decision_misc.dds"
-	ai_check_interval = 60
+	
 
 
 
@@ -15,9 +15,56 @@ host_tournament_decision = {
 	is_shown = { # Can tie this to culture, innovation , whatever.. Will do when im not tired.
 		is_landed = yes
 		highest_held_title_tier > tier_barony
+		NOR = {
+			has_character_flag = holding_tournament
+			has_character_flag = attending_tournament
+		}
 	}
 	is_valid_showing_failures_only = {
 		is_available_adult = yes
 	}
+
+	ai_check_interval = 60
+	ai_potential = {
+		ai_consider_hosting_tournament = yes
+	}
+
+
+
+	#Chivalric characters are more likely to host tournaments.
+	#Minor nobles more likely to host tournaments, as they have less
+	#opportunity for war than independent rulers.
+
+	ai_will_do = {
+		base = 0
+		modifier = {
+			add = 5
+			has_lifestyle = martial_lifestyle		
+		}
+		modifier = {
+			has_trait = brave
+			has_trait = gallant
+			add = 15
+		}
+		modifier = {
+			is_independent_ruler = no
+			add = 10
+		}
+	}
+
+	effect = {
+		add_character_flag = holding_tournament
+
+
+		# Create the tournament activity.
+		capital_province = {
+			spawn_activity = {
+				type = tournament
+				owner = root
+			}
+		}
+	}
+
+	
 	
 }

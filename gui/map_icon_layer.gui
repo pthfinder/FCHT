@@ -54,11 +54,12 @@ widget = {
 			name = "rename_button_scripted_gui"
 			layoutpolicy_horizontal = expanding
 			
-			datacontext = "[GetScriptedGui('tourney_opt_out')]"
+			datacontext = "[GetScriptedGui('tournament_button_join')]"
 			visible = yes
 			enabled = yes
 			tooltip = "test"
-			onclick = "[ScriptedGui.Execute(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+			onclick = "[ScriptedGui.Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('tournament',ProvinceIcon.GetCapitalIcon.GetOwner.GetCurrentActivity.MakeScope).End)]"
+
 			
 			gfxtype = updownframedbuttongfx
 			effectname = "NoHighlight"

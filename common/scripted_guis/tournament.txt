@@ -62,3 +62,33 @@ tourney_opt_out = {
 	}
 }
 
+
+tournament_button_join = {
+	saved_scopes = {
+		tournament
+	}
+	scope = character
+	is_shown = {
+		always = yes
+	}
+	is_valid = {
+		NOT = {
+			has_variable = holding_tournament
+			has_variable = invited_to_tournament
+			has_variable = opted_out_of_tournaments
+			#has_variable = attending_tournament
+		}
+	}
+
+	effect ={
+
+		scope:tournament = {
+			invite_character_to_activity = root
+			accept_invitation_for_character = root
+		}
+	}
+}
+
+
+
+

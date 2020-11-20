@@ -1,6 +1,11 @@
 tournament_invite_weight = {
     value = 0
-    
+    if = {
+        limit = {
+            prowess > 20
+        }
+        add = 1000
+    }
     if = {
         limit = {
             is_knight_of = root.activity_owner
@@ -54,3 +59,80 @@ tournament_invite_weight = {
         add = 5
     }
 }
+
+grand_tournament_invite_weight = { #In this instance, we really want the grandest lords and the strongest warriors.
+    value = 0
+    
+
+    if = {
+        limit = {
+            prowess > 20
+        }
+        add = 1000
+    }
+    if = {
+        limit = {
+            highest_held_title_tier >= tier_duchy
+        }
+        add = 100
+    }
+    if = {
+        limit = {
+            is_liege_or_above_of = root.activity_owner
+        }
+        add = 50
+    }
+
+    if = {
+        limit = {
+            liege = root.activity_owner.liege
+        }
+        add = 50
+    }
+    if = {
+        limit = {
+            culture = root.activity_owner.culture
+        }
+        add = 50
+    }
+    if = {
+        limit = {
+            is_knight_of = root.activity_owner
+        }
+        add = 30
+    }
+    if = {
+        limit = {
+            is_vassal_of = root.activity_owner
+        }
+        add = 30
+    }
+
+    if = {
+        limit = {
+            is_extended_family_of = root.activity_owner
+        }
+        add = 30
+    }
+
+    if = {
+        limit = {
+            holds_landed_title = yes
+        }
+        add = 30
+    }
+
+    if = {
+        limit = {
+            highest_held_title_tier < root.activity_owner.highest_held_title_tier
+        }
+        add = 10
+    }
+    if = { # For grand tournaments we really want to encourage the best.
+        limit = {
+            prowess <= 10
+        }
+        add = -50
+    }
+}
+    

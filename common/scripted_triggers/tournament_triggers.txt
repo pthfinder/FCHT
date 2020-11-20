@@ -50,11 +50,11 @@ ai_consider_joining_tournament = {
 		}
 	}
 
-	OR = { #Character is either a knight, or at the very least is a military oriented individual.
-		AND = {
-			is_knight = yes
-			is_landed = no
-		}
+	# OR = { #Character is either a knight, or at the very least is a military oriented individual.
+		# AND = {
+		# 	is_knight = yes
+		# 	is_landed = no
+		# }
 
 
 		AND = {
@@ -67,8 +67,37 @@ ai_consider_joining_tournament = {
 				has_trait = education_martial_2
 				has_trait = education_martial_3
 				has_trait = education_martial_4
-
+				prowess > 10
 			}
 		}
+
+	# }
+}
+
+ai_knight_will_join_with_liege = {
+	is_adult = yes
+	is_imprisoned = no
+	is_incapable = no
+	is_at_war = no
+
+	OR = {
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_male_dominated
+			}
+			is_male = yes
+		}
+		#In female dominated societies, only women can participate.
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_female_dominated
+			}
+			is_female = yes
+		}
+		#In equal gendered societies, anyone can participate.
+		faith = {
+			has_doctrine = doctrine_gender_equal
+		}
 	}
+
 }

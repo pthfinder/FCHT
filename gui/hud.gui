@@ -132,6 +132,162 @@ widget = {
 			}
 		}
 	}
+
+	window = {
+		size = { 500 400 }
+		position = { 250 0 }			
+		datacontext = "[GetScriptedGui('activate_tournament_gui')]"
+
+
+		visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]"
+		movable = yes
+		parentanchor = center
+
+		state = {
+			name = _show
+			using = Animation_FadeIn_Standard
+			using = Sound_WindowShow_Standard
+
+		}
+
+		state = {
+			name = _hide
+			using = Animation_FadeOut_Standard
+		}
+		vbox = {
+			layoutpolicy_horizontal = expanding
+			margin_bottom = 320
+			hbox = {
+				layoutpolicy_horizontal = expanding
+				spacing = 0
+				margin_top = 20
+				margin_bottom = 10
+
+
+				name = Header
+				text_single = {
+					margin_bottom = 5
+					fontsize = 26
+					text = "Upcoming Tournaments"
+				}
+
+				background = {
+					using = Background_Area_Dark
+				}
+			
+			}
+	
+
+		}
+
+
+		
+
+		background = {
+			texture = "gfx/interface/illustrations/decisions/decision_invite_knights.dds"
+			spriteborder = { 18 18 }
+
+			texture_density = 2
+			
+
+		}
+
+			
+		
+
+		scrollbox = {
+			name = "list of tournaments"
+			layoutpolicy_horizontal = expanding
+			layoutpolicy_vertical = expanding
+			size = { 500 400 }
+
+			blockoverride "scrollbox_margins" { }
+
+			blockoverride "scrollbox_content"
+			{
+				spacing = 20
+				margin = { 0 20 }
+			
+			
+				vbox = {
+					name = "type"
+					datacontext = "[GetScriptedGui('tournament_info_gui')]"
+					layoutpolicy_horizontal = expanding
+					layoutpolicy_vertical = expanding
+					spacing = 0
+
+					hbox = {
+						margin_top = 50
+	
+						layoutpolicy_horizontal = shrinking
+						layoutpolicy_vertical = expanding
+						name = "test2"
+						parentanchor = center|left
+						spacing = 50
+						dynamicgridbox = {
+							name = "test"
+							layoutpolicy_vertical = expanding
+							datamodel = "[GetPlayer.MakeScope.GetList('tournament_list')]"
+							flipdirection = yes
+							datamodel_wrap = 1		
+							item = {
+								text_single = {
+									fontsize = 20
+									text = "[Scope.GetCharacter.GetCurrentActivity.GetName]"
+									# [Scope.GetCharacter.MakeScope.Var('num').GetValue|0] gives number of participants, prolly just want to put this in a dif gui
+								}			
+							}
+						}
+
+						dynamicgridbox = {
+							name = "test6"
+							layoutpolicy_vertical = expanding
+							datamodel = "[GetPlayer.MakeScope.GetList('tournament_list')]"
+							flipdirection = yes
+							datamodel_wrap = 1				
+							item = {
+								button = {   ## Get the on map button working.
+								name = "rename_button_scripted_gui"
+								layoutpolicy_horizontal = expanding
+					
+								datacontext = "[GetScriptedGui('tournament_button_join')]"
+								visible = yes
+								enabled = yes
+								tooltip = "[Scope.GetCharacter.GetCurrentActivity.GetName]"
+Z								onclick = "[ScriptedGui.Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('tournament',Scope.GetCharacter.GetCurrentActivity.MakeScope).End),ActivityWindow.CenterOnMap]"
+					
+								
+								gfxtype = updownframedbuttongfx
+								effectname = "NoHighlight"
+								upframe = 1
+								overframe = 2
+								downframe = 4
+								texture = "gfx/interface/buttons/button_small_round.dds"
+								framesize = { 82 82 }
+					
+								parentanchor = top|right
+								size = { 29 29 }
+					
+									button_icon = {
+										parentanchor = center
+										alwaystransparent = yes
+										downframe = 2
+					
+										size = { 29 29 }
+										texture = "gfx/interface/icons/icon_rename_children_radio.dds"
+									}
+								}			
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+
+
 }
 
 widget = {
@@ -607,30 +763,6 @@ widget = {
 				size = { 25 25 }
 			}
 		}
-
-		widget = {
-			name = "test"
-			size = { 500 500 }
-			widgetanchor = center
-			
-			datacontext = "[GetScriptedGui('is_holding_tournament')]"
-			visible = yes
-		
-		
-		}
-		
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 
 	### Main Tabs

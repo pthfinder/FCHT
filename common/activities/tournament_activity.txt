@@ -1,175 +1,553 @@
-# == Structure ==
+	# == Structure ==
 
-# name_of_activity = {
+	# name_of_activity = {
 
-# 	expiration_days = X 			# default number of days after an activity is started to it's expiration
-# 	days_until_auto_start = X 		# number of days from an activity is spawned until it's started (regardless of if participants have arrived or not)
-# 	valid = trigger					# checked daily on the activity scope
-# 	on_spawn = effect 				# executed on the activity when spawned
-# 	on_activate = effect			# executed on the activity when started (all invitations replied to or auto started)
-# 	on_complete = effect			# executed on the activity when completed through complete_activity = yes (ignored if complete_activity = no)
-# 	on_expire = effect				# executed on the activity when expiring from timeout
-# 	on_participant_death			# executed on the dying character during death, activity set as scope:activity
-# 	on_invalidated = effect			# executed on the activity when failing the valid trigger
-	
-# 	solo = yes						# marks the activity as a solo activity (no guests)
-# 	has_activity_window = yes		# determines if a certain activity should show a window or not
-# }
-
-
-tournament = {
-	solo = no
-	has_activity_window = yes
-	expiration_days = 183 # Obviously tournaments did not last half a year, gameplay decision.
-	days_until_auto_start = 60 
-
-	valid = {
-		activity_owner = {
-			is_alive = yes
-			is_imprisoned = no
-			is_at_war = no
-
-		}
-	}
-
-
-	## Send an invitation to all eligible characters. Players will receive
-	# a cooldown flag to make sure they dont get spammed with events
-	# if they want to join other tournaments they can always interact
-	# with the tournament GUI.
-
-	on_spawn = {
-		invite_character_to_activity = activity_owner
-		accept_invitation_for_character = activity_owner
-
-		every_living_character = {
-			limit  = {
-				NOR = { 
-					is_in_list = tournament_invite_list
-					has_character_flag = invited_to_tournament
-					has_character_flag = tournament_cooldown_human
-				}
-				is_ai = yes
-				ai_consider_joining_tournament = yes
-				faith = scope:activity.activity_owner.faith 
-				
-				realm_to_title_distance_squared = {
-					title = scope:activity.activity_owner.capital_county
-					value <= 6250 # Within "one Ireland" away
-				}
-			}
-			add_to_temporary_list = tournament_invite_list
-			add_character_flag = invited_to_tournament
-
-			if = {
-				limit = {
-					is_ai = no
-				}
-				add_character_flag = {
-					flag = tournament_cooldown_human
-					years = 3
-				}
-			}
-			
-		}
-		ordered_in_list = {
-			max = 35
-			list = tournament_invite_list
-			order_by = tournament_invite_weight
-
-			scope:activity = {
-				invite_character_to_activity = prev
-			}
-			trigger_event = {
-				id = tournament.01
-				days = { 7 60 }
-			}
-		}
-
+	# 	expiration_days = X 			# default number of days after an activity is started to it's expiration
+	# 	days_until_auto_start = X 		# number of days from an activity is spawned until it's started (regardless of if participants have arrived or not)
+	# 	valid = trigger					# checked daily on the activity scope
+	# 	on_spawn = effect 				# executed on the activity when spawned
+	# 	on_activate = effect			# executed on the activity when started (all invitations replied to or auto started)
+	# 	on_complete = effect			# executed on the activity when completed through complete_activity = yes (ignored if complete_activity = no)
+	# 	on_expire = effect				# executed on the activity when expiring from timeout
+	# 	on_participant_death			# executed on the dying character during death, activity set as scope:activity
+	# 	on_invalidated = effect			# executed on the activity when failing the valid trigger
 		
-		
+	# 	solo = yes						# marks the activity as a solo activity (no guests)
+	# 	has_activity_window = yes		# determines if a certain activity should show a window or not
+	# }
 
 
-	}
+	local_tournament = {
+		solo = no
+		has_activity_window = yes
+		expiration_days = 183 # Obviously tournaments did not last half a year, gameplay decision.
+		days_until_auto_start = 60 
 
+		valid = {
+			activity_owner = {
+				is_alive = yes
+				is_imprisoned = no
+				is_at_war = no
 
-	on_activate = {
-		# Remove the invitation flag from those who didnt get an invite after all.
-		every_in_list = {
-			list = tournament_invite_list
-			limit = {
-				has_character_flag = invited_to_tournament
 			}
-			remove_character_flag = invited_to_tournament
 		}
-		if = {
-			limit = {
-				# Check that people other than the host have joined the tournament.
-				NOT = {
-					any_participant = {
-						NOT = {	this = scope:activity.activity_owner }
+
+
+		## Send an invitation to all eligible characters. Players will receive
+		# a cooldown flag to make sure they dont get spammed with events
+		# if they want to join other tournaments they can always interact
+		# with the tournament GUI.
+
+		on_spawn = {
+			invite_character_to_activity = activity_owner
+			accept_invitation_for_character = activity_owner
+
+			scope:activity.activity_owner = {
+				every_knight = {
+					limit = {
+						is_knight_of = prev
+					}
+					if = {
+						limit = {
+						is_ai = yes					
+						ai_knight_will_join_with_liege = yes
+						}
+						scope:activity = {
+							invite_character_to_activity = prev
+							accept_invitation_for_character = prev
+						}
+					}
+					else = {
+						this = {
+							trigger_event = tournament.05
+						}
 					}
 				}
 			}
-			# If there are no other tournament-goers, cancel.
-			activity_owner = {
-				trigger_event = tournament.02
+
+
+			every_living_character = {
+				limit  = {
+					NOR = { 
+						is_in_list = tournament_invite_list
+						has_character_flag = invited_to_tournament
+						has_character_flag = tournament_cooldown_human
+					}
+					ai_consider_joining_tournament = yes
+					faith = scope:activity.activity_owner.faith 
+					
+					realm_to_title_distance_squared = {
+						title = scope:activity.activity_owner.capital_county
+						value <= 6250 # Within "one Ireland" away
+					}
+				}
+				if = {
+					limit = {
+						is_ai = yes
+					}
+					add_to_temporary_list = tournament_invite_list
+					add_character_flag = invited_to_tournament
+				}
+
+
+				else_if = {
+					limit = {
+						is_ai = no
+					}
+					add_to_temporary_list = tournament_invite_list
+					add_character_flag = invited_to_tournament
+
+					add_character_flag = {
+						flag = tournament_cooldown_human
+						years = 3
+					}
+				}
+				
+			}
+			ordered_in_list = {
+				max = 10
+				list = tournament_invite_list
+				order_by = tournament_invite_weight
+
+				scope:activity = {
+					invite_character_to_activity = prev
+				}
+				trigger_event = {
+					id = tournament.02
+					days = { 7 60 }
+				}
 			}
 		}
-		else = {
+
+
+		on_activate = {
+			# Remove the invitation flag from those who didnt get an invite after all.
+			every_in_list = {
+				list = tournament_invite_list
+				limit = {
+					has_character_flag = invited_to_tournament
+				}
+				remove_character_flag = invited_to_tournament
+			}
+			if = {
+				limit = {
+					# Check that people other than the host have joined the tournament.
+
+					list_size = {
+						name = tournament_invite_list
+						value < 10
+					}
+	
+				}
+				# If there are no other tournament-goers, cancel.
+				activity_owner = {
+					trigger_event = tournament.03
+				}
+			}
+			else = {
+				activity_owner = {
+					trigger_event = tournament.04
+				}
+			}
+
+
+		}
+
+		on_complete = {
 			activity_owner = {
-				trigger_event = tournament.03
+				remove_character_flag =  holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
 			}
 		}
 
+		on_expire = {
+
+			activity_owner = {
+				remove_character_flag =  holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+
+		}
+		on_invalidated = {
+
+			activity_owner = {
+				remove_character_flag = holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+
+		}
+
+		on_participant_death = { 	# on_participant_death = {
+			# 	trigger_event.. triggers within that event for if the participant was murdered, 
+			# died naturally, died fighting in the tournament
+			# }
+
+		}
 	}
 
-	on_complete = {
-		activity_owner = {
-			remove_character_flag =  holding_tournament
-		}
-		every_participant = {
-			remove_character_flag = invited_to_tournament
-		}
-	}
+	regional_tournament = {
+		solo = no
+		has_activity_window = yes
+		expiration_days = 183 # Obviously tournaments did not last half a year, gameplay decision.
+		days_until_auto_start = 90
 
-	on_expire = {
+		valid = {
+			activity_owner = {
+				is_alive = yes
+				is_imprisoned = no
+				is_at_war = no
 
-		activity_owner = {
-			remove_character_flag =  holding_tournament
-		}
-		every_participant = {
-			remove_character_flag = invited_to_tournament
+			}
 		}
 
-	}
-	on_invalidated = {
 
-		activity_owner = {
-			remove_character_flag = holding_tournament
-		}
-		every_participant = {
-			remove_character_flag = invited_to_tournament
-		}
+		## Send an invitation to all eligible characters. Players will receive
+		# a cooldown flag to make sure they dont get spammed with events
+		# if they want to join other tournaments they can always interact
+		# with the tournament GUI.
 
-	}
+		on_spawn = {
+			invite_character_to_activity = activity_owner
+			accept_invitation_for_character = activity_owner
 
-on_participant_death = { 	# on_participant_death = {
-	# 	trigger_event.. triggers within that event for if the participant was murdered, 
-	# died naturally, died fighting in the tournament
-	# }
-
-}
-
+			every_knight = {
+				limit = {
+					is_knight_of = root
+				}
+				if = {
+					limit = {
+					is_ai = yes					
+					ai_knight_will_join_with_liege = yes
+					}
+					scope:activity = {
+						invite_character_to_activity = prev
+						accept_invitation_for_character = prev
+					}
+				}
+				else = {
+					this = {
+						trigger_event = tournament.05
+					}
 	
+				}
+			}
 	
 
+			every_ruler = {
+				limit  = {
+					NOR = { 
+						is_in_list = tournament_invite_list
+						has_character_flag = invited_to_tournament
+						has_character_flag = tournament_cooldown_human
+					}
+					is_ai = yes
+					ai_consider_joining_tournament = yes
+					faith = scope:activity.activity_owner.faith 
+					
+					realm_to_title_distance_squared = {
+						title = scope:activity.activity_owner.capital_county
+						value <= 8000 # Within "one Ireland" away
+					}
+				}
+				if = {
+					limit = {
+						is_ai = yes
+					}
+					add_to_temporary_list = tournament_invite_list
+					add_character_flag = invited_to_tournament
+				}
 
 
+				else_if = {
+					limit = {
+						is_ai = no
+					}
+					add_to_temporary_list = tournament_invite_list
+					add_character_flag = invited_to_tournament
+
+					add_character_flag = {
+						flag = tournament_cooldown_human
+						years = 3
+					}
+				}
+
+				
+			}
+			ordered_in_list = {
+				max = 10
+				list = tournament_invite_list
+				order_by = tournament_invite_weight
+
+				scope:activity = {
+					invite_character_to_activity = prev
+				}
+				trigger_event = {
+					id = tournament.02
+					days = { 7 60 }
+				}
+			}
+		}
 
 
+		on_activate = {
+			# Remove the invitation flag from those who didnt get an invite after all.
+			every_in_list = {
+				list = tournament_invite_list
+				limit = {
+					has_character_flag = invited_to_tournament
+				}
+				remove_character_flag = invited_to_tournament
+			}
+			if = {
+				limit = {
+					# Check that people other than the host have joined the tournament.
+
+					list_size = {
+						name = tournament_invite_list
+						value < 1
+					}
+				}
+				# If there are no other tournament-goers, cancel.
+				activity_owner = {
+					trigger_event = tournament.03
+				}
+			}
+			else = {
+				activity_owner = {
+					trigger_event = tournament.04
+				}
+			}
+
+		}
+
+		on_complete = {
+			activity_owner = {
+				remove_character_flag =  holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+		}
+
+		on_expire = {
+
+			activity_owner = {
+				remove_character_flag =  holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+
+		}
+		on_invalidated = {
+
+			activity_owner = {
+				remove_character_flag = holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+
+		}
+
+		on_participant_death = { 	# on_participant_death = {
+			# 	trigger_event.. triggers within that event for if the participant was murdered, 
+			# died naturally, died fighting in the tournament
+			# }
+
+		}
+	}
+
+	grand_tournament = {
+		solo = no
+		has_activity_window = yes
+		expiration_days = 365 # Obviously tournaments did not a year, gameplay decision.
+		days_until_auto_start = 120
+
+		valid = {
+			activity_owner = {
+				is_alive = yes
+				is_imprisoned = no
+				is_at_war = no
+
+			}
+		}
 
 
+		## Send an invitation to all eligible characters. Players will receive
+		# a cooldown flag to make sure they dont get spammed with events
+		# if they want to join other tournaments they can always interact
+		# with the tournament GUI.
 
+		on_spawn = {
+			invite_character_to_activity = activity_owner
+			accept_invitation_for_character = activity_owner
+
+			every_knight = {
+				limit = {
+					is_knight_of = root
+				}
+				if = {
+					limit = {
+					is_ai = yes					
+					ai_knight_will_join_with_liege = yes
+					}
+					scope:activity = {
+						invite_character_to_activity = prev
+						accept_invitation_for_character = prev
+					}
+				}
+				else = {
+					this = {
+						trigger_event = tournament.05
+					}
+	
+				}
+			}
+	
+
+			every_living_character = {
+				limit  = {
+					NOR = { 
+						is_in_list = tournament_invite_list
+						has_character_flag = invited_to_tournament
+						has_character_flag = tournament_cooldown_human
+					}
+					is_ai = yes
+					ai_consider_joining_tournament = yes
+					faith = scope:activity.activity_owner.faith 
+					
+					realm_to_title_distance_squared = {
+						title = scope:activity.activity_owner.capital_county
+						value <= 18000 # Within "one Ireland" away
+					}
+				}
+				if = {
+					limit = {
+						is_ai = yes
+					}
+					add_to_temporary_list = tournament_invite_list
+					add_character_flag = invited_to_tournament
+				}
+
+
+				else_if = {
+					limit = {
+						is_ai = no
+					}
+					add_to_temporary_list = tournament_invite_list
+					add_character_flag = invited_to_tournament
+
+					add_character_flag = {
+						flag = tournament_cooldown_human
+						years = 3
+					}
+				}
+				
+			}
+			ordered_in_list = {
+				max = 10
+				list = tournament_invite_list
+				order_by = grand_tournament_invite_weight
+
+				scope:activity = {
+					invite_character_to_activity = prev
+				}
+				trigger_event = {
+					id = tournament.02
+					days = { 7 60 }
+				}
+			}
+		}
+
+
+		on_activate = {
+			# Remove the invitation flag from those who didnt get an invite after all.
+			every_in_list = {
+				list = tournament_invite_list
+				limit = {
+					has_character_flag = invited_to_tournament
+				}
+				remove_character_flag = invited_to_tournament
+			}
+			if = {
+				limit = {
+					# Check that people other than the host have joined the tournament.
+
+					list_size = {
+						name = tournament_invite_list
+						value < 10
+					}
+				}
+				# If there are no other tournament-goers, cancel.
+				activity_owner = {
+					trigger_event = tournament.03
+				}
+			}
+			else = {
+				activity_owner = {
+					trigger_event = tournament.04
+				}
+			}
+
+		}
+
+		on_complete = {
+			activity_owner = {
+				remove_character_flag =  holding_tournament
+			}
+
+			every_player = {
+				trigger_event = tournament.99
+			}
+			
+
+			
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+		}
+
+		on_expire = {
+
+			activity_owner = {
+				remove_character_flag =  holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+
+
+			every_player = {
+				trigger_event = tournament.99
+			}
+
+		}
+		on_invalidated = {
+
+			activity_owner = {
+				remove_character_flag = holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+			every_player = {
+				trigger_event = tournament.99
+			}
+
+		}
+
+		on_participant_death = { 	# on_participant_death = {
+			# 	trigger_event.. triggers within that event for if the participant was murdered, 
+			# died naturally, died fighting in the tournament
+			# }
+
+		}
 	}
 

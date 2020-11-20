@@ -24,7 +24,7 @@ host_tournament_decision = { #Probably want several different types of hastilude
 		is_available_adult = yes
 	}
 
-	ai_check_interval = 60
+	ai_check_interval = 6
 	ai_potential = {
 		ai_consider_hosting_tournament = yes
 	}
@@ -36,7 +36,7 @@ host_tournament_decision = { #Probably want several different types of hastilude
 	#opportunity for war than independent rulers.
 
 	ai_will_do = {
-		base = 0
+		base = 25
 		modifier = {
 			add = 5
 			has_lifestyle = martial_lifestyle		
@@ -53,15 +53,13 @@ host_tournament_decision = { #Probably want several different types of hastilude
 	}
 
 	effect = {
-		add_character_flag = holding_tournament
 
+		trigger_event = tournament.01
 
-		# Create the tournament activity.
-		capital_province = {
-			spawn_activity = {
-				type = tournament
-				owner = root
-			}
-		}
 	}
 }
+
+#The tournament, in its strictist sense, was a melee fought out over several miles of open countryside necompassing rivers, wood, vineyards, and farm buildings - all of which provided useful opportunities for ambush and sorties.
+#Several companies of knights took part, under the leadrship of the same lords whom they followed and served in warfare, and often as many as two hundred knights participated on each side.
+#In the early period there wer eno rules, common for several knights to band together to attack a single tourneyer.
+#Object of the game was to capture and ransom thed opposing knights, not to kill them.

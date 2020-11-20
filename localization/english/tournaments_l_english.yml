@@ -1,0 +1,12 @@
+﻿l_english:
+ local_tournament:0 "Local Tournament"
+ local_tournament_name:0 "Local Tournament of [ACTIVITY.GetLocation.GetNameNoTooltip]"
+ local_tournament_host:0 "Host"
+ regional_tournament:0 "Regional Tournament"
+ regional_tournament_name:0 "Regional Tournament of [ACTIVITY.GetLocation.GetNameNoTooltip]"
+ regional_tournament_owner:0 "Host"
+ grand_tournament:0 "Grand Tournament"
+ grand_tournament_name:0 "Grand Tournament of [ACTIVITY.GetLocation.GetNameNoTooltip]"
+ grand_tournament_owner:0 "Host"
+
+ 

@@ -39,58 +39,6 @@ widget = {
 	
 
 
-	container = {
-		datacontext = "[GetScriptedGui('tourney_opt_out')]" 
-		visible = "[ScriptedGui.IsShown(GuiScope.SetRoot(GetPlayer.MakeScope).End)]" 
-
-		flowcontainer = {
-			ignoreinvisible = yes
-			allow_outside = yes
-			position = { 15 0 }
-			datacontext = "[GetScriptedGui('is_holding_tournament')]"
-			visible = "[And(ScriptedGui.IsShown(GuiScope.SetRoot(ProvinceIcon.GetCapitalIcon.GetOwner.MakeScope).End), Not( IsPauseMenuShown ))]"
-	
-			button = {   ## Get the on map button working.
-			name = "rename_button_scripted_gui"
-			layoutpolicy_horizontal = expanding
-			
-			datacontext = "[GetScriptedGui('tournament_button_join')]"
-			visible = yes
-			enabled = yes
-			tooltip = "test"
-			onclick = "[ScriptedGui.Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('tournament',ProvinceIcon.GetCapitalIcon.GetOwner.GetCurrentActivity.MakeScope).End)]"
-
-			
-			gfxtype = updownframedbuttongfx
-			effectname = "NoHighlight"
-			upframe = 1
-			overframe = 2
-			downframe = 4
-			texture = "gfx/interface/buttons/button_small_round.dds"
-			framesize = { 82 82 }
-			
-			parentanchor = bottom
-			size = { 80 80 }
-			
-				button_icon = {
-					parentanchor = center
-					alwaystransparent = yes
-					downframe = 2
-					
-					size = { 20 20 }
-					texture = "gfx/interface/icons/icon_rename_children_radio.dds"
-				}
-			}
-		}
-	
-	}
-
-
-
-
-
-
-
 	# block "capital_datacontext" {
 	# 	datacontext = "[ProvinceIcon.GetOwner]"
 	# }
@@ -141,6 +89,13 @@ widget = {
 				}
 			}
 		}
+
+	
+
+
+	
+	
+	
 
 		widget = {
 			visible = "[And( LessThan_int32( GetZoomLevel, '(int32)7' ), Or( ProvinceIcon.HasCoa, ProvinceIcon.HasLocationIcons ) )]"
@@ -435,6 +390,11 @@ container = {
 		datacontext = "[TitleCapitalMapIcon.GetTitle]"
 		alpha = "[Select_float( TitleCapitalMapIcon.GetTitle.GetHolder.IsValid, '(float)1.0', '(float)0.7' )]"
 	}
+	
+
+
+
+	
 }
 
 ### Combat prediction
@@ -973,6 +933,9 @@ types MapIcons
 		flowcontainer = {
 			parentanchor = hcenter
 			allow_outside = yes
+
+
+			
 
 			container = {
 				name = "name_banner"

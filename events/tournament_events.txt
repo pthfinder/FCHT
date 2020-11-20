@@ -1,7 +1,181 @@
+
 namespace = tournament
 
-#  Character receives invitation to join a tournament.
+tournament.99 = {
+	hidden = yes
+
+	immediate = {
+		remove_list_variable = {
+			name = tournament_list
+			target = scope:activity.activity_owner
+		}
+	}
+}
+# Decide the type of tournament.
+
 tournament.01 = {
+
+
+	option = { #local
+		add_character_flag = holding_tournament
+
+		capital_province = {
+			spawn_activity = {
+				type = local_tournament
+				owner = root
+			}
+		}
+		set_variable = {
+			name = num
+			value = 1
+		}
+
+
+		every_player = {
+			limit = {
+				NOT = {
+					this = root
+				}
+				realm_to_title_distance_squared = {
+					title = root.primary_title
+					value <= 6000
+				}
+			}
+			this = {
+				add_to_variable_list = {
+					name = tournament_list
+					target = root
+				}
+			}
+		}
+
+
+
+		ai_chance = {
+			base = 0
+			modifier = {
+				highest_held_title_tier >= tier_county
+				add = 10
+			}
+			modifier = {
+				yearly_character_income >= 25
+				add = 10
+			}
+		}
+	}
+
+	option = { #regional
+		add_character_flag = holding_tournament
+
+		capital_province = {
+			spawn_activity = {
+				type = regional_tournament
+				owner = root
+			}
+		}
+		
+		set_variable = {
+			name = num
+			value = 1
+		}
+
+
+		every_player = {
+			limit = {
+				NOT = {
+					this = root
+				}
+				realm_to_title_distance_squared = {
+					title = root.primary_title
+					value <= 8000
+				}
+			}
+			this = {
+				add_to_variable_list = {
+					name = tournament_list
+					target = root
+				}
+			}
+		}
+
+
+
+		ai_chance = {
+			base = 0
+			modifier = {
+				highest_held_title_tier >= tier_duchy
+				add = 25
+			}
+			modifier = {
+				yearly_character_income >= 50
+				add = 10
+			}
+			modifier = {
+				has_trait = humble
+				has_trait = fickle
+				has_trait = greedy
+				add = 10
+			}
+		}
+
+	}
+
+	option = { #grand
+		add_character_flag = holding_tournament
+
+		capital_province = {
+			spawn_activity = {
+				type = grand_tournament
+				owner = root
+			}
+		}
+		set_variable = {
+			name = num
+			value = 1
+		}
+
+		every_player = {
+			limit = {
+				NOT = {
+					this = root
+				}
+				realm_to_title_distance_squared = {
+					title = root.primary_title
+					value <= 12000
+				}
+			}
+			this = {
+				add_to_variable_list = {
+					name = tournament_list
+					target = root
+				}
+			}
+		}
+
+
+		ai_chance = {
+			base = 0
+			modifier = {
+				highest_held_title_tier >= tier_kingdom
+				add = 25
+			}
+			modifier = {
+				yearly_character_income >= 100
+				add = 10
+			}
+			modifier = {
+				has_trait = ambitious
+				has_trait = arrogant
+				has_trait = gregarious
+				add = 10
+			}
+		}
+	}
+}
+
+
+#  Character receives invitation to join a tournament.
+tournament.02 = {
 	type = letter_event
 	trigger = {
 		is_alive = yes
@@ -12,13 +186,47 @@ tournament.01 = {
 	}
 
 
+
+
 	option = {
 		scope:activity = {
 			accept_invitation_for_character = root
 		}
+
+		every_knight = {
+			limit = {
+				is_knight_of = root
+			}
+			if = {
+				limit = {
+				is_ai = yes					
+				ai_knight_will_join_with_liege = yes
+				}
+				scope:activity = {
+					invite_character_to_activity = prev
+					accept_invitation_for_character = prev
+				}
+			}
+			else = {
+				this = {
+					trigger_event = tournament.05
+				}
+
+			}
+		}
+
 		
+		# scope:activity.activity_owner = {
+		# 	change_variable = {
+		# 		name = num
+		# 		add = 1
+		# 	}
+		# }
+		
+		remove_character_flag = invited_to_tournament
+
 		ai_chance = {
-			base = 0
+			base = 50
 			modifier = {
 				add = 25
 				has_trait = brave
@@ -49,7 +257,7 @@ tournament.01 = {
 			base = 0
 			modifier = {
 				root.highest_held_title_tier > scope:activity.activity_owner.highest_held_title_tier  # Not super prestigious is it?
-				add = -25
+				add = -50
 			}
 
 			modifier = {
@@ -63,10 +271,10 @@ tournament.01 = {
 }
 
 # Event for failed tournament, nobody showed up..
-tournament.02 = {
+tournament.03 = {
 	type = character_event
-	title = tournament.02.title
-	desc = tournament.02.desc
+	title = "tournament failed"
+	desc = tournament.03.desc
 	theme = crown
 
 	left_portrait = {
@@ -74,32 +282,225 @@ tournament.02 = {
 		animation = sadness
 	}
 	immediate = {
+
+		scope:activity = {
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+				remove_character_flag = holding_tournament
+			}
+		}
 		scope:activity = {
 			complete_activity = no
+		}
+		
+		every_player = {
+			trigger_event = tournament.99
 		}
 	}
 
 	option = {
-		name = tournament.02.option
+		name = tournament.03.option
 		stress_impact = {
 			base = minor_stress_impact_gain
 		}
 	}
 }
 
-tournament.03 = {
+tournament.04 = { # Tournament is about to start, knights have arrived.
 	type = character_event
-	title = tournament.03.title
-	desc = tournament.03.desc
-	theme = battle
+	title = tournament.04.title #all the knights have arrived, throw a feast beforehand.
+	desc = tournament.04.desc #triggered desc
+	
 
 	left_portrait = {
 		character = scope:activity.activity_owner
-		animation = sadness
+		animation = happiness
 	}
+
+	immediate = {
+		if = {
+			limit = {
+				NOT = {
+					has_global_variable = jousting_era
+				}
+			}
+			trigger_event = { #Feast
+				id = tournament.06
+				days = 10
 	
+			}
+		}
+
+
+
+		every_player = {
+			trigger_event = tournament.99
+		}
+
+		#Should we throw a feast for those in attendance?
+	}
 
 	option = {
 		
 	}
 }
+
+
+tournament.05 = {
+	type = letter_event
+
+
+	option = {
+		scope:activity = {
+			invite_character_to_activity = root
+			accept_invitation_for_character = root
+		}
+	}
+	option = {
+	}
+}
+
+tournament.06 = { #Feast
+
+	# desc = , if root = host, tell event from their point of view, welcome all the knights and lords, welcome all the ladies
+	# desc = if root = attendant tell event from their point of view
+
+
+	immediate = {
+
+		trigger_event = {
+			on_action = tournament_feast_event_selection
+			days = 10
+		}
+	}
+
+	option = {
+
+	}
+}
+tournament.07 = { #Someone is drunkenly murdered, cancels the tournament.
+
+
+
+	immediate = {
+		
+		trigger_event = {
+			on_action = tournament_dance_event_selection
+			days = 10
+		}
+
+	}
+
+	option = {
+
+	}
+}
+tournament.08 = { # Befriend Feast
+
+
+
+	immediate = {
+		
+		trigger_event = {
+			on_action = tournament_dance_event_selection
+			days = 10
+		}
+	}
+
+	option = {
+
+	}
+}
+tournament.09 = { # Rival Feast
+
+
+
+	immediate = {
+
+		trigger_event = {
+			on_action = tournament_dance_event_selection
+			days = 10
+		}
+	}
+
+	option = {
+
+	}
+}
+tournament.10 = { #Regular Feast
+
+
+
+	immediate = {
+
+		trigger_event = {
+			on_action = tournament_dance_event_selection
+			days = 10
+		}
+	}
+
+	option = {
+
+	}
+}
+tournament.11 = { # Awful Dance
+
+
+
+	immediate = {
+
+	}
+
+	option = {
+
+	}
+}
+tournament.12 = { # Inspiring Dance
+
+
+
+	immediate = {
+	}
+
+	option = {
+
+	}
+}
+tournament.13 = { # Regular Dance
+
+
+
+	immediate = {
+
+	}
+
+	option = {
+
+	}
+}
+
+#Kingdoms can license tournaments,making them occur more frequently, be larger in size. But perhaps makes factions occur more easily, or gives a scheme debuff.
+#Kingdoms can prohibti tournaments, tournaments can still be held but at a risk to the character. It gives a stability bonus to the realm perhaps but you lose the potential prowess buffs for your knights.
+#Pope can issue bulls about tournaments, which gives those who join a chance of beign excommunicated.
+#Mid to late 1200s, Jousts appear.
+#Behourds, Roundstables, Melees
+
+
+
+#Types of tournament
+
+#There was a very wide range, can classify them into tthree types
+#Original mass tournament, the melee proper, fought between two teams of knights either in the open field or in the lists, the field tournament without enclosing barriers in the 12th century does not seem to have survived beyond the 13th century.
+#The mass tournament, gives way in the late 14th century to the individual gjoust, whcih first appears in the late 12th century, but only reaches its most developed form with the tilt down the centre of the lists in the early 15th century.
+#Practice tournament,
+
+
+#Reasons for holding tournaments
+#Held because the participants enjoyed them
+#Held during sieges. (not good for gameplay, maybe a flavor event.
+#End of campaign could be marked by jousts or tournaments.
+#Knighting ceremonies
+#Coronations
+#Diplomatic Meetings
+#Weddings
+#Prizes were generally items, can abstract to gold.

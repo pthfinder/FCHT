@@ -1,0 +1,22 @@
+tournament_feast_event_selection = {
+    trigger = {
+        exists = scope:activity
+	}
+	random_events = {
+		1 = tournament.07 #Someone is drunkenly murdered, cancels the tournament.
+		50 = tournament.08 # Befriend Feast
+		50 = tournament.09 # Rival Feast
+		500 = tournament.10 #Regular Feast
+	}
+}
+
+tournament_dance_event_selection = {
+	trigger = {
+		exists = scope:acitivty
+	}
+	random_events = {
+		10 =tournament.11 # Awful Dance
+		10 = tournament.12 # Inspiring Dance
+		100 = tournament.13 # Regular Dance
+	}
+}

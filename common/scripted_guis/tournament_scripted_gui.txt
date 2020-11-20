@@ -1,0 +1,88 @@
+activate_tournament_gui = {
+	scope = character
+	is_shown = {
+		has_variable = activated_tournament_gui
+	}
+	effect = {
+		if = {
+			limit = {
+				has_variable = activated_tournament_gui
+			}
+			remove_variable = activated_tournament_gui
+		}
+		else = {
+			set_variable = activated_tournament_gui
+		}
+	}
+
+}
+
+# tournament_info_gui = {
+# 	scope = character
+
+# 	effect = {
+# 		# clear_variable_list = tournament_list
+
+# 		#Get rulers hosting tournaments that are reasonably close to the root characters realm.
+# 		every_ruler = {
+# 			limit = {
+# 				has_character_flag = holding_tournament
+# 				realm_to_title_distance_squared = {
+# 					title = root.primary_title
+# 					value <= 12000
+# 				}
+# 			}
+# 			root = {
+# 				add_to_variable_list = {
+# 					name = tournament_list
+# 					target = prev
+# 				}
+# 			}
+			
+
+# 		}
+
+# 	}
+# }
+
+tournament_button_join = {
+	saved_scopes = {
+		tournament
+	}
+	scope = character
+	is_shown = {
+		always = yes
+	}
+	is_valid = {
+		NOT = {
+			has_variable = holding_tournament
+			has_variable = invited_to_tournament
+			has_variable = opted_out_of_tournaments
+			#has_variable = attending_tournament
+		}
+	}
+
+	effect = {
+
+		scope:tournament = {
+			invite_character_to_activity = root
+			accept_invitation_for_character = root
+		}
+		every_living_character = {
+			limit = {
+				is_knight_of = root
+			}
+			if = {
+				limit = {
+					is_ai = yes
+					ai_knight_will_join_with_liege = yes
+				}
+				scope:tournament = {
+					invite_character_to_activity = prev
+					accept_invitation_for_character = prev
+				}
+			}
+		}
+
+	}
+}

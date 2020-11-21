@@ -24,7 +24,7 @@ host_tournament_decision = { #Probably want several different types of hastilude
 		is_available_adult = yes
 	}
 
-	ai_check_interval = 6
+	ai_check_interval = 24
 	ai_potential = {
 		ai_consider_hosting_tournament = yes
 	}

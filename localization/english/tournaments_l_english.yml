@@ -8,5 +8,7 @@
  grand_tournament:0 "Grand Tournament"
  grand_tournament_name:0 "Grand Tournament of [ACTIVITY.GetLocation.GetNameNoTooltip]"
  grand_tournament_owner:0 "Host"
+ tournament.12.title:0 "The Inspiring Dance"
+ tournament.12.desc:0 "Her smile.. Her scent.. This woman truly captivates me with her beauty and grace.\n As we dance it feels like time itself stops and yet before long, we part and move on to our next partners.. \n\nI did not catch her name, but this fair creature has inspired me to perform great feats in the upcoming events in her honor."
+ tournament.12.option.a:0 "A woman's affection is only surpassed by honor in battle."
 
- 

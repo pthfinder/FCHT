@@ -21,7 +21,7 @@
 		solo = no
 		has_activity_window = yes
 		expiration_days = 183 # Obviously tournaments did not last half a year, gameplay decision.
-		days_until_auto_start = 60 
+		days_until_auto_start = 30 
 
 		valid = {
 			activity_owner = {
@@ -41,6 +41,8 @@
 		on_spawn = {
 			invite_character_to_activity = activity_owner
 			accept_invitation_for_character = activity_owner
+
+
 
 			scope:activity.activity_owner = {
 				every_knight = {
@@ -105,7 +107,7 @@
 				
 			}
 			ordered_in_list = {
-				max = 10
+				max = 15
 				list = tournament_invite_list
 				order_by = tournament_invite_weight
 
@@ -129,28 +131,22 @@
 				}
 				remove_character_flag = invited_to_tournament
 			}
-			if = {
-				limit = {
-					# Check that people other than the host have joined the tournament.
 
-					list_size = {
-						name = tournament_invite_list
-						value < 10
+			activity_owner = {
+				if = {
+					limit = {
+						# Check that people other than the host have joined the tournament.
+						var:num <15
+
 					}
-	
-				}
-				# If there are no other tournament-goers, cancel.
-				activity_owner = {
 					trigger_event = tournament.03
 				}
-			}
+			
 			else = {
-				activity_owner = {
-					trigger_event = tournament.04
+				trigger_event = tournament.04
+				
 				}
 			}
-
-
 		}
 
 		on_complete = {
@@ -216,27 +212,30 @@
 			invite_character_to_activity = activity_owner
 			accept_invitation_for_character = activity_owner
 
-			every_knight = {
-				limit = {
-					is_knight_of = root
-				}
-				if = {
+			scope:activity.activity_owner = {
+				every_knight = {
 					limit = {
-					is_ai = yes					
-					ai_knight_will_join_with_liege = yes
+						is_knight_of = prev
 					}
-					scope:activity = {
-						invite_character_to_activity = prev
-						accept_invitation_for_character = prev
+					if = {
+						limit = {
+						is_ai = yes					
+						ai_knight_will_join_with_liege = yes
+						}
+						scope:activity = {
+							invite_character_to_activity = prev
+							accept_invitation_for_character = prev
+						}
+
 					}
-				}
-				else = {
-					this = {
-						trigger_event = tournament.05
+					else = {
+						this = {
+							trigger_event = tournament.05
+						}
 					}
-	
 				}
 			}
+
 	
 
 			every_ruler = {
@@ -280,7 +279,7 @@
 				
 			}
 			ordered_in_list = {
-				max = 10
+				max = 30
 				list = tournament_invite_list
 				order_by = tournament_invite_weight
 
@@ -304,27 +303,22 @@
 				}
 				remove_character_flag = invited_to_tournament
 			}
-			if = {
-				limit = {
-					# Check that people other than the host have joined the tournament.
+			activity_owner = {
+				if = {
+					limit = {
+						# Check that people other than the host have joined the tournament.
+						var:num <30
 
-					list_size = {
-						name = tournament_invite_list
-						value < 1
 					}
-				}
-				# If there are no other tournament-goers, cancel.
-				activity_owner = {
 					trigger_event = tournament.03
-				}
-			}
-			else = {
-				activity_owner = {
+				}		
+				else = {
 					trigger_event = tournament.04
+					
 				}
 			}
-
 		}
+
 
 		on_complete = {
 			activity_owner = {
@@ -389,27 +383,32 @@
 			invite_character_to_activity = activity_owner
 			accept_invitation_for_character = activity_owner
 
-			every_knight = {
-				limit = {
-					is_knight_of = root
-				}
-				if = {
+			
+			
+
+			scope:activity.activity_owner = {
+				every_knight = {
 					limit = {
-					is_ai = yes					
-					ai_knight_will_join_with_liege = yes
+						is_knight_of = prev
 					}
-					scope:activity = {
-						invite_character_to_activity = prev
-						accept_invitation_for_character = prev
+					if = {
+						limit = {
+						is_ai = yes					
+						ai_knight_will_join_with_liege = yes
+						}
+						scope:activity = {
+							invite_character_to_activity = prev
+							accept_invitation_for_character = prev
+						}
 					}
-				}
-				else = {
-					this = {
-						trigger_event = tournament.05
+					else = {
+						this = {
+							trigger_event = tournament.05
+						}
 					}
-	
 				}
 			}
+
 	
 
 			every_living_character = {
@@ -452,7 +451,7 @@
 				
 			}
 			ordered_in_list = {
-				max = 10
+				max = 50
 				list = tournament_invite_list
 				order_by = grand_tournament_invite_weight
 
@@ -476,27 +475,22 @@
 				}
 				remove_character_flag = invited_to_tournament
 			}
-			if = {
-				limit = {
-					# Check that people other than the host have joined the tournament.
-
-					list_size = {
-						name = tournament_invite_list
-						value < 10
+			activity_owner = {
+				if = {
+					limit = {
+						# Check that people other than the host have joined the tournament.
+						var:num <50
 					}
-				}
-				# If there are no other tournament-goers, cancel.
-				activity_owner = {
 					trigger_event = tournament.03
 				}
-			}
-			else = {
-				activity_owner = {
+			
+				else = {
 					trigger_event = tournament.04
+					
 				}
 			}
-
 		}
+
 
 		on_complete = {
 			activity_owner = {

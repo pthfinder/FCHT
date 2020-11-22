@@ -1,0 +1,75 @@
+poor_fighter = {
+	index = 900
+	lifestyle = yes
+	negative_health_penalty_add = 0.25
+	prowess = 3
+
+	group = lifestyle_fighter
+	level = 1
+		compatibility = {
+			poor_fighter = @pos_compat_medium
+			trained_fighter = @pos_compat_medium
+			skilled_fighter = @pos_compat_medium
+			formidable_fighter = @pos_compat_medium
+			brave = @pos_compat_low
+			craven = @neg_compat_low
+		}
+}
+
+trained_fighter = {
+	index = 901
+	lifestyle = yes
+	negative_health_penalty_add = 0.50
+	prowess = 6
+	group = lifestyle_fighter
+	level = 2
+	
+	compatibility = {
+		poor_fighter = @pos_compat_medium
+		trained_fighter = @pos_compat_medium
+		skilled_fighter = @pos_compat_medium
+		formidable_fighter = @pos_compat_medium
+		brave = @pos_compat_low
+		craven = @neg_compat_low
+	}
+
+}
+
+
+skilled_fighter = {
+	index = 902
+	lifestyle = yes
+	negative_health_penalty_add = 0.75
+	prowess = 9
+	group = lifestyle_fighter
+	level = 3
+
+	compatibility = {
+		poor_fighter = @pos_compat_medium
+		trained_fighter = @pos_compat_medium
+		skilled_fighter = @pos_compat_medium
+		formidable_fighter = @pos_compat_medium
+		brave = @pos_compat_low
+		craven = @neg_compat_low
+	}
+}
+
+
+formidable_fighter = {
+	index = 903
+	lifestyle = yes
+	negative_health_penalty_add = 1
+	prowess = 15
+
+	group = lifestyle_fighter
+	level = 4
+
+	compatibility = {
+		poor_fighter = @pos_compat_medium
+		trained_fighter = @pos_compat_medium
+		skilled_fighter = @pos_compat_medium
+		formidable_fighter = @pos_compat_medium
+		brave = @pos_compat_low
+		craven = @neg_compat_low
+	}
+}

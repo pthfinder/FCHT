@@ -21,13 +21,24 @@ tournament_dance_event_selection = {
 	}
 }
 
-tournament_actual_event_selection = {
+tournament_melee_good_selection = {
 	trigger = {
 		exists = scope:activity
 	}
 	random_events = {
-		10 =tournament.0800 # Awful Dance
-		10 = tournament.0801 # Inspiring Dance
-		10 = tournament.0802 # Regular Dance
+		1000 = tournament.0800
+		10 = tournament.0802 
+		10 = tournament.0804 
+	}
+}
+tournament_melee_bad_selection = {
+	trigger = {
+		exists = scope:activity
+	}
+	random_events = {
+		1000 =tournament.0800 
+		10 = tournament.0803
+		10 = tournament.0805
+		10 = tournament.0806
 	}
 }

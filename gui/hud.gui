@@ -254,7 +254,7 @@ widget = {
 								visible = yes
 								enabled = yes
 								tooltip = "[Scope.GetCharacter.GetCurrentActivity.GetName]"
-Z								onclick = "[ScriptedGui.Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('tournament',Scope.GetCharacter.GetCurrentActivity.MakeScope).End),ActivityWindow.CenterOnMap]"
+								onclick = "[ScriptedGui.Execute(GuiScope.SetRoot(GetPlayer.MakeScope).AddScope('tournament',Scope.GetCharacter.GetCurrentActivity.MakeScope).End),ActivityWindow.CenterOnMap]"
 					
 								
 								gfxtype = updownframedbuttongfx

@@ -99,5 +99,53 @@ ai_knight_will_join_with_liege = {
 			has_doctrine = doctrine_gender_equal
 		}
 	}
+}
+
+positive_traits_tournament_small = { #These traits give characters a small buff to getting positive outcomes in tournaments
+	OR = {
+		has_trait = ambitious
+		has_trait = patient
+		has_trait = intellect_good_1 # Quick
+		has_trait = deceitful
+		has_trait = whole_of_body
+	}
+	
+}
+positive_traits_tournament_medium = { #These non-prowess affecting traits give characters a medium  buff to getting positive outcomes in tournaments
+	OR = {
+		has_trait = brave
+		has_trait = shrewd
+		has_trait = intellect_good_2  #Intelligent
+
+	}
+}
+
+positive_traits_tournament_large = { #These non-prowess affecting traits give characters a large buff to getting negative outcomes in tournaments
+	OR = {
+		has_trait = intellect_good_3  #Genius
+	}
 
 }
+negative_traits_tournament_small = { #These non-prowess affecting traits give characters a small buff to getting negative outcomes in tournaments
+	OR = {
+		has_trait = intellect_bad_1 #Slow
+		has_trait = dull
+		has_trait = impatient
+		has_trait = trusting
+		has_trait = stubborn	
+	}
+}
+negative_traits_tournament_medium = { #These non-prowess affecting traits give characters a medium buff to getting negative outcomes in tournaments
+	OR = {
+		has_trait = intellect_bad_2 #Stupid
+
+	}
+}
+
+negative_traits_tournament_large = { #These non-prowess affecting traits give characters a large buff to getting negative outcomes in tournaments
+	OR = {
+		has_trait = intellect_bad_3 #Imbecile
+
+	}
+}
+

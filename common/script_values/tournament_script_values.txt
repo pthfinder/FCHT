@@ -136,3 +136,327 @@ grand_tournament_invite_weight = { #In this instance, we really want the grandes
     }
 }
     
+
+ransom_value = {
+   value = 0
+
+   if = {
+      limit = {
+         highest_held_title_tier = tier_emperor
+      }
+      value = 25
+   }
+   if = {
+      limit = {
+         highest_held_title_tier = tier_kingdom
+      }
+      value = 20
+   }
+   if = {
+      limit = {
+         highest_held_title_tier = tier_duchy
+      }
+      value = 15
+   }
+   if = {
+      limit = {
+         highest_held_title_tier = tier_county
+      }
+      value = 10
+   }
+
+   if = {
+      limit = {
+         highest_held_title_tier = tier_barony
+      }
+      value = 10
+   }
+   if = {
+      limit = {
+         is_landed = no
+      }
+      value = 10
+   }
+}
+
+
+
+melee_chance = {
+    value = 0
+
+    add = prowess
+
+    if = {
+        limit = {
+            has_trait = intellect_good_1
+        }
+        add = 5
+    }
+    if = {
+        limit = {
+            has_trait = shrewd
+        }
+        add = 7
+    }
+    if = {
+        limit = {
+            has_trait = intellect_good_2
+        }
+        add = 10
+    }
+    if = {
+        limit = {
+            has_trait = intellect_good_3
+        }
+        add = 15
+    }
+
+    if = {
+        limit = {
+            has_trait = aggressive_attacker
+        }
+        add = 5
+    }
+
+    if = {
+        limit = {
+            has_trait = intellect_bad_1
+        }
+        subtract = 5
+    }
+    if = {
+        limit = {
+            has_trait = dull
+        }
+        subtract = 7
+    }
+    if = {
+        limit = {
+            has_trait = intellect_bad_2
+        }
+        subtract = 10
+    }
+    if = {
+        limit = {
+            has_trait = intellect_bad_3
+        }
+        subtract = 15
+    }
+
+    multiply = 10
+}
+
+
+swordsmanship_upgrade_chance = {
+    value = 0
+    
+    if = {    #Upgrading from untrained to poor 
+        limit = {
+            NOT = {
+                has_trait = lifestyle_fighter
+            }
+        }
+        add = 50
+        
+        if = {
+            limit = {
+                positive_traits_tournament_small = yes
+            }
+            add = 5 # % chance.
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_medium = yes
+            }
+            add = 10
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_large = yes
+            }
+            add = 25
+        }
+        if = {
+            limit = {
+                OR = {
+                    has_trait = dull
+                    has_trait = intellect_bad_1
+                    has_trait = craven
+                }
+            }
+            subtract = 10
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_medium = yes
+            }
+            subtract = 20
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_large = yes
+            }
+            multiply = 0
+        }
+    }
+        
+    if = {    #Upgrading from poor to trained
+        limit = {
+            has_trait = poor_fighter
+            NOR = {
+                has_trait = trained_fighter
+                has_trait = skilled_fighter
+                has_trait = formidable_fighter
+            }
+        }
+        add = 25
+        
+        if = {
+            limit = {
+                positive_traits_tournament_small = yes
+            }
+            add = 5 # % chance.
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_medium = yes
+            }
+            add = 10
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_large = yes
+            }
+            add = 20
+        }
+        if = {
+            limit = {
+                OR = {
+                    has_trait = dull
+                    has_trait = intellect_bad_1
+                    has_trait = craven
+                }
+            }
+            subtract = 20
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_medium = yes
+            }
+            subtract = 30
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_large = yes
+            }
+            multiply = 0
+        }
+    }
+
+    if = {    #Upgrading from trained to skilled
+        limit = {
+            has_trait = trained_fighter
+            NOR = {
+                has_trait = poor_fighter
+                has_trait = skilled_fighter
+                has_trait = formidable_fighter
+            }
+        }
+        add = 10
+        
+        if = {
+            limit = {
+                positive_traits_tournament_small = yes
+            }
+            add = 1 # % chance.
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_medium = yes
+            }
+            add = 5
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_large = yes
+            }
+            add = 10
+        }
+        if = {
+            limit = {
+                OR = {
+                    has_trait = dull
+                    has_trait = intellect_bad_1
+                    has_trait = craven
+                }
+            }
+            subtract = 30
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_medium = yes
+            }
+            multiply = 0.5
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_large = yes
+            }
+            multiply = 0
+        }
+    }
+    if = {    #Upgrading from skilled to formidable
+        limit = {
+            has_trait = skilled_fighter
+            NOR = {
+                has_trait = poor_fighter
+                has_trait = trained_fighter
+                has_trait = formidable_fighter
+            }
+        }
+        add = 2
+        
+        if = {
+            limit = {
+                positive_traits_tournament_small = yes
+            }
+            add = 1 # % chance.
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_medium = yes
+            }
+            add = 2
+        }
+        if = {
+            limit = {
+                positive_traits_tournament_large = yes
+            }
+            add = 5
+        }
+        if = {
+            limit = {
+                OR = {
+                    has_trait = dull
+                    has_trait = intellect_bad_1
+                    has_trait = craven
+                }
+            }
+            multiply = 0.25
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_medium = yes
+            }
+            multiply = 0.5
+        }
+        if = {
+            limit = {
+                negative_traits_tournament_large = yes
+            }
+            multiply = 0
+        }
+    }
+
+
+}

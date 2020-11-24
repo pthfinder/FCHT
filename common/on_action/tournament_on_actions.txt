@@ -15,8 +15,8 @@ tournament_dance_event_selection = {
 		exists = scope:activity
 	}
 	random_events = {
-		10 =tournament.11 # Awful Dance
-		1000 = tournament.12 # Inspiring Dance
+		5 =tournament.11 # Awful Dance
+		5 = tournament.12 # Inspiring Dance
 		100 = tournament.13 # Regular Dance
 	}
 }
@@ -40,5 +40,14 @@ tournament_melee_bad_selection = {
 		10 = tournament.0803
 		10 = tournament.0805
 		10 = tournament.0806
+	}
+}
+
+tournament_closing_selection = {
+	trigger = {
+		exists = scope:activity
+	}
+	random_events = {
+		1000 = tournament.0810
 	}
 }

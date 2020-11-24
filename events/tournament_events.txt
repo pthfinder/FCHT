@@ -177,18 +177,33 @@ tournament.01 = {
 #  Character receives invitation to join a tournament.
 tournament.02 = {
 	type = letter_event
+	opening = {
+		desc = tournament.02.opening
+	}
+	desc = tournament.02.desc
+	sender = scope:activity.activity_owner
+
 	trigger = {
 		is_alive = yes
 		is_at_war = no
 		is_imprisoned = no
 		is_incapable = no
+		is_in_an_activity = no
 		
+	}
+	immediate = {
+		scope:activity.activity_owner = {
+			save_scope_as = tournament_host
+		}
+
+		play_music_cue = "mx_cue_banquet"
 	}
 
 
 
 
 	option = {
+		name = tournament.02.option.a
 		trigger = {
 			exists = scope:activity
 		}
@@ -259,6 +274,7 @@ tournament.02 = {
 		
 	}
 	option = {
+		name = tournament.02.option.b
 		trigger = {
 			exists = scope:activity
 		}
@@ -305,15 +321,16 @@ tournament.03 = {
 	immediate = {
 
 		scope:activity = {
-			every_participant = {
-				remove_character_flag = invited_to_tournament
+			activity_owner = {
 				remove_character_flag = holding_tournament
 			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
+	
 		}
-		scope:activity = {
-			complete_activity = no
-		}
-		
+
+
 		every_player = {
 			trigger_event = tournament.99
 		}
@@ -339,6 +356,7 @@ tournament.04 = { # Tournament is about to start, knights have arrived.
 	}
 
 	immediate = {
+
 		if = {
 			limit = {
 				NOT = {
@@ -352,17 +370,32 @@ tournament.04 = { # Tournament is about to start, knights have arrived.
 						days = 10
 					}
 					trigger_event = {
-						id = tournament.0100
-						days = 30
+						id = tournament.0809
+						days = 65
 					}
-					trigger_event = {
-						id = tournament.0101
-						days = 31
+					trigger_event = { # Closing Feast
+					on_action = tournament_closing_selection 
+					days = 70
 					}
+					if = {
+						limit = {
+							NOT = {
+								has_character_flag = host_not_fighting
+							}
+						}
+						trigger_event = {
+							id = tournament.0100
+							days = 30
+						}
+						trigger_event = {
+							id = tournament.0101
+							days = 31
+						}
+					}
+
 				}
 			}
 		}
-
 
 
 		every_player = {
@@ -371,7 +404,35 @@ tournament.04 = { # Tournament is about to start, knights have arrived.
 	}
 
 	option = {
-		
+		name = tournament.04.option.a
+		trigger = {
+			OR = {
+				AND = {
+					faith = {
+						has_doctrine = doctrine_gender_male_dominated
+					}
+					is_male = yes
+				}
+				#In female dominated societies, only women can participate.
+				AND = {
+					faith = {
+						has_doctrine = doctrine_gender_female_dominated
+					}
+					is_female = yes
+				}
+				#In equal gendered societies, anyone can participate.
+				faith = {
+					has_doctrine = doctrine_gender_equal
+				}
+			}
+		}
+		custom_tooltip = tournament.04.option.a.tt		
+	}
+
+	option = {
+		name = tournament.04.option.b
+		custom_tooltip = tournament.04.option.b.tt
+		add_character_flag = host_not_fighting
 	}
 }
 
@@ -707,6 +768,11 @@ tournament.12 = { # Inspiring Dance
 	override_background = {
 		event_background = sitting_room
 	}
+	trigger ={
+		NOT = {
+			has_character_flag = host_not_fighting
+		}
+	}
 
 
 	immediate = {
@@ -871,26 +937,45 @@ tournament.0101 = {
 	immediate = {
 		play_music_cue = "mx_cue_war_declared"
 
-
-		set_variable = {
-			name = number_of_captures
-			value = 0
+		if = {
+			limit = {
+				NOT = {
+					has_character_flag = host_not_fighting
+				}
+			}
+			set_variable = {
+				name = number_of_captures
+				value = 0
+			}
+			set_variable = {
+				name = number_of_times_captured
+				value = 0
+			}
+			set_variable = { 
+				name = gold_earned
+				value = 0
+			}
+			set_variable = {
+				name = prowess_gained
+				value = 0
+			}
+			trigger_event = tournament.0999
 		}
-		set_variable = {
-			name = number_of_times_captured
-			value = 0
+	}
+	option = {
+		name = tournament.0101.option.a
+		trigger = {
+			NOT = {
+				has_character_flag = host_not_fighting
+			}
 		}
-		set_variable = { 
-			name = gold_earned
-			value = 0
-		}
-
-
-		trigger_event = tournament.0999
 
 	}
 	option = {
-
+		name = tournament.0101.option.b
+		trigger = {
+			has_character_flag = host_not_fighting
+		}
 	}
 }
 
@@ -915,6 +1000,9 @@ tournament.0800 = { #Encounter with another Knight. Fight
 		scope:activity = {
 			any_participant = {
 				is_alive = yes
+				NOT = {
+					has_character_flag = host_not_fighting
+				}
 			}
 		}
 	}
@@ -929,146 +1017,185 @@ tournament.0800 = { #Encounter with another Knight. Fight
 		}
 		scope:activity = {
 			random_participant = {
-				limit = {
+				limit = {			
 					is_alive = yes
 					is_imprisoned = no
 					is_incapable = no
-					NOT = {
+
+					NOR = {
 						this = root
+						has_character_flag = host_not_fighting
 					}
+
 				}
 				save_scope_as = opponent
 			}
 		}
 			
 
-
-			random_list = {
-				0 = {
-					modifier = {
-						add = root.melee_chance
-					}
-				
-					root = {
-						save_scope_as = winner
-					}
-					scope:opponent = {
-						save_scope_as = loser
-					}
-				}
-
-				0 = {
-					modifier = {
-						add = scope:opponent.melee_chance
-					}
-		
-					root = {
-						save_scope_as = loser
-					}
-					scope:opponent = {
-						save_scope_as = winner
-					}
-				}
-			}
-
-	scope:winner = {
-		if = {
-			limit = {
-				has_variable = number_of_captures
-			}
-			change_variable = {
-				name = number_of_captures
-				add = 1
-			}
-		}
-		else = {
-			set_variable = {
-				name = number_of_captures
-				value = 1
-			}
-		}
-
-		if = {
-			limit = {
-				has_variable = gold_earned
-			}
-			change_variable = { 
-				name = gold_earned
-				add = scope:loser.ransom_value
-			}
-		}
-		else = {
-			set_variable = {
-				name = gold_earned
-				value = scope:loser.ransom_value
-			}
-		}
-	}
-	scope:loser = {
-		
-		if = {
-			limit ={
-				has_variable = number_of_times_captured
-			}
-			change_variable = {
-				name = number_of_times_captured
-				add = 1
-			}
-		}
-		else = {
-			set_variable = {
-				name = number_of_times_captured
-				value = 1
-			}
-		}
-
-		if = {
-			limit = {
-				has_variable = gold_earned
-			}
-			change_variable = { 
-				name = gold_earned
-				subtract = scope:loser.ransom_value
-			}
-		}
-		else = {
-			set_variable = {
-				name = gold_earned
-				value = 0
-			}
-			change_variable = {
-				name = gold_earned
-				subtract = scope:loser.ransom_value
-			}
-		}
-	}
-
-	if = {
-		limit = {
-			root = scope:winner
-		}
 		random_list = {
 			0 = {
 				modifier = {
-					add = root.swordsmanship_upgrade_chance
+					add = root.melee_chance
 				}
-				change_trait_rank = {
-					trait = lifestyle_fighter
-					rank = 1
+				
+				root = {
+					save_scope_as = winner
+				}
+				scope:opponent = {
+					save_scope_as = loser
 				}
 			}
-			50 = {
 
+			0 = {
+				modifier = {
+					add = scope:opponent.melee_chance
+				}
+		
+				root = {
+					save_scope_as = loser
+				}
+				scope:opponent = {
+					save_scope_as = winner
+				}
 			}
 		}
-	}
 
-	if = {
-		limit = {
-			var:EVENT_COUNTER <=3
-		}
+
+		if = {
+			limit = {
+				exists = scope:winner
+			}
+			scope:winner = {
+				if = {
+					limit = {
+						has_variable = number_of_captures
+					}
+					change_variable = {
+						name = number_of_captures
+						add = 1
+					}
+				}
+				else = {
+					set_variable = {
+						name = number_of_captures
+						value = 1
+					}
+				}
 	
+				if = {
+					limit = {
+						has_variable = gold_earned
+					}
+					change_variable = { 
+						name = gold_earned
+						add = scope:loser.ransom_value
+					}
+				}
+				else = {
+					set_variable = {
+						name = gold_earned
+						value = scope:loser.ransom_value
+					}
+				}
+			}
+		}
 
+		if = {
+			limit = {
+				exists = scope:loser
+			}
+			scope:loser = {
+			
+				if = {
+					limit ={
+						has_variable = number_of_times_captured
+					}
+					change_variable = {
+						name = number_of_times_captured
+						add = 1
+					}
+				}
+				else = {
+					set_variable = {
+						name = number_of_times_captured
+						value = 1
+					}
+				}
+	
+				if = {
+					limit = {
+						has_variable = gold_earned
+					}
+					change_variable = { 
+						name = gold_earned
+						subtract = scope:loser.ransom_value
+					}
+				}
+				else = {
+					set_variable = {
+						name = gold_earned
+						value = 0
+					}
+					change_variable = {
+						name = gold_earned
+						subtract = scope:loser.ransom_value
+					}
+				}
+			}
+		}
+
+
+
+		if = {
+			limit = {
+				exists = scope:winner
+				root = scope:winner
+			}
+			random_list = {
+				0 = {
+					modifier = {
+						add = root.swordsmanship_upgrade_chance
+					}
+					add_character_flag = improve_fighting_skill  # Just so we can change in the option, rather than immediately.
+				}
+				
+				50 = {
+
+				}
+			}
+		}
+
+		# Chance to increase prowess skill if you haven't already increased it twice this tournament. 
+
+		if = {
+			limit = {
+				var:prowess_gained < 2
+			}
+			random_list = {
+				0 = {
+					modifier = {
+						add = root.prowess_gain_chance
+					}
+					add_prowess_skill = 1
+					change_variable = {
+						name = prowess_gained
+						add = 1
+					}
+				}
+				50 = {
+		
+				}
+			}
+			
+		}
+
+
+		if = {
+			limit = {
+				var:EVENT_COUNTER <=3	
+			}
+		
 			random_list = {
 				50 = {
 					modifier = {
@@ -1088,7 +1215,7 @@ tournament.0800 = { #Encounter with another Knight. Fight
 						days = 5
 					}
 				}
-				
+					
 
 				50 = {
 					modifier = {
@@ -1119,28 +1246,61 @@ tournament.0800 = { #Encounter with another Knight. Fight
 			trigger_event = tournament.0807
 		}
 
+	}
+	
+	option = {
+		name = tournament.0800.option
+		
+		if = {
+			limit = {
+				has_character_flag = improve_fighting_skill
+			}
 
-
-
-
-
-
-
+			if = {
+				limit = {
+					NOR = {
+						has_trait = poor_fighter
+						has_trait = trained_fighter
+						has_trait = skilled_fighter
+						has_trait = formidable_fighter
+					}
+				}
+				add_trait = poor_fighter
+			}
+			if = {
+				limit = {
+					has_trait = poor_fighter
+				}
+				add_trait = trained_fighter
+			}
+			if = {
+				limit = {
+					has_trait = trained_fighter
+				}
+				add_trait = skilled_fighter
+			}
+			if = {
+				limit = {
+					has_trait = skilled_fighter
+				}
+				add_trait = formidable_fighter
+			}
+			
+			
 
 
 
 		}
 	
-		option = {
-			
-		}
-
 	}
+
+}
 		
 
 tournament.0802 = { #You and another knight team up on someone
 	title = ""
 	desc = ""
+
 
 
 	override_background = {
@@ -1512,11 +1672,13 @@ tournament.0807 = {
 		scope:activity = {
 			random_participant = {
 				limit = {
+					
 					is_alive = yes
 					is_imprisoned = no
 					is_incapable = no
-					NOT = {
+					NOR = {
 						this = root
+						has_character_flag = host_not_fighting
 					}
 				}
 				save_scope_as = opponent
@@ -1630,12 +1792,26 @@ tournament.0807 = {
 
 		if = {
 			limit = {
-				var:EVENT_COUNTER <10
+				AND = {
+					var:EVENT_COUNTER <10
+					NOT = {
+						has_character_flag = host_not_fighting
+					}
+				}
 			}
 			trigger_event = tournament.0807
 		}
-		else = {
-			trigger_event = tournament.0808
+
+		else_if = {
+			limit = {
+				NOT = {
+					has_character_flag = host_not_fighting
+				}
+			}
+			trigger_event = {
+				id = tournament.0808
+				days = 5
+			}
 		}
 
 	}
@@ -1645,11 +1821,64 @@ tournament.0807 = {
 
 
 tournament.0808 = {
-	title = tournament.080.title
-	desc = tournament.0808.desc
+	title = tournament.0808.title
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					root.performance_rating = -1
+				}
+				desc = tournament.0808.desc.poor
+			}
+			triggered_desc = {
+				trigger = {
+					root.performance_rating = 0
+				}
+				desc = tournament.0808.desc.ok
+			}
+			triggered_desc = {
+				trigger = {
+					root.performance_rating = 2
+				}
+				desc = tournament.0808.desc.moderate
+			}
+			triggered_desc = { 
+				trigger = {
+					root.performance_rating = 5
+				}
+				desc = tournament.0808.desc.great
+			}
+		}
+
+	}
 	
 	left_portrait = {
 		character = root
+		triggered_animation = {
+			trigger = {
+				root.performance_rating = -1
+			}
+			animation = shame
+		}
+		triggered_animation = {
+			trigger = {
+				root.performance_rating = 0
+			}
+			animation = disgust
+		}
+		triggered_animation = {
+			trigger = {
+				root.performance_rating = 2
+			}
+			animation = personality_honorable
+		}
+		triggered_animation = {
+			trigger = {
+				root.performance_rating = 5
+			}
+			animation = personality_bold
+		}
+		animation = idle
 	}
 
 	override_background = {
@@ -1657,20 +1886,241 @@ tournament.0808 = {
 	}
 
 	immediate = {
-		
+
+
+		set_variable = {
+			name = capture_diff
+			value = var:number_of_captures
+		}
+		change_variable = {
+			name = capture_diff
+			subtract = var:number_of_times_captured
+		}
 
 	}
 	option = {
-		add_gold = var:gold_earned
-		remove_variable = var:gold_earned
-		remove_variable = var:EVENT_COUNTER
+		if = {
+			limit = {
+				var:gold_earned >= 0
+			}
+			add_gold = var:gold_earned
+		}
+
+		else_if = {
+			limit = {
+				var:gold_earned < 0
+			}
+
+			remove_short_term_gold = root.abs_value
+
+		}
 	}
 
 }
 
+tournament.0809 = {
+	title = tournament.0809.title
+	desc = tournament.0809.desc
+
+	left_portrait = {
+		character = scope:activity.activity_owner
+		animation = ecstasy
+	}
+	# right_portrait = {
+	# 	character = scope:attendee
+	# 	triggered_animation = {
+	# 		trigger = {
+	# 			scope:attendee.performance_rating > 0
+	# 		}
+	# 		animation = happiness
+	# 	}
+	# 	animation = idle
+	# }
+
+	lower_left_portrait = scope:first_place
+	lower_center_portrait = scope:second_place
+	lower_right_portrait = scope:third_place
+
+	theme = feast_activity
+	override_background = {
+		event_background = throne_room_scope
+	}
+
+
+	immediate = {
+		play_music_cue = "mx_cue_meadandwine"
+
+
+		scope:activity = {
+			every_participant = {
+				limit = {
+					NOT = {
+						has_character_flag = host_not_fighting
+					}
+					has_variable = capture_diff
+				}
+				add_to_list = participant_list
+
+			}
+		}
+
+		
+		root.melee_ranking = {
+			save_scope_as = THE_RANK
+		}
+
+	
+		ordered_in_list = {
+			list = participant_list
+			order_by = melee_ranking
+			max = 1
+			save_scope_as = first_place
+			remove_from_list = participant_list
+		}
+		ordered_in_list = {
+			list = participant_list
+			order_by = melee_ranking
+			max = 1
+			save_scope_as = second_place
+			remove_from_list = participant_list
+		}
+
+		ordered_in_list = {
+			list = participant_list
+			order_by = melee_ranking
+			max = 1
+			save_scope_as = third_place
+			remove_from_list = participant_list
+		}
+
+
+
+
+
+
+	}
+
+	option = { #First place
+		name = tournament.0809.option.a
+		trigger = {
+			root = scope:first_place
+		}
+		add_gold = melee_prize_first
+		add_prestige = melee_prestige_gain_large
+
+	}
+	option = { #Second place
+		name = tournament.0809.option.b
+		trigger = {
+			root = scope:second_place
+		}
+		add_gold = melee_prize_second
+		add_prestige = melee_prestige_gain_medium
+
+	}	
+	option = {#Third place
+		name = tournament.0809.option.c
+		trigger = {
+			root = scope:third_place
+		}
+		add_gold = melee_prize_third
+		add_prestige = melee_prestige_gain_small
+	}
+	option = { #Host
+		name = tournament.0809.option.d
+		trigger = {
+			root = scope:activity.activity_owner
+			NOR = {
+				root = scope:first_place
+				root = scope:second_place
+				root = scope:third_place
+			}
+		}
+		
+	}
+	option = {#Everyone else
+		name = tournament.0809.option.d
+		trigger = {
+			NOR = {
+				root = scope:activity.activity_owner
+				root = scope:first_place
+				root = scope:second_place
+				root = scope:third_place
+			}
+		}
+
+	}
+}
+
+
+
+
+
+tournament.0810 = {
+	title = tourmament.0810
+	left_portrait = root
+
+	trigger = {
+		exists = scope:activity
+	}
+
+	immediate = {
+
+		remove_variable = prowess_gained
+		remove_variable = gold_earned
+		remove_variable = number_of_captures
+		remove_variable = number_of_times_captured
+		remove_variable = capture_diff
+		remove_variable = EVENT_COUNTER
+		if = {
+			limit = {
+				root = scope:activity.activity_owner
+			}
+			remove_variable = num
+			if = {
+				limit = {
+					has_character_flag = host_not_fighting
+				}
+				remove_character_flag = host_not_fighting
+			}
+		}
+	}
+
+	option = {
+		if = {
+			limit = {
+				root = scope:activity.activity_owner
+			}
+			add_prestige = tournament_host_prestige
+		}
+		scope:activity = {
+			complete_activity = yes
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 tournament.0999 = {
 	hidden = yes
+
+	trigger = {
+		NOT = {
+			has_character_flag = host_not_fighting
+		}
+	}
 
 	immediate = {
 
@@ -1730,12 +2180,5 @@ tournament.0999 = {
 
 
 
-tournament.50 = {
-	
-	immediate = {
-		change_trait_rank = {
-			trait = lifestyle_fighter
-			rank = 1
-		}
-	}
-}
+
+

@@ -28,6 +28,7 @@
 				is_alive = yes
 				is_imprisoned = no
 				is_at_war = no
+				is_incapable = no
 
 			}
 		}
@@ -170,12 +171,12 @@
 		}
 		on_invalidated = {
 
-			activity_owner = {
-				remove_character_flag = holding_tournament
+
+			scope:activity = {
+				complete_activity = no
 			}
-			every_participant = {
-				remove_character_flag = invited_to_tournament
-			}
+		
+			
 
 		}
 
@@ -198,6 +199,7 @@
 				is_alive = yes
 				is_imprisoned = no
 				is_at_war = no
+				is_incapable = no
 
 			}
 		}
@@ -341,12 +343,6 @@
 		}
 		on_invalidated = {
 
-			activity_owner = {
-				remove_character_flag = holding_tournament
-			}
-			every_participant = {
-				remove_character_flag = invited_to_tournament
-			}
 
 		}
 
@@ -369,6 +365,7 @@
 				is_alive = yes
 				is_imprisoned = no
 				is_at_war = no
+				is_incapable = no
 
 			}
 		}

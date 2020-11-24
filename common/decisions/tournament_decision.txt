@@ -15,6 +15,7 @@ host_tournament_decision = { #Probably want several different types of hastilude
 	is_shown = { # Can tie this to culture, innovation , whatever.. Will do when im not tired.
 		is_landed = yes
 		highest_held_title_tier > tier_barony
+		
 		NOR = {
 			has_character_flag = holding_tournament
 			has_character_flag = attending_tournament
@@ -53,9 +54,7 @@ host_tournament_decision = { #Probably want several different types of hastilude
 	}
 
 	effect = {
-
 		trigger_event = tournament.01
-
 	}
 }
 

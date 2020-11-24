@@ -142,7 +142,7 @@ ransom_value = {
 
    if = {
       limit = {
-         highest_held_title_tier = tier_emperor
+         highest_held_title_tier = tier_empire
       }
       value = 25
    }
@@ -252,17 +252,20 @@ swordsmanship_upgrade_chance = {
     
     if = {    #Upgrading from untrained to poor 
         limit = {
-            NOT = {
-                has_trait = lifestyle_fighter
+            NOR = {
+                has_trait = poor_fighter
+                has_trait = trained_fighter
+                has_trait = skilled_fighter
+                has_trait = formidable_fighter
             }
         }
-        add = 50
+        add = 33
         
         if = {
             limit = {
                 positive_traits_tournament_small = yes
             }
-            add = 5 # % chance.
+            add = 5 
         }
         if = {
             limit = {
@@ -303,13 +306,9 @@ swordsmanship_upgrade_chance = {
     if = {    #Upgrading from poor to trained
         limit = {
             has_trait = poor_fighter
-            NOR = {
-                has_trait = trained_fighter
-                has_trait = skilled_fighter
-                has_trait = formidable_fighter
-            }
+
         }
-        add = 25
+        add = 20
         
         if = {
             limit = {
@@ -356,11 +355,7 @@ swordsmanship_upgrade_chance = {
     if = {    #Upgrading from trained to skilled
         limit = {
             has_trait = trained_fighter
-            NOR = {
-                has_trait = poor_fighter
-                has_trait = skilled_fighter
-                has_trait = formidable_fighter
-            }
+
         }
         add = 10
         
@@ -458,5 +453,747 @@ swordsmanship_upgrade_chance = {
         }
     }
 
+}
 
+prowess_gain_chance = {
+    value = 0
+
+    if = {
+        limit = {
+            prowess <= 4 # "Terrible"
+        }
+        add = 50
+        if = {
+            limit = {
+                has_trait = intellect_good_1
+                has_trait = shrewd
+            }
+            add = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_2
+            }
+            add = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_3
+            }
+            add = 5
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_1
+                has_trait = dull
+            }
+            subtract = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_2
+            }
+            subtract = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_3
+            }
+            subtract = 5
+        }
+    }
+    else_if = {
+        limit = {
+            prowess <= 8 # "Poor"
+        }
+        add = 25
+        if = {
+            limit = {
+                has_trait = intellect_good_1
+                has_trait = shrewd
+            }
+            add = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_2
+            }
+            add = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_3
+            }
+            add = 5
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_1
+                has_trait = dull
+            }
+            subtract = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_2
+            }
+            subtract = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_3
+            }
+            subtract = 5
+        }
+    }
+    else_if = {
+        limit = {
+            prowess <= 12 #Average
+        }
+        add = 15
+        if = {
+            limit = {
+                has_trait = intellect_good_1
+                has_trait = shrewd
+            }
+            add = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_2
+            }
+            add = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_3
+            }
+            add = 5
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_1
+                has_trait = dull
+            }
+            subtract = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_2
+            }
+            subtract = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_3
+            }
+            subtract = 5
+        }
+    }
+    else_if = {
+        limit = {
+            prowess <= 16 #Good
+        }
+        add = 10
+        if = {
+            limit = {
+                has_trait = intellect_good_1
+                has_trait = shrewd
+            }
+            add = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_2
+            }
+            add = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_3
+            }
+            add = 5
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_1
+                has_trait = dull
+            }
+            subtract = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_2
+            }
+            subtract = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_3
+            }
+            subtract = 5
+        }
+    }
+    else_if = {
+        limit = {
+            prowess >= 17 #Excellent
+        }
+        add = 5
+        if = {
+            limit = {
+                has_trait = intellect_good_1
+                has_trait = shrewd
+            }
+            add = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_2
+            }
+            add = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_3
+            }
+            add = 5
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_1
+                has_trait = dull
+            }
+            subtract = 1
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_2
+            }
+            subtract = 3
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_3
+            }
+            subtract = 5
+        }
+    }
+}
+
+
+
+performance_rating = {
+    value = 0
+
+    if = {
+        limit = {
+            var:capture_diff >= 0 # Captured more than you were captured.
+        }
+        if = { #Hard Fought
+            limit = {
+                var:capture_diff = 0
+            }
+            value = 0
+        }
+        if = {
+            limit = { #Moderate performance.
+                AND = {
+                    var:capture_diff >=1
+                    var:capture_diff < 4
+                }
+            }
+            value = 2
+        }
+
+        if = { #Great perforamnce.
+            limit = {
+                var:capture_diff >=4
+            }
+            value = 5
+        }
+    }
+    
+
+    if = {
+        limit = {
+            var:capture_diff < 0
+        }
+        value = -1
+    }
+}
+
+
+
+abs_value = {
+    value = 0
+
+    if = {  # If positive the absolute value is the same thing.
+        limit = {
+            var:gold_earned >= 0
+        }
+        value = var:gold_earned
+
+    }
+    if = { # Turn negatives into positive values.
+        limit = {
+           var:gold_earned < 0
+        }
+        value = var:gold_earned
+        multiply = -1
+        
+    }
+}
+
+
+melee_ranking = {
+    value = 0
+
+
+    if = {
+        limit = {
+            AND = {
+                has_variable = number_of_captures
+                has_variable = number_of_times_captured
+            }
+        }
+        add = var:number_of_captures
+        subtract = var:number_of_times_captured
+    }
+}
+
+
+melee_prize_first = {
+    value = 0
+    
+    if = {
+        limit = {
+            in_activity_type = local_tournament
+        }
+        add = 25
+    }
+    if = {
+        limit = {
+            in_activity_type = regional_tournament
+        }
+        add = 50
+    }
+    if = {
+        limit = {
+            in_activity_type = grand_tournament
+        }
+        add = 100
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_county
+        }
+        multiply = 1
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_duchy
+        }
+        multiply = 1.25
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_kingdom
+        }
+        multiply = 1.5
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_empire
+        }
+        multiply = 2
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner = {
+                has_trait = greedy
+            }
+        }
+        divide = 2
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner = {
+                has_trait = generous
+            }
+        }
+        multiply = 1.25
+    }
+    
+}
+
+melee_prize_second = {
+    value = 0
+    
+    if = {
+        limit = {
+            in_activity_type = local_tournament
+        }
+        add = 15
+    }
+    if = {
+        limit = {
+            in_activity_type = regional_tournament
+        }
+        add = 30
+    }
+    if = {
+        limit = {
+            in_activity_type = grand_tournament
+        }
+        add = 50
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_county
+        }
+        multiply = 1
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_duchy
+        }
+        multiply = 1.25
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_kingdom
+        }
+        multiply = 1.5
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_empire
+        }
+        multiply = 2
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner = {
+                has_trait = greedy
+            }
+        }
+        divide = 2
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner = {
+                has_trait = generous
+            }         
+        }
+        multiply = 1.25
+    }
+    
+}
+
+melee_prize_third = {
+    value = 0
+    
+    if = {
+        limit = {
+            in_activity_type = local_tournament
+        }
+        add = 10
+    }
+    if = {
+        limit = {
+            in_activity_type = regional_tournament
+        }
+        add = 20
+    }
+    if = {
+        limit = {
+            in_activity_type = grand_tournament
+        }
+        add = 30
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_county
+        }
+        multiply = 1
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_duchy
+        }
+        multiply = 1.25
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_kingdom
+        }
+        multiply = 1.5
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_empire
+        }
+        multiply = 2
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner = {
+                has_trait = greedy
+            }
+        }
+        divide = 2
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner = {
+                has_trait = generous
+            }
+            
+        }
+        multiply = 1.25
+    }
+    
+}
+melee_prestige_gain_large = {
+    value = 0
+
+    if = {
+        limit = {
+            in_activity_type = local_tournament
+        }
+        add = 100
+    }
+    if = {
+        limit = {
+            in_activity_type = regional_tournament
+        }
+       add = 200
+    }
+    if = {
+        limit = {
+            in_activity_type = grand_tournament
+        }
+        add = 400
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_county
+        }
+        multiply = 1
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_duchy
+        }
+        multiply = 1.25
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_kingdom
+        }
+        multiply = 1.5
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_empire
+        }
+        multiply = 2
+    }
+}
+melee_prestige_gain_medium = {
+    value = 0
+
+    if = {
+        limit = {
+            in_activity_type = local_tournament
+        }
+        add = 60
+    }
+    if = {
+        limit = {
+            in_activity_type = regional_tournament
+        }
+       add = 125
+    }
+    if = {
+        limit = {
+            in_activity_type = grand_tournament
+        }
+        add = 250
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_county
+        }
+        multiply = 1
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_duchy
+        }
+        multiply = 1.25
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_kingdom
+        }
+        multiply = 1.5
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_empire
+        }
+        multiply = 2
+    }
+}
+melee_prestige_gain_small = {
+    value = 0
+
+    if = {
+        limit = {
+            in_activity_type = local_tournament
+        }
+        add = 20
+    }
+    if = {
+        limit = {
+            in_activity_type = regional_tournament
+        }
+       add = 70
+    }
+    if = {
+        limit = {
+            in_activity_type = grand_tournament
+        }
+        add = 150
+    }
+
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_county
+        }
+        multiply = 1
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_duchy
+        }
+        multiply = 1.25
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_kingdom
+        }
+        multiply = 1.5
+    }
+    if = {
+        limit = {
+            scope:activity.activity_owner.highest_held_title_tier = tier_empire
+        }
+        multiply = 2
+    }
+}
+
+tournament_host_prestige = {
+    value = 0
+
+    if = {    # Local Tournament
+        limit = {
+            in_activity_type = local_tournament
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_county
+            }
+            add = 200
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_duchy
+            }
+            add = 150
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_kingdom
+            }
+            add = 100
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_empire
+            }
+            add = 50
+        }
+    }
+    
+    if = {    # Regional Tournament
+        limit = {
+            in_activity_type = regional_tournament
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_county
+            }
+            add = 400
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_duchy
+            }
+            add = 300
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_kingdom
+            }
+            add = 200
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_empire
+            }
+            add = 100
+        }
+    }
+        if = {    # Grand Tournament
+        limit = {
+            in_activity_type = grand_tournament
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_county
+            }
+            add = 500
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_duchy
+            }
+            add = 350
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_kingdom
+            }
+            add = 250
+        }
+        if = {
+            limit = {
+                highest_held_title_tier = tier_empire
+            }
+            add = 175
+        }
+    }
 }

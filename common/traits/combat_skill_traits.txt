@@ -1,11 +1,23 @@
 poor_fighter = {
-	index = 900
-	lifestyle = yes
-	negative_health_penalty_add = 0.25
+	index = 600
+	negate_health_penalty_add = 0.25
 	prowess = 3
 
-	group = lifestyle_fighter
-	level = 1
+	ruler_designer_cost = 20
+
+
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = this }
+				}
+				desc = trait_poor_fighter_desc
+			}
+			desc = trait_poor_fighter_character_desc
+		}
+	}
+	
 		compatibility = {
 			poor_fighter = @pos_compat_medium
 			trained_fighter = @pos_compat_medium
@@ -17,13 +29,23 @@ poor_fighter = {
 }
 
 trained_fighter = {
-	index = 901
-	lifestyle = yes
-	negative_health_penalty_add = 0.50
+	index = 601
+	negate_health_penalty_add = 0.50
 	prowess = 6
-	group = lifestyle_fighter
-	level = 2
-	
+	ruler_designer_cost = 40
+
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = this }
+				}
+				desc = trait_trained_fighter_desc
+			}
+			desc = trait_trained_fighter_character_desc
+		}
+	}
+
 	compatibility = {
 		poor_fighter = @pos_compat_medium
 		trained_fighter = @pos_compat_medium
@@ -37,12 +59,22 @@ trained_fighter = {
 
 
 skilled_fighter = {
-	index = 902
-	lifestyle = yes
-	negative_health_penalty_add = 0.75
+	index = 602
+	negate_health_penalty_add = 0.75
 	prowess = 9
-	group = lifestyle_fighter
-	level = 3
+	ruler_designer_cost = 60
+
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = this }
+				}
+				desc = trait_skilled_fighter_desc
+			}
+			desc = trait_skilled_fighter_character_desc
+		}
+	}
 
 	compatibility = {
 		poor_fighter = @pos_compat_medium
@@ -56,14 +88,22 @@ skilled_fighter = {
 
 
 formidable_fighter = {
-	index = 903
-	lifestyle = yes
-	negative_health_penalty_add = 1
+	index = 603
+	negate_health_penalty_add = 1
 	prowess = 15
+	ruler_designer_cost = 80
 
-	group = lifestyle_fighter
-	level = 4
-
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = this }
+				}
+				desc = trait_formidable_fighter_desc
+			}
+			desc = trait_formidable_fighter_character_desc
+		}
+	}
 	compatibility = {
 		poor_fighter = @pos_compat_medium
 		trained_fighter = @pos_compat_medium
@@ -73,3 +113,5 @@ formidable_fighter = {
 		craven = @neg_compat_low
 	}
 }
+
+

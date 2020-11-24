@@ -18,7 +18,6 @@ ai_consider_joining_tournament = {
 	is_adult = yes
 	is_at_war = no
 	is_imprisoned = no
-	is_in_an_activity = no
 	is_incapable = no
 	is_clergy = no #au contraire, the clergy were against this sort of stuff.
 	
@@ -79,6 +78,7 @@ ai_knight_will_join_with_liege = {
 	is_imprisoned = no
 	is_incapable = no
 	is_at_war = no
+	is_in_an_activity = no
 
 	OR = {
 		AND = {

@@ -170,6 +170,19 @@
 
 		}
 		on_invalidated = {
+			if = {
+				limit = {
+					scope:activity.activity_owner = {
+						is_alive = no
+					}
+				}
+				scope:activity = {
+					every_participant = {
+						trigger_event = tournament.014
+					}
+				}
+				
+			}
 
 
 			scope:activity = {
@@ -184,6 +197,7 @@
 			# 	trigger_event.. triggers within that event for if the participant was murdered, 
 			# died naturally, died fighting in the tournament
 			# }
+			
 
 		}
 	}
@@ -343,6 +357,12 @@
 		}
 		on_invalidated = {
 
+			activity_owner = {
+				remove_character_flag =  holding_tournament
+			}
+			every_participant = {
+				remove_character_flag = invited_to_tournament
+			}
 
 		}
 

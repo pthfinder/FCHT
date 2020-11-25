@@ -369,10 +369,10 @@ tournament.04 = { # Tournament is about to start, knights have arrived.
 						on_action = tournament_feast_event_selection
 						days = 10
 					}
-					trigger_event = {
-						id = tournament.0809
-						days = 65
-					}
+					# trigger_event = {
+					# 	id = tournament.0809
+					# 	days = 65
+					# }
 					trigger_event = { # Closing Feast
 					on_action = tournament_closing_selection 
 					days = 70
@@ -908,1275 +908,2797 @@ tournament.13 = { # Regular Dance
 
 #Wake up on the day of the event, town background
 
+	tournament.014 = {  #Tournament Ends because Host dies.
+		title = tournament.014.title
+		desc = tournament.014.desc
+		theme = death
 
 
-tournament.0100 = {
-	title = "Morning Before"
-	desc = ""
+		left_portrait = {
+			character = root
+			animation = worry
+		}
 
-	override_background = {
-		event_background = market_west
+		right_portrait = {
+			character = scope:activity.activity_owner
+			animation = worry
+		}
+		
+
+		immediate = {
+			play_music_cue = "mx_cue_succession"
+
+			remove_variable = prowess_gained
+			remove_variable = gold_earned
+			remove_variable = number_of_captures
+			remove_variable = number_of_times_captured
+			remove_variable = capture_diff
+			remove_variable = EVENT_COUNTER
+	
+		}
+		
+		option = {
+			name = tournament.014.option
+		}
 	}
 
-	immediate = {
+	tournament.030 = {
+		title = tournament.030.title
+		desc = tournament.030.desc
+
+		left_portrait = {
+			character = root
+			animation = anger
+		}
+		right_portrait = {
+			character = scope:opponent
+			animation = anger
+		}
+		override_background = {
+			event_background = terrain_activity
+
+		}
+		trigger = {
+			scope:activity = {
+				any_participant = {
+					is_alive = yes
+					NOR = {
+						has_character_flag = host_not_fighting
+						has_character_flag = is_in_melee_duel
+					}
+				}
+			}
+		}
+
+
+		immediate = {
+			add_character_flag = is_in_melee_duel
+			root = {
+				change_variable = {
+					name = EVENT_COUNTER
+					add = 1
+				}
+			}
+			scope:activity = {
+				random_participant = {
+					limit = {			
+						is_alive = yes
+						is_imprisoned = no
+						is_incapable = no
+
+						NOR = {
+							this = root
+							has_character_flag = host_not_fighting
+							has_character_flag = is_in_melee_duel
+						}
+
+					}
+					save_scope_as = opponent
+
+				}
+			}
+
+
+				#Probability of Opponent attacking you before you get a chance to attack them.
+			random_list = {
+				0 = { #Opponent attacks you
+					modifier = {
+						scope:opponent = {
+							OR = {
+								has_trait = aggressive_attacker
+								has_trait = impatient
+								has_trait = lunatic
+								has_trait = wrathful
+								has_trait = brave
+							}
+						}
+						add = 50
+					}
+					modifier = {
+						add = scope:opponent.melee_attack_chance
+					}
+
+					modifier = {
+						scope:opponent.melee_attack_chance > root.melee_defense_chance
+						add = 25
+					}
+
+					modifier = {  #Opponent is going to definitely attack you if they or on horseback and you are not.
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								NOT = {
+									has_variable = on_horseback
+								}
+							}
+						}
+						add = 200
+					}
+
+
+
+					# scope:opponent = {
+					# 	add_character_flag = opponent_attacking
+					# }
+				}
+
+
+
+				0 = { # Opponent does not atack you
+					modifier = {
+						scope:opponent = {
+							OR = {
+								has_trait = patient
+								has_trait = craven
+								has_trait = calm
+								has_trait = cautious_leader
+								has_trait = unyielding_defender
+								has_trait = wounded_1
+								has_trait = wounded_2
+								has_trait = wounded_3
+								has_trait = maimed
+							}
+						}
+						add = 50
+					}
+					modifier = {
+						add = scope:opponent.melee_defense_chance
+					}
+					modifier = {
+						scope:opponent.melee_defense_chance > root.melee_attack_chance
+						add = 25
+					}
+					modifier = {  #Opponent is going to avoid attacking you if they are not on horseback and you are.
+						AND = {
+							scope:opponent = {
+								NOT ={
+									has_variable = on_horseback
+								}	
+							}		
+							root = {
+								has_variable = on_horseback
+								
+							}
+						}
+						add = 200
+					}
+				}
+			}
+
+
+
+
+
+
+	
+
+			# Calculating the percent chance of success for either attacking or defending.
+		set_variable = {
+			name = chance_of_attack_success
+			value = root.melee_attack_chance
+		}
+
+		set_variable = {
+			name = chance_of_attack_success_temp
+			value = scope:opponent.melee_defense_chance
+		}
+		change_variable = {
+			name = chance_of_attack_success_temp
+			add = root.melee_attack_chance
+		}
+
+		change_variable = {
+			name = chance_of_attack_success
+			divide = var:chance_of_attack_success_temp
+		}
+		change_variable = {
+			name = chance_of_attack_success
+			multiply = 100
+		}
+		remove_variable = chance_of_attack_success_temp
+
+
+
+		set_variable = {
+			name = chance_of_defense_success
+			value = root.melee_defense_chance
+		}
+
+		set_variable = {
+			name = chance_of_defense_success_temp
+			value = scope:opponent.melee_attack_chance
+		}
+		change_variable = {
+			name = chance_of_defense_success_temp
+			add = root.melee_defense_chance
+		}
+
+		change_variable = {
+			name = chance_of_defense_success
+			divide = var:chance_of_defense_success_temp
+		}
+		change_variable = {
+			name = chance_of_defense_success
+			multiply = 100
+		}
+		remove_variable = chance_of_defense_success_temp
+
+
+
+		}
+
+		option = { # You attack your opponent
+			name = tournament.030.option.a
+			trigger = {
+				NOT = {
+					scope:opponent = {
+						has_character_flag = opponent_attacking
+					}
+				}
+			}
+			hidden_effect = {
+				trigger_event = tournament.031
+				# random_list = {
+				# 	0 = { # It goes well
+				# 		modifier = {
+				# 			add = var:chance_of_attack_success
+				# 		}
+				# 		trigger_event = tournament.031
+	
+				# 	}
+	
+				# 	0 = { #It goes poorly
+				# 		modifier = {
+				# 			add = var:chance_of_attack_success
+				# 		}
+				# 		trigger_event = tournament.032
+				# 	}
+				# }
+			}
+
+			custom_tooltip = tournament.030.option.a.tt
+		}
+
+		
+		# option = { # Opponent attacks you
+		# 	name = tournament.030.option.b
+		# 	trigger = {
+		# 		scope:opponent = {
+		# 			has_character_flag = opponent_attacking
+		# 		}
+		# 	}
+
+		# 	hidden_effect = {
+		# 		random_list = {
+		# 			0 = { # It goes well
+		# 				modifier = {
+		# 					add = var:chance_of_attack_success
+		# 				}
+		# 				trigger_event = tournament.033
+
+		# 			}
+
+		# 			0 = { #It goes poorly
+		# 				modifier = {
+		# 					add = var:chance_of_defense_success
+		# 				}
+		# 				trigger_event = tournament.034
+		# 			}
+		# 		}
+		# 	}
+		# 	custom_tooltip = tournament.030.option.b.tt
+		# }
 	}
-	option = {
 
+
+	tournament.031 = { # You attack your opponent(successful)
+		title = tournament.031.title
+		
+		desc = {
+			first_valid = {
+				triggered_desc = {   # We are both on horseback, we knock them off, and capture them.
+					trigger = {
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								AND = {
+									has_variable = on_horseback
+									has_character_flag = knocked_opponent_off
+									has_character_flag = captured_opponent
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.a
+				}
+				triggered_desc = {   # We are both on horseback, we knock them off but they recover and will enter a duel.
+					trigger = {
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								AND = {
+									has_variable = on_horseback
+									has_character_flag = knocked_opponent_off
+									has_character_flag = tournament_duel
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.b
+				}
+
+				triggered_desc = {   # We are both on horseback, we get knocked off and get captured.
+					trigger = {
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								has_variable = on_horseback
+								has_character_flag = got_knocked_off
+								has_character_flag = got_captured
+							}
+						}
+					}
+					desc = tournament.031.desc.c
+				}
+				triggered_desc = {   # We are both on horseback, we get knocked off but recover and will enter a duel
+					trigger = {
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								AND = {
+									has_variable = on_horseback
+									has_character_flag = got_knocked_off
+									has_character_flag = tournament_duel
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.d
+				}
+				triggered_desc = {   # Opponent is on horseback, but we are not, we knock them off and capture them
+					trigger = {
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								AND = {
+									NOT = {
+										has_variable = on_horseback
+									}
+									has_character_flag = knocked_opponent_off
+									has_character_flag = captured_opponent
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.e
+				}
+				triggered_desc = {   # Opponent is on horseback, but we are not, we knock them off but they recover and will enter a duel
+					trigger = {
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								AND = {
+									NOT = {
+										has_variable = on_horseback
+									}
+									has_character_flag = knocked_opponent_off
+									has_character_flag = tournament_duel
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.f
+				}
+				triggered_desc = {   # Opponent is on horseback, but we are not, we are beat into submission.
+					trigger = {
+						AND = {
+							scope:opponent = {
+								has_variable = on_horseback
+							}
+							root = {
+								AND = {
+									NOT = {
+										has_variable = on_horseback
+									}
+									has_character_flag = got_beaten_into_submission
+								}									
+							}
+
+						}
+					}
+					desc = tournament.031.desc.g
+				}
+
+				triggered_desc = { # Opponent is NOT on horseback, but we ARE, and we beat them into submission
+					trigger = {
+						AND = {
+							scope:opponent = {
+								NOT = {
+									has_variable = on_horseback
+								}
+							}
+							root = {
+								AND = {
+									has_variable = on_horseback
+									has_character_flag = beat_opponent_into_submission
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.h
+				}
+				triggered_desc = { # Opponent is NOT on horseback, but we ARE, and they knock us off and capture us
+					trigger = {
+						AND = {
+							scope:opponent = {
+								NOT = {
+									has_variable = on_horseback
+								}
+							}
+							root = {
+								AND = {
+									has_variable = on_horseback
+									has_character_flag = got_knocked_off
+									has_character_flag = got_captured 
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.i
+				}
+				triggered_desc = { # Opponent is NOT on horseback, but we ARE, and they knock us off but we recover and will enter a duel
+					trigger = {
+						AND = {
+							scope:opponent = {
+								NOT = {
+									has_variable = on_horseback
+								}
+							}
+							root = {
+								AND = {
+									has_variable = on_horseback
+									has_character_flag = got_knocked_off
+									has_character_flag = tournament_duel
+								}
+							}
+						}
+					}
+					desc = tournament.031.desc.j
+				}
+				triggered_desc = { # Opponent is NOT on horseback, and NEITHER are we. Enter a duel immediately.
+					trigger = {
+						AND = {
+							scope:opponent = {
+								NOT = {
+									has_variable = on_horseback
+								}
+							}
+							root = {
+								AND = {
+									NOT = {
+										has_variable = on_horseback
+									}
+								}
+								has_character_flag = tournament_duel
+
+							}
+						}
+					}
+					desc = tournament.031.desc.k
+				}
+			}
+		}
+
+		left_portrait = {
+			character = root
+			animation = idle
+		}
+		right_portrait = {
+			character = scope:opponent
+			animation = idle
+		}
+
+		override_background = {
+			event_background = terrain_activity
+		}
+
+		
+		
+
+		immediate = {
+			play_music_cue = "mx_cue_combat_2"
+
+
+
+
+			if = {  # Opponent is on horseback
+				limit = {
+					scope:opponent = {
+						has_variable = on_horseback
+					}
+				}
+				if = { # And we are also on horseback
+					limit = {
+						root = {
+							has_variable = on_horseback
+						}
+					}
+					random_list = { # If so we do knock them off?
+
+						0 = { #Knock them off
+							modifier = {
+								add = root.melee_attack_chance
+							}
+							add_character_flag = knocked_opponent_off
+
+							random_list = {  # If they are knocked off, there is a chance they can recover and enter a duel.
+		
+								50 = { # They don't recover, we capture them.
+
+									add_character_flag = captured_opponent
+									# Update stats for winner(root wins)
+									if = {
+										limit = {
+											exists = root
+										}
+										root = {
+											if = {
+												limit = {
+													has_variable = number_of_captures
+												}
+												change_variable = {
+													name = number_of_captures
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_captures
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													add = scope:opponent.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = scope:opponent.ransom_value
+												}
+											}
+										}
+									}
+
+									if = {
+										limit = {
+											exists = scope:opponent
+										}
+										scope:opponent = {									
+											if = {
+												limit = {
+													has_variable = number_of_times_captured
+												}
+												change_variable = {
+													name = number_of_times_captured
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_times_captured
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													subtract = this.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = 0
+												}
+												change_variable = {
+													name = gold_earned
+													subtract = this.ransom_value
+												}
+											}
+										}
+									}
+								}								
+
+
+								50 = { # They recover, and pull us down, we duel.
+									modifier = {
+										add = scope:opponent.knocked_off_chance_to_recover
+									}
+									add_character_flag = tournament_duel					
+								}
+							}
+						}
+
+						0 = { #Get knocked off
+							modifier = {
+								add = scope:opponent.melee_defense_chance
+							}
+							add_character_flag = got_knocked_off
+
+
+							random_list = {  # If we are knocked off, there is a chance we can recover and enter a duel.
+
+								50 = { # We don't recover, we get captured
+
+									add_character_flag = got_captured
+
+									# Update stats for winner(opponent wins)
+									if = {
+										limit = {
+											exists = scope:opponent
+										}
+										scope:opponent = {
+											if = {
+												limit = {
+													has_variable = number_of_captures
+												}
+												change_variable = {
+													name = number_of_captures
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_captures
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													add = root.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = root.ransom_value
+												}
+											}
+										}
+									}
+
+									if = {
+										limit = {
+											exists = root
+										}
+										root = {									
+											if = {
+												limit ={
+													has_variable = number_of_times_captured
+												}
+												change_variable = {
+													name = number_of_times_captured
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_times_captured
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													subtract = root.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = 0
+												}
+												change_variable = {
+													name = gold_earned
+													subtract = root.ransom_value
+												}
+											}
+										}
+									}
+								}
+								50 = { # We recover, and pull them down, we duel.
+
+									modifier = {
+										add = root.knocked_off_chance_to_recover
+									}
+									add_character_flag = tournament_duel
+								}
+							}
+						}
+					}
+				}
+				else = { # We are not also on horseback.
+					random_list = {
+						0 = { #Knock them off
+							modifier = {
+								add = root.melee_attack_chance
+							}
+							add_character_flag = knocked_opponent_off
+
+
+							random_list = { # If they are knocked off, there is a chance they can recover and enter a duel.
+								50 = { # They don't recover, we capture them.
+
+									add_character_flag = captured_opponent
+
+									# Update stats for winner(root wins)
+									if = {
+										limit = {
+											exists = root
+										}
+										root = {
+											if = {
+												limit = {
+													has_variable = number_of_captures
+												}
+												change_variable = {
+													name = number_of_captures
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_captures
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													add = scope:opponent.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = scope:opponent.ransom_value
+												}
+											}
+										}
+									}
+
+									if = {
+										limit = {
+											exists = scope:opponent
+										}
+										scope:opponent = {									
+											if = {
+												limit = {
+													has_variable = number_of_times_captured
+												}
+												change_variable = {
+													name = number_of_times_captured
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_times_captured
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													subtract = this.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = 0
+												}
+												change_variable = {
+													name = gold_earned
+													subtract = this.ransom_value
+												}
+											}
+										}
+									}
+								}
+								50 = { # They recover, duel.
+									modifier = {
+										add = scope:opponent.knocked_off_chance_to_recover
+									}
+									add_character_flag = tournament_duel					
+								}
+							}		
+						}
+						10 = {#Beat into submission
+							modifier = {
+								add = scope:opponent.melee_defense_chance
+							}
+							add_character_flag = got_beaten_into_submission
+							if = {
+								limit = {
+									exists = scope:opponent
+								}
+								scope:opponent = {
+									if = {
+										limit = {
+											has_variable = number_of_captures
+										}
+										change_variable = {
+											name = number_of_captures
+											add = 1
+										}
+									}
+									else = {
+										set_variable = {
+											name = number_of_captures
+											value = 1
+										}
+									}
+						
+									if = {
+										limit = {
+											has_variable = gold_earned
+										}
+										change_variable = { 
+											name = gold_earned
+											add = root.ransom_value
+										}
+									}
+									else = {
+										set_variable = {
+											name = gold_earned
+											value = root.ransom_value
+										}
+									}
+								}
+							}
+
+							if = {
+								limit = {
+									exists = root
+								}
+								root = {									
+									if = {
+										limit ={
+											has_variable = number_of_times_captured
+										}
+										change_variable = {
+											name = number_of_times_captured
+											add = 1
+										}
+									}
+									else = {
+										set_variable = {
+											name = number_of_times_captured
+											value = 1
+										}
+									}
+						
+									if = {
+										limit = {
+											has_variable = gold_earned
+										}
+										change_variable = { 
+											name = gold_earned
+											subtract = root.ransom_value
+										}
+									}
+									else = {
+										set_variable = {
+											name = gold_earned
+											value = 0
+										}
+										change_variable = {
+											name = gold_earned
+											subtract = root.ransom_value
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			else = { # Opponent is not on horseback
+
+				if = { # And we are on horseback
+					limit = {
+						root = {
+							has_variable = on_horseback
+						}
+					}
+					random_list = { # If so we do beat them into submission?
+						10 = { #Beat them into submission
+							modifier = {
+								add = root.melee_attack_chance
+							}
+							add_character_flag = beat_opponent_into_submission
+
+
+							if = {
+								limit = {
+									exists = root
+								}
+								root = {
+									if = {
+										limit = {
+											has_variable = number_of_captures
+										}
+										change_variable = {
+											name = number_of_captures
+											add = 1
+										}
+									}
+									else = {
+										set_variable = {
+											name = number_of_captures
+											value = 1
+										}
+									}
+						
+									if = {
+										limit = {
+											has_variable = gold_earned
+										}
+										change_variable = { 
+											name = gold_earned
+											add = scope:opponent.ransom_value
+										}
+									}
+									else = {
+										set_variable = {
+											name = gold_earned
+											value = scope:opponent.ransom_value
+										}
+									}
+								}
+							}
+
+							if = {
+								limit = {
+									exists = scope:opponent
+								}
+								scope:opponent = {									
+									if = {
+										limit ={
+											has_variable = number_of_times_captured
+										}
+										change_variable = {
+											name = number_of_times_captured
+											add = 1
+										}
+									}
+									else = {
+										set_variable = {
+											name = number_of_times_captured
+											value = 1
+										}
+									}
+						
+									if = {
+										limit = {
+											has_variable = gold_earned
+										}
+										change_variable = { 
+											name = gold_earned
+											subtract = scope:opponent.ransom_value
+										}
+									}
+									else = {
+										set_variable = {
+											name = gold_earned
+											value = 0
+										}
+										change_variable = {
+											name = gold_earned
+											subtract = scope:opponent.ransom_value
+										}
+									}
+								}
+							}
+
+						}
+
+						0 = { # Get knocked off
+							modifier = {
+								add = scope:opponent.melee_defense_chance
+							}	
+							add_character_flag = got_knocked_off
+
+							random_list = { # If we are knocked off, there is a chance we can recover and enter a duel.
+								50 = { # We don't recover, they capture us
+
+									add_character_flag = got_captured
+									# Update stats for winner(opponent wins)
+									if = {
+										limit = {
+											exists = scope:opponent
+										}
+										scope:opponent = {
+											if = {
+												limit = {
+													has_variable = number_of_captures
+												}
+												change_variable = {
+													name = number_of_captures
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_captures
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													add = root.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = root.ransom_value
+												}
+											}
+										}
+									}
+
+									if = {
+										limit = {
+											exists = root
+										}
+										root = {									
+											if = {
+												limit ={
+													has_variable = number_of_times_captured
+												}
+												change_variable = {
+													name = number_of_times_captured
+													add = 1
+												}
+											}
+											else = {
+												set_variable = {
+													name = number_of_times_captured
+													value = 1
+												}
+											}
+								
+											if = {
+												limit = {
+													has_variable = gold_earned
+												}
+												change_variable = { 
+													name = gold_earned
+													subtract = root.ransom_value
+												}
+											}
+											else = {
+												set_variable = {
+													name = gold_earned
+													value = 0
+												}
+												change_variable = {
+													name = gold_earned
+													subtract = root.ransom_value
+												}
+											}
+										}
+									}	
+								}
+								50 = { # We recover, duel.
+									modifier = {
+										add = root.knocked_off_chance_to_recover
+									}
+									add_character_flag = tournament_duel					
+								}
+							}
+						}
+					}
+				}
+
+				else = { # Neither of us are on horseback - duel engine time
+					add_character_flag = tournament_duel
+				}
+			}
+		}
+
+
+
+
+
+
+
+
+
+			# if = { # If we successfully captured our opponent..
+			# 	limit = {
+			# 		has_character_flag = captured_opponent
+			# 	}
+
+			# 	random_list = { # Did the horses run off?
+
+			# 		25 = { # Yes they did
+			# 			add_character_flag = horses_ran_off
+			# 			remove_variable = on_horseback
+
+			# 		}
+
+			# 		75 = { # No they did not
+					
+			# 		}
+			# 	}
+			# }
+
+
+
+		
+
+
+
+		option = {
+			root = {
+				remove_character_flag = got_knocked_off
+				remove_character_flag = tournament_duel
+				remove_character_flag = got_captured
+				remove_character_flag = captured_opponent
+				remove_character_flag = knocked_opponent_off
+				remove_character_flag = beat_opponent_into_submission
+				remove_character_flag = got_beaten_into_submission
+				remove_character_flag = opponent_attacking
+				remove_character_flag = is_in_melee_duel
+			}
+
+			trigger_event = tournament.030
+		}
 	}
-}
 
-#About to begin the melee, grassland background
 
-tournament.0101 = {
-	title = "The Tournament Begins!"
-	desc = ""
 
-	override_background = {
-		event_background = farmland
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	tournament.032 = { #You attack your opponent(fail)
+		title = tournament.032.title
+
+		option = {
+			
+		}
 	}
-	immediate = {
-		play_music_cue = "mx_cue_war_declared"
+	tournament.033 = { #Your opponent attacks you(and succeeds)
+		title = tournament.033.title
 
-		if = {
-			limit = {
+		option = {
+			
+		}
+	}
+	tournament.034 = { #Your  opponent attacks you(and fails)
+		title = tournament.034.title
+
+		option = {
+			
+		}
+	}
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	tournament.0100 = {
+		title = "Morning Before"
+		desc = ""
+
+		override_background = {
+			event_background = market_west
+		}
+		trigger = {
+			exists = scope:activity
+		}
+
+		immediate = {
+		}
+		option = {
+
+		}
+	}
+
+#About to begin the melee
+
+	tournament.0101 = {
+		title = "The Tournament Begins!"
+		desc = ""
+
+		override_background = {
+			event_background = terrain_activity
+		}
+		trigger = {
+			exists = scope:activity
+		}
+		immediate = {
+			play_music_cue = "mx_cue_war_declared"
+
+			if = {
+				limit = {
+					NOT = {
+						has_character_flag = host_not_fighting
+					}
+				}
+				set_variable = {
+					name = number_of_captures
+					value = 0
+				}
+				set_variable = {
+					name = number_of_times_captured
+					value = 0
+				}
+				set_variable = { 
+					name = gold_earned
+					value = 0
+				}
+				set_variable = {
+					name = prowess_gained
+					value = 0
+				}
+
+				set_variable = on_horseback
+
+				trigger_event = tournament.0999
+			}
+		}
+		option = {
+			name = tournament.0101.option.a
+			trigger = {
 				NOT = {
 					has_character_flag = host_not_fighting
 				}
 			}
-			set_variable = {
-				name = number_of_captures
-				value = 0
+
+		}
+		option = {
+			name = tournament.0101.option.b
+			trigger = {
+				has_character_flag = host_not_fighting
 			}
-			set_variable = {
-				name = number_of_times_captured
-				value = 0
-			}
-			set_variable = { 
-				name = gold_earned
-				value = 0
-			}
-			set_variable = {
-				name = prowess_gained
-				value = 0
-			}
-			trigger_event = tournament.0999
 		}
 	}
-	option = {
-		name = tournament.0101.option.a
+
+	# tournament.0800 = { #Encounter with another Knight. Fight
+	# 	title = ""
+	# 	desc = ""
+
+	# 	left_portrait = {
+	# 		character = scope:winner
+	# 		animation = personality_bold
+	# 	}
+	# 	right_portrait = {
+	# 		character = scope:loser
+	# 		animation = shame
+	# 	}
+
+	# 	override_background = {
+	# 		event_background = terrain_activity
+
+	# 	}
+	# 	trigger = {
+	# 		scope:activity = {
+	# 			any_participant = {
+	# 				is_alive = yes
+	# 				NOT = {
+	# 					has_character_flag = host_not_fighting
+	# 				}
+	# 			}
+	# 		}
+	# 	}
+
+
+	# 	immediate = {
+	# 		root = {
+	# 			change_variable = {
+	# 				name = EVENT_COUNTER
+	# 				add = 1
+	# 			}
+	# 		}
+	# 		scope:activity = {
+	# 			random_participant = {
+	# 				limit = {			
+	# 					is_alive = yes
+	# 					is_imprisoned = no
+	# 					is_incapable = no
+
+	# 					NOR = {
+	# 						this = root
+	# 						has_character_flag = host_not_fighting
+	# 					}
+
+	# 				}
+	# 				save_scope_as = opponent
+	# 			}
+	# 		}
+				
+
+	# 		random_list = {
+	# 			0 = {
+	# 				modifier = {
+	# 					add = root.melee_chance
+	# 				}
+					
+	# 				root = {
+	# 					save_scope_as = winner
+	# 				}
+	# 				scope:opponent = {
+	# 					save_scope_as = loser
+	# 				}
+	# 			}
+
+	# 			0 = {
+	# 				modifier = {
+	# 					add = scope:opponent.melee_chance
+	# 				}
+			
+	# 				root = {
+	# 					save_scope_as = loser
+	# 				}
+	# 				scope:opponent = {
+	# 					save_scope_as = winner
+	# 				}
+	# 			}
+	# 		}
+
+
+	# 		if = {
+	# 			limit = {
+	# 				exists = scope:winner
+	# 			}
+	# 			scope:winner = {
+	# 				if = {
+	# 					limit = {
+	# 						has_variable = number_of_captures
+	# 					}
+	# 					change_variable = {
+	# 						name = number_of_captures
+	# 						add = 1
+	# 					}
+	# 				}
+	# 				else = {
+	# 					set_variable = {
+	# 						name = number_of_captures
+	# 						value = 1
+	# 					}
+	# 				}
+		
+	# 				if = {
+	# 					limit = {
+	# 						has_variable = gold_earned
+	# 					}
+	# 					change_variable = { 
+	# 						name = gold_earned
+	# 						add = scope:loser.ransom_value
+	# 					}
+	# 				}
+	# 				else = {
+	# 					set_variable = {
+	# 						name = gold_earned
+	# 						value = scope:loser.ransom_value
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+
+	# 		if = {
+	# 			limit = {
+	# 				exists = scope:loser
+	# 			}
+	# 			scope:loser = {
+				
+	# 				if = {
+	# 					limit ={
+	# 						has_variable = number_of_times_captured
+	# 					}
+	# 					change_variable = {
+	# 						name = number_of_times_captured
+	# 						add = 1
+	# 					}
+	# 				}
+	# 				else = {
+	# 					set_variable = {
+	# 						name = number_of_times_captured
+	# 						value = 1
+	# 					}
+	# 				}
+		
+	# 				if = {
+	# 					limit = {
+	# 						has_variable = gold_earned
+	# 					}
+	# 					change_variable = { 
+	# 						name = gold_earned
+	# 						subtract = scope:loser.ransom_value
+	# 					}
+	# 				}
+	# 				else = {
+	# 					set_variable = {
+	# 						name = gold_earned
+	# 						value = 0
+	# 					}
+	# 					change_variable = {
+	# 						name = gold_earned
+	# 						subtract = scope:loser.ransom_value
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+
+
+
+	# 		if = {
+	# 			limit = {
+	# 				exists = scope:winner
+	# 				root = scope:winner
+	# 			}
+	# 			random_list = {
+	# 				0 = {
+	# 					modifier = {
+	# 						add = root.swordsmanship_upgrade_chance
+	# 					}
+	# 					add_character_flag = improve_fighting_skill  # Just so we can change in the option, rather than immediately.
+	# 				}
+					
+	# 				50 = {
+
+	# 				}
+	# 			}
+	# 		}
+
+	# 		#Chance to increase prowess skill if you haven't already increased it twice this tournament. 
+
+	# 		if = {
+	# 			limit = {
+	# 				var:prowess_gained < 2
+	# 			}
+	# 			random_list = {
+	# 				0 = {
+	# 					modifier = {
+	# 						add = root.prowess_gain_chance
+	# 					}
+	# 					add_prowess_skill = 1
+	# 					change_variable = {
+	# 						name = prowess_gained
+	# 						add = 1
+	# 					}
+	# 				}
+	# 				50 = {
+			
+	# 				}
+	# 			}
+				
+	# 		}
+
+
+
+	# 		# Chance of getting injured.
+			
+	# 		random_list = {
+	# 			0 = {
+	# 				modifier = {
+	# 					add = tournament_injury_chance
+	# 				}
+	# 				if = {
+	# 					limit = {
+	# 						NOR = {
+	# 							has_trait = wounded_1
+	# 							has_trait = wounded_2
+	# 							has_trait = wounded_3
+	# 							has_trait = maimed
+	# 						}
+	# 					}
+	# 					add_character_flag = wounded_1_in_fight
+	# 				}
+	# 				else_if = {
+	# 					limit = {
+	# 						has_trait = wounded_1
+	# 					}
+	# 					add_character_flag = wounded_2_in_fight
+	# 				}
+	# 				else_if = {
+	# 					limit = {
+	# 						has_trait = wounded_2
+	# 					}
+	# 					add_character_flag = wounded_3_in_fight
+	# 				}
+	# 				else_if = {
+	# 					limit = {
+	# 						has_trait = wounded_3
+	# 					}
+	# 					add_character_flag = maimed_in_fight
+	# 				}
+
+	# 			}
+
+	# 			80 = {
+	# 				modifier = {
+	# 					subtract = tournament_injury_chance
+	# 				}
+					
+
+	# 			}
+	# 		}
+
+	# 		if = {
+	# 			limit = {
+	# 				var:EVENT_COUNTER <=3	
+	# 			}
+			
+	# 			random_list = {
+	# 				50 = {
+	# 					modifier = {
+	# 						positive_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_good_selection
+	# 						days = 5
+	# 					}
+	# 				}
+						
+
+	# 				50 = {
+	# 					modifier = {
+	# 						negative_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+	# 					if = {
+	# 						limit = {
+
+	# 						}
+	# 					}
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_bad_selection
+	# 						days = 5
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+	# 		else = {
+	# 			trigger_event = tournament.0807
+	# 		}
+
+	# 	}
+
+	# 	option = {
+	# 		if = {
+	# 			limit = {
+	# 				has_character_flag = improve_fighting_skill
+	# 			}
+
+	# 			if = {
+	# 				limit = {
+	# 					NOR = {
+	# 						has_trait = poor_fighter
+	# 						has_trait = trained_fighter
+	# 						has_trait = skilled_fighter
+	# 						has_trait = formidable_fighter
+	# 					}
+	# 				}
+	# 				add_trait = poor_fighter
+	# 				remove_character_flag = improve_fighting_skill
+
+	# 			}
+	# 			else_if = {
+	# 				limit = {
+	# 					has_trait = poor_fighter
+	# 				}
+	# 				hidden_effect = {
+	# 					remove_trait = poor_fighter
+	# 				}
+	# 				add_trait = trained_fighter
+	# 				remove_character_flag = improve_fighting_skill
+	# 			}
+	# 			else_if = {
+	# 				limit = {
+	# 					has_trait = trained_fighter
+	# 				}
+	# 				hidden_effect = {
+	# 					remove_trait = trained_fighter
+	# 				}
+	# 				add_trait = skilled_fighter
+	# 				remove_character_flag = improve_fighting_skill
+
+	# 			}
+	# 			else_if = {
+	# 				limit = {
+	# 					has_trait = skilled_fighter
+	# 				}
+	# 				remove_trait = skilled_fighter
+
+	# 				add_trait = formidable_fighter
+	# 				remove_character_flag = improve_fighting_skill
+
+	# 			}
+	# 		}
+
+	# 		if = {
+	# 			limit = {
+	# 				has_character_flag = wounded_1_in_fight
+	# 			}
+	# 			add_trait = wounded_1
+	# 			remove_character_flag = wounded_1_in_fight
+	# 		}
+	# 		if = {
+	# 			limit = {
+	# 				has_character_flag = wounded_2_in_fight
+	# 			}
+	# 			add_trait = wounded_2
+	# 			remove_character_flag = wounded_2_in_fight
+	# 		}
+	# 		if = {
+	# 			limit = {
+	# 				has_character_flag = wounded_3_in_fight
+	# 			}
+	# 			add_trait = wounded_3
+	# 			remove_character_flag = wounded_3_in_fight
+	# 		}
+
+	# 		if = {
+	# 			limit = {
+	# 				has_character_flag = maimed_in_fight
+	# 			}
+	# 			add_trait = maimed
+	# 			remove_character_flag = maimed_in_fight
+	# 		}
+	# 	}
+		
+
+			
+	# }
+
+		
+		
+	
+			
+
+	# tournament.0802 = { #You and another knight team up on someone
+	# 	title = ""
+	# 	desc = ""
+
+
+
+	# 	override_background = {
+	# 		event_background = terrain_activity
+
+	# 	}
+
+	# 	immediate = {
+	# 		root = {
+	# 			change_variable = {
+	# 				name = EVENT_COUNTER
+	# 				add = 1
+	# 			}
+	# 		}
+	# 		random_list = {
+	# 			50 = {
+	# 				modifier = {
+	# 					positive_traits_tournament_small = yes
+	# 					add = 5
+	# 				}
+	# 				modifier = {
+	# 					positive_traits_tournament_medium = yes
+	# 					add = 10
+	# 				}
+	# 				modifier = {
+	# 					positive_traits_tournament_large = yes
+	# 					add = 15
+	# 				}
+	# 				trigger_event = {
+	# 					on_action = tournament_melee_good_selection
+	# 					days = 5
+	# 				}
+	# 			}
+				
+
+	# 			50 = {
+	# 				modifier = {
+	# 					negative_traits_tournament_small = yes
+	# 					add = 5
+	# 				}
+	# 				modifier = {
+	# 					negative_traits_tournament_medium = yes
+	# 					add = 10
+	# 				}
+	# 				modifier = {
+	# 					negative_traits_tournament_large = yes
+	# 					add = 15
+	# 				}
+
+	# 				trigger_event = {
+	# 					on_action = tournament_melee_bad_selection
+	# 					days = 5
+	# 				}
+	# 			}
+	# 		}
+	# 	}
+	# 	option = {
+
+	# 	}
+	# }
+	# tournament.0803 = { #You are teamed up on
+	# 	title = ""
+	# 	desc = ""
+
+
+	# 	override_background = {
+	# 		event_background = terrain_activity
+
+	# 	}
+	# 	immediate = {
+
+		
+	# 		root = {
+	# 			change_variable = {
+	# 				name = EVENT_COUNTER
+	# 				add = 1
+	# 			}
+	# 		}
+
+
+	# 		#Grab two knights.
+
+	# 		scope:activity = {
+	# 			random_participant = {
+	# 				limit = {		
+	# 					is_alive = yes
+	# 					is_imprisoned = no
+	# 					is_incapable = no
+	# 					NOR = {
+	# 						this = root
+	# 						has_character_flag = host_not_fighting
+	# 					}
+	# 				}
+	# 				save_scope_as = opponent_1
+	# 			}
+	# 			random_participant = {
+	# 				limit = {		
+	# 					is_alive = yes
+	# 					is_imprisoned = no
+	# 					is_incapable = no
+	# 					NOR = {
+	# 						this = root
+	# 						has_character_flag = host_not_fighting
+	# 						this = scope:opponent_1
+	# 					}
+	# 				}
+	# 				save_scope_as = opponent_2
+	# 			}
+	# 		}
+
+
+	# 		random_list = {
+	# 			0 = {
+	# 				modifier = {
+	# 					add = root.melee_chance
+	# 				}
+					
+	# 				root = {
+	# 					save_scope_as = winner
+	# 				}
+	# 				scope:opponent = {
+	# 					save_scope_as = loser
+	# 				}
+	# 			}
+
+	# 			10 = {
+	# 				modifier = {
+	# 					add = scope:opponent_1.melee_chance
+	# 					add = scope:opponent_2.melee_chance
+	# 				}
+			
+	# 				root = {
+	# 					save_scope_as = loser
+	# 				}
+	# 				scope:opponent_1 = {
+	# 					save_scope_as = winner_1
+	# 				}
+	# 				scope:opponent_2 = {
+	# 					save_scope_as = winner_2
+	# 				}
+	# 			}
+	# 		}
+
+
+			
+
+
+
+
+
+
+
+
+
+	# 		if = {
+	# 			limit = {
+	# 				var:EVENT_COUNTER <=3	
+	# 			}
+			
+	# 			random_list = {
+	# 				50 = {
+	# 					modifier = {
+	# 						positive_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_good_selection
+	# 						days = 5
+	# 					}
+	# 				}
+						
+
+	# 				50 = {
+	# 					modifier = {
+	# 						negative_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+	# 					if = {
+	# 						limit = {
+
+	# 						}
+	# 					}
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_bad_selection
+	# 						days = 5
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+
+
+	# 		else = {
+	# 			trigger_event = tournament.0807
+	# 		}
+
+
+
+
+	# 	}
+	# 	option = {
+			
+	# 	}
+	# }
+
+	# tournament.0804 = { # You accidentally killed someone
+	# 	title = ""
+	# 	desc = ""
+
+
+	# 	override_background = {
+	# 		event_background = terrain_activity
+
+	# 	}
+	# 	immediate = {
+	# 		root = {
+	# 			change_variable = {
+	# 				name = EVENT_COUNTER
+	# 				add = 1
+	# 			}
+	# 		}
+
+	# 		if = {
+	# 			limit = {
+	# 				root = {
+	# 					var:EVENT_COUNTER <= 3
+	# 				}
+	# 			}
+	# 			random_list = {
+	# 				50 = {
+	# 					modifier = {
+	# 						positive_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_good_selection
+	# 						days = 5
+	# 					}
+	# 				}
+					
+		
+	# 				50 = {
+	# 					modifier = {
+	# 						negative_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+		
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_bad_selection
+	# 						days = 5
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+	# 		else = {
+	# 			trigger_event = {
+	# 				id = tournament.0807
+	# 				days = 5
+	# 			}
+	# 		}
+	# 	}
+	# 	option = {
+			
+	# 	}
+	# }
+
+	# tournament.0805 = { #You were accidently killed 
+	# 	title = ""
+	# 	desc = ""
+
+
+	# 	override_background = {
+	# 		event_background = terrain_activity
+
+	# 	}
+	# 	immediate = {
+	# 		root = {
+	# 			change_variable = {
+	# 				name = EVENT_COUNTER
+	# 				add = 1
+	# 			}
+	# 		}
+	# 		if = {
+	# 			limit = {
+	# 				root = {
+	# 					var:EVENT_COUNTER <= 3
+	# 				}
+	# 			}
+	# 			random_list = {
+	# 				50 = {
+	# 					modifier = {
+	# 						positive_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_good_selection
+	# 						days = 5
+	# 					}
+	# 				}
+					
+
+	# 				50 = {
+	# 					modifier = {
+	# 						negative_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_bad_selection
+	# 						days = 5
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+
+	# 		else = {
+	# 			trigger_event = {
+					
+	# 				id = tournament.0807
+	# 				days = 5
+	# 			}
+	# 		}
+	# 	}
+	# 	option = {
+			
+	# 	}
+	# }
+
+
+	# tournament.0806 = { #drainage pipe meme event
+	# 	title = ""
+	# 	desc = ""
+
+
+	# 	override_background = {
+	# 		event_background = terrain_activity
+
+	# 	}
+	# 	immediate = {
+
+	# 		root = {
+	# 			change_variable = {
+	# 				name = EVENT_COUNTER
+	# 				add = 1
+	# 			}
+	# 		}
+
+	# 		if = {
+	# 			limit = {
+	# 				root = {
+	# 					var:EVENT_COUNTER <= 3
+	# 				}
+	# 			}
+	# 			random_list = {
+	# 				50 = {
+	# 					modifier = {
+	# 						positive_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						positive_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_good_selection
+	# 						days = 5
+	# 					}
+	# 				}
+					
+
+	# 				50 = {
+	# 					modifier = {
+	# 						negative_traits_tournament_small = yes
+	# 						add = 5
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_medium = yes
+	# 						add = 10
+	# 					}
+	# 					modifier = {
+	# 						negative_traits_tournament_large = yes
+	# 						add = 15
+	# 					}
+
+	# 					trigger_event = {
+	# 						on_action = tournament_melee_bad_selection
+	# 						days = 5
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+	# 		else = {
+	# 			trigger_event = {			
+	# 				id = tournament.0807
+	# 				days = 5
+	# 			}
+	# 		}
+	# 	}
+	# 	option = {
+			
+	# 	}
+	# }
+
+	# tournament.0807 = {
+
+	# 	hidden = yes
+
+	# 	immediate = {
+
+	# 		change_variable = {
+	# 			name = EVENT_COUNTER
+	# 			add = 1
+	# 		}
+
+	# 		scope:activity = {
+	# 			random_participant = {
+	# 				limit = {
+						
+	# 					is_alive = yes
+	# 					is_imprisoned = no
+	# 					is_incapable = no
+	# 					NOR = {
+	# 						this = root
+	# 						has_character_flag = host_not_fighting
+	# 					}
+	# 				}
+	# 				save_scope_as = opponent
+	# 			}
+	# 		}
+
+	# 		random_list = {
+	# 			0 = {
+
+	# 				modifier = {
+	# 					add = root.melee_chance
+	# 				}
+
+				
+	# 				root = {
+	# 					save_scope_as = winner
+	# 				}
+	# 				scope:opponent = {
+	# 					save_scope_as = loser
+	# 				}
+	# 			}
+
+	# 			0 = {
+
+	# 				modifier = {
+	# 					add = scope:opponent.melee_chance
+	# 				}
+
+					
+
+	# 				root = {
+	# 					save_scope_as = loser
+	# 				}
+	# 				scope:opponent = {
+	# 					save_scope_as = winner
+	# 				}
+	# 			}
+	# 		}
+
+	# 		scope:winner = {
+	# 			if = {
+	# 				limit = {
+	# 					has_variable = number_of_captures
+	# 				}
+	# 				change_variable = {
+	# 					name = number_of_captures
+	# 					add = 1
+	# 				}
+	# 			}
+	# 			else = {
+	# 				set_variable = {
+	# 					name = number_of_captures
+	# 					value = 1
+	# 				}
+	# 			}
+
+	# 			if = {
+	# 				limit = {
+	# 					has_variable = gold_earned
+	# 				}
+	# 				change_variable = { 
+	# 					name = gold_earned
+	# 					add = scope:loser.ransom_value
+	# 				}
+	# 			}
+	# 			else = {
+	# 				set_variable = {
+	# 					name = gold_earned
+	# 					value = scope:loser.ransom_value
+	# 				}
+	# 			}
+	# 		}
+	# 		scope:loser = {
+				
+	# 			if = {
+	# 				limit ={
+	# 					has_variable = number_of_times_captured
+	# 				}
+	# 				change_variable = {
+	# 					name = number_of_times_captured
+	# 					add = 1
+	# 				}
+	# 			}
+	# 			else = {
+	# 				set_variable = {
+	# 					name = number_of_times_captured
+	# 					value = 1
+	# 				}
+	# 			}
+
+	# 			if = {
+	# 				limit = {
+	# 					has_variable = gold_earned
+	# 				}
+	# 				change_variable = { 
+	# 					name = gold_earned
+	# 					subtract = scope:loser.ransom_value
+	# 				}
+	# 			}
+	# 			else = {
+	# 				set_variable = {
+	# 					name = gold_earned
+	# 					value = 0
+	# 				}
+	# 				change_variable = {
+	# 					name = gold_earned
+	# 					subtract = scope:loser.ransom_value
+	# 				}
+	# 			}
+	# 		}
+
+	# 		if = {
+	# 			limit = {
+	# 				AND = {
+	# 					var:EVENT_COUNTER <10
+	# 					NOT = {
+	# 						has_character_flag = host_not_fighting
+	# 					}
+	# 				}
+	# 			}
+	# 			trigger_event = tournament.0807
+	# 		}
+
+	# 		else_if = {
+	# 			limit = {
+	# 				NOT = {
+	# 					has_character_flag = host_not_fighting
+	# 				}
+	# 			}
+	# 			trigger_event = {
+	# 				id = tournament.0808
+	# 				days = 5
+	# 			}
+	# 		}
+	# 	}
+	# }
+
+
+	# tournament.0808 = {
+	# 	title = tournament.0808.title
+	# 	desc = {
+	# 		first_valid = {
+	# 			triggered_desc = {
+	# 				trigger = {
+	# 					root.performance_rating = -1
+	# 				}
+	# 				desc = tournament.0808.desc.poor
+	# 			}
+	# 			triggered_desc = {
+	# 				trigger = {
+	# 					root.performance_rating = 0
+	# 				}
+	# 				desc = tournament.0808.desc.ok
+	# 			}
+	# 			triggered_desc = {
+	# 				trigger = {
+	# 					root.performance_rating = 2
+	# 				}
+	# 				desc = tournament.0808.desc.moderate
+	# 			}
+	# 			triggered_desc = { 
+	# 				trigger = {
+	# 					root.performance_rating = 5
+	# 				}
+	# 				desc = tournament.0808.desc.great
+	# 			}
+	# 		}
+
+	# 	}
+		
+	# 	left_portrait = {
+	# 		character = root
+	# 		triggered_animation = {
+	# 			trigger = {
+	# 				root.performance_rating = -1
+	# 			}
+	# 			animation = shame
+	# 		}
+	# 		triggered_animation = {
+	# 			trigger = {
+	# 				root.performance_rating = 0
+	# 			}
+	# 			animation = disgust
+	# 		}
+	# 		triggered_animation = {
+	# 			trigger = {
+	# 				root.performance_rating = 2
+	# 			}
+	# 			animation = personality_honorable
+	# 		}
+	# 		triggered_animation = {
+	# 			trigger = {
+	# 				root.performance_rating = 5
+	# 			}
+	# 			animation = personality_bold
+	# 		}
+	# 		animation = idle
+	# 	}
+
+	# 	override_background = {
+	# 		event_background = corridor_night
+	# 	}
+
+	# 	trigger = {
+	# 		exists = scope:activity
+	# 	}
+
+	# 	immediate = {
+
+
+	# 		set_variable = {
+	# 			name = capture_diff
+	# 			value = var:number_of_captures
+	# 		}
+	# 		change_variable = {
+	# 			name = capture_diff
+	# 			subtract = var:number_of_times_captured
+	# 		}
+
+	# 	}
+	# 	option = {
+	# 		if = {
+	# 			limit = {
+	# 				var:gold_earned >= 0
+	# 			}
+	# 			add_gold = var:gold_earned
+	# 		}
+
+	# 		else_if = {
+	# 			limit = {
+	# 				var:gold_earned < 0
+	# 			}
+
+	# 			remove_short_term_gold = root.abs_value
+
+	# 		}
+	# 	}
+
+	# }
+
+	# tournament.0809 = {
+	# 	title = tournament.0809.title
+	# 	desc = tournament.0809.desc
+
+	# 	left_portrait = {
+	# 		character = scope:activity.activity_owner
+	# 		animation = ecstasy
+	# 	}
+	# 	# right_portrait = {
+	# 	# 	character = scope:attendee
+	# 	# 	triggered_animation = {
+	# 	# 		trigger = {
+	# 	# 			scope:attendee.performance_rating > 0
+	# 	# 		}
+	# 	# 		animation = happiness
+	# 	# 	}
+	# 	# 	animation = idle
+	# 	# }
+
+	# 	lower_left_portrait = scope:first_place
+	# 	lower_center_portrait = scope:second_place
+	# 	lower_right_portrait = scope:third_place
+
+	# 	theme = feast_activity
+	# 	override_background = {
+	# 		event_background = throne_room_scope
+	# 	}
+
+	# 	trigger = {
+	# 		exists = scope:activity
+
+	# 	}
+
+
+	# 	immediate = {
+	# 		play_music_cue = "mx_cue_meadandwine"
+
+
+	# 		scope:activity = {
+	# 			every_participant = {
+	# 				limit = {
+	# 					NOT = {
+	# 						has_character_flag = host_not_fighting
+	# 					}
+	# 					has_variable = capture_diff
+	# 				}
+	# 				add_to_list = participant_list
+
+	# 			}
+	# 		}
+
+			
+	# 		root.melee_ranking = {
+	# 			save_scope_as = THE_RANK
+	# 		}
+
+		
+	# 		ordered_in_list = {
+	# 			list = participant_list
+	# 			order_by = melee_ranking
+	# 			max = 1
+	# 			save_scope_as = first_place
+	# 			remove_from_list = participant_list
+	# 		}
+	# 		ordered_in_list = {
+	# 			list = participant_list
+	# 			order_by = melee_ranking
+	# 			max = 1
+	# 			save_scope_as = second_place
+	# 			remove_from_list = participant_list
+	# 		}
+
+	# 		ordered_in_list = {
+	# 			list = participant_list
+	# 			order_by = melee_ranking
+	# 			max = 1
+	# 			save_scope_as = third_place
+	# 			remove_from_list = participant_list
+	# 		}
+
+
+
+
+
+
+	# 	}
+
+	# 	option = { #First place
+	# 		name = tournament.0809.option.a
+	# 		trigger = {
+	# 			root = scope:first_place
+	# 		}
+	# 		add_gold = melee_prize_first
+	# 		add_prestige = melee_prestige_gain_large
+
+	# 	}
+	# 	option = { #Second place
+	# 		name = tournament.0809.option.b
+	# 		trigger = {
+	# 			root = scope:second_place
+	# 		}
+	# 		add_gold = melee_prize_second
+	# 		add_prestige = melee_prestige_gain_medium
+
+	# 	}	
+	# 	option = {#Third place
+	# 		name = tournament.0809.option.c
+	# 		trigger = {
+	# 			root = scope:third_place
+	# 		}
+	# 		add_gold = melee_prize_third
+	# 		add_prestige = melee_prestige_gain_small
+	# 	}
+	# 	option = { #Host
+	# 		name = tournament.0809.option.d
+	# 		trigger = {
+	# 			root = scope:activity.activity_owner
+	# 			NOR = {
+	# 				root = scope:first_place
+	# 				root = scope:second_place
+	# 				root = scope:third_place
+	# 			}
+	# 		}
+			
+	# 	}
+	# 	option = {#Everyone else
+	# 		name = tournament.0809.option.d
+	# 		trigger = {
+	# 			NOR = {
+	# 				root = scope:activity.activity_owner
+	# 				root = scope:first_place
+	# 				root = scope:second_place
+	# 				root = scope:third_place
+	# 			}
+	# 		}
+
+	# 	}
+	# }
+
+
+	tournament.0810 = {
+		title = tourmament.0810
+		left_portrait = root
+
+		trigger = {
+			exists = scope:activity
+		}
+
+		immediate = {
+
+			remove_variable = prowess_gained
+			remove_variable = gold_earned
+			remove_variable = number_of_captures
+			remove_variable = number_of_times_captured
+			remove_variable = EVENT_COUNTER
+			if = {
+				limit = {
+					root = scope:activity.activity_owner
+				}
+				remove_variable = num
+				if = {
+					limit = {
+						has_character_flag = host_not_fighting
+					}
+					remove_character_flag = host_not_fighting
+				}
+			}
+		}
+
+		option = {
+			if = {
+				limit = {
+					root = scope:activity.activity_owner
+				}
+				add_prestige = tournament_host_prestige
+			}
+			scope:activity = {
+				complete_activity = yes
+			}
+			remove_character_flag = got_knocked_off
+			remove_character_flag = tournament_duel
+			remove_character_flag = got_captured
+			remove_character_flag = captured_opponent
+			remove_character_flag = knocked_opponent_off
+			remove_character_flag = beat_opponent_into_submission
+			remove_character_flag = got_beaten_into_submission
+			remove_character_flag = opponent_attacking
+			remove_character_flag = is_in_melee_duel
+		}
+	}
+
+
+
+	tournament.0999 = {
+		hidden = yes
+
 		trigger = {
 			NOT = {
 				has_character_flag = host_not_fighting
 			}
 		}
 
-	}
-	option = {
-		name = tournament.0101.option.b
-		trigger = {
-			has_character_flag = host_not_fighting
-		}
-	}
-}
+		immediate = {
 
-tournament.0800 = { #Encounter with another Knight. Fight
-	title = ""
-	desc = ""
-
-	left_portrait = {
-		character = scope:winner
-		animation = personality_bold
-	}
-	right_portrait = {
-		character = scope:loser
-		animation = shame
-	}
-
-	override_background = {
-		event_background = terrain_activity
-
-	}
-	trigger = {
-		scope:activity = {
-			any_participant = {
-				is_alive = yes
-				NOT = {
-					has_character_flag = host_not_fighting
-				}
-			}
-		}
-	}
-
-
-	immediate = {
-		root = {
-			change_variable = {
-				name = EVENT_COUNTER
-				add = 1
-			}
-		}
-		scope:activity = {
-			random_participant = {
-				limit = {			
-					is_alive = yes
-					is_imprisoned = no
-					is_incapable = no
-
-					NOR = {
-						this = root
-						has_character_flag = host_not_fighting
-					}
-
-				}
-				save_scope_as = opponent
-			}
-		}
-			
-
-		random_list = {
-			0 = {
-				modifier = {
-					add = root.melee_chance
-				}
-				
-				root = {
-					save_scope_as = winner
-				}
-				scope:opponent = {
-					save_scope_as = loser
-				}
-			}
-
-			0 = {
-				modifier = {
-					add = scope:opponent.melee_chance
-				}
-		
-				root = {
-					save_scope_as = loser
-				}
-				scope:opponent = {
-					save_scope_as = winner
-				}
-			}
-		}
-
-
-		if = {
-			limit = {
-				exists = scope:winner
-			}
-			scope:winner = {
-				if = {
-					limit = {
-						has_variable = number_of_captures
-					}
-					change_variable = {
-						name = number_of_captures
-						add = 1
-					}
-				}
-				else = {
-					set_variable = {
-						name = number_of_captures
-						value = 1
-					}
-				}
-	
-				if = {
-					limit = {
-						has_variable = gold_earned
-					}
-					change_variable = { 
-						name = gold_earned
-						add = scope:loser.ransom_value
-					}
-				}
-				else = {
-					set_variable = {
-						name = gold_earned
-						value = scope:loser.ransom_value
-					}
-				}
-			}
-		}
-
-		if = {
-			limit = {
-				exists = scope:loser
-			}
-			scope:loser = {
-			
-				if = {
-					limit ={
-						has_variable = number_of_times_captured
-					}
-					change_variable = {
-						name = number_of_times_captured
-						add = 1
-					}
-				}
-				else = {
-					set_variable = {
-						name = number_of_times_captured
-						value = 1
-					}
-				}
-	
-				if = {
-					limit = {
-						has_variable = gold_earned
-					}
-					change_variable = { 
-						name = gold_earned
-						subtract = scope:loser.ransom_value
-					}
-				}
-				else = {
-					set_variable = {
-						name = gold_earned
-						value = 0
-					}
-					change_variable = {
-						name = gold_earned
-						subtract = scope:loser.ransom_value
-					}
-				}
-			}
-		}
-
-
-
-		if = {
-			limit = {
-				exists = scope:winner
-				root = scope:winner
-			}
-			random_list = {
-				0 = {
-					modifier = {
-						add = root.swordsmanship_upgrade_chance
-					}
-					add_character_flag = improve_fighting_skill  # Just so we can change in the option, rather than immediately.
-				}
-				
-				50 = {
-
-				}
-			}
-		}
-
-		# Chance to increase prowess skill if you haven't already increased it twice this tournament. 
-
-		if = {
-			limit = {
-				var:prowess_gained < 2
-			}
-			random_list = {
-				0 = {
-					modifier = {
-						add = root.prowess_gain_chance
-					}
-					add_prowess_skill = 1
-					change_variable = {
-						name = prowess_gained
-						add = 1
-					}
-				}
-				50 = {
-		
-				}
-			}
-			
-		}
-
-
-		if = {
-			limit = {
-				var:EVENT_COUNTER <=3	
-			}
-		
-			random_list = {
-				50 = {
-					modifier = {
-						positive_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						positive_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						positive_traits_tournament_large = yes
-						add = 15
-					}
-					trigger_event = {
-						on_action = tournament_melee_good_selection
-						days = 5
-					}
-				}
-					
-
-				50 = {
-					modifier = {
-						negative_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						negative_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						negative_traits_tournament_large = yes
-						add = 15
-					}
-					if = {
-						limit = {
-
-						}
-					}
-					trigger_event = {
-						on_action = tournament_melee_bad_selection
-						days = 5
-					}
-				}
-			}
-		}
-		else = {
-			trigger_event = tournament.0807
-		}
-
-	}
-	
-	option = {
-		name = tournament.0800.option
-		
-		if = {
-			limit = {
-				has_character_flag = improve_fighting_skill
-			}
-
-			if = {
-				limit = {
-					NOR = {
-						has_trait = poor_fighter
-						has_trait = trained_fighter
-						has_trait = skilled_fighter
-						has_trait = formidable_fighter
-					}
-				}
-				add_trait = poor_fighter
-			}
-			if = {
-				limit = {
-					has_trait = poor_fighter
-				}
-				add_trait = trained_fighter
-			}
-			if = {
-				limit = {
-					has_trait = trained_fighter
-				}
-				add_trait = skilled_fighter
-			}
-			if = {
-				limit = {
-					has_trait = skilled_fighter
-				}
-				add_trait = formidable_fighter
-			}
-			
-			
-
-
-
-		}
-	
-	}
-
-}
-		
-
-tournament.0802 = { #You and another knight team up on someone
-	title = ""
-	desc = ""
-
-
-
-	override_background = {
-		event_background = terrain_activity
-
-	}
-
-	immediate = {
-		root = {
-			change_variable = {
-				name = EVENT_COUNTER
-				add = 1
-			}
-		}
-		random_list = {
-			50 = {
-				modifier = {
-					positive_traits_tournament_small = yes
-					add = 5
-				}
-				modifier = {
-					positive_traits_tournament_medium = yes
-					add = 10
-				}
-				modifier = {
-					positive_traits_tournament_large = yes
-					add = 15
-				}
-				trigger_event = {
-					on_action = tournament_melee_good_selection
-					days = 5
-				}
-			}
-			
-
-			50 = {
-				modifier = {
-					negative_traits_tournament_small = yes
-					add = 5
-				}
-				modifier = {
-					negative_traits_tournament_medium = yes
-					add = 10
-				}
-				modifier = {
-					negative_traits_tournament_large = yes
-					add = 15
-				}
-
-				trigger_event = {
-					on_action = tournament_melee_bad_selection
-					days = 5
-				}
-			}
-		}
-	}
-	option = {
-
-	}
-}
-tournament.0803 = { #You are teamed up on
-	title = ""
-	desc = ""
-
-
-	override_background = {
-		event_background = terrain_activity
-
-	}
-	immediate = {
-		root = {
-			change_variable = {
-				name = EVENT_COUNTER
-				add = 1
-			}
-		}
-		random_list = {
-			50 = {
-				modifier = {
-					positive_traits_tournament_small = yes
-					add = 5
-				}
-				modifier = {
-					positive_traits_tournament_medium = yes
-					add = 10
-				}
-				modifier = {
-					positive_traits_tournament_large = yes
-					add = 15
-				}
-				trigger_event = {
-					on_action = tournament_melee_good_selection
-					days = 5
-				}
-			}
-			
-
-			50 = {
-				modifier = {
-					negative_traits_tournament_small = yes
-					add = 5
-				}
-				modifier = {
-					negative_traits_tournament_medium = yes
-					add = 10
-				}
-				modifier = {
-					negative_traits_tournament_large = yes
-					add = 15
-				}
-
-				trigger_event = {
-					on_action = tournament_melee_bad_selection
-					days = 5
-				}
-			}
-		}
-	}
-	option = {
-		
-	}
-}
-
-tournament.0804 = { # You accidentally killed someone
-	title = ""
-	desc = ""
-
-
-	override_background = {
-		event_background = terrain_activity
-
-	}
-	immediate = {
-		root = {
-			change_variable = {
-				name = EVENT_COUNTER
-				add = 1
-			}
-		}
-
-		if = {
-			limit = {
-				root = {
-					var:EVENT_COUNTER <= 3
-				}
-			}
-			random_list = {
-				50 = {
-					modifier = {
-						positive_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						positive_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						positive_traits_tournament_large = yes
-						add = 15
-					}
-					trigger_event = {
-						on_action = tournament_melee_good_selection
-						days = 5
-					}
-				}
-				
-	
-				50 = {
-					modifier = {
-						negative_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						negative_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						negative_traits_tournament_large = yes
-						add = 15
-					}
-	
-					trigger_event = {
-						on_action = tournament_melee_bad_selection
-						days = 5
-					}
-				}
-			}
-		}
-		else = {
-			trigger_event = {
-				id = tournament.0807
-				days = 5
-			}
-		}
-	}
-	option = {
-		
-	}
-}
-
-tournament.0805 = { #You were accidently killed 
-	title = ""
-	desc = ""
-
-
-	override_background = {
-		event_background = terrain_activity
-
-	}
-	immediate = {
-		root = {
-			change_variable = {
-				name = EVENT_COUNTER
-				add = 1
-			}
-		}
-		if = {
-			limit = {
-				root = {
-					var:EVENT_COUNTER <= 3
-				}
-			}
-			random_list = {
-				50 = {
-					modifier = {
-						positive_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						positive_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						positive_traits_tournament_large = yes
-						add = 15
-					}
-					trigger_event = {
-						on_action = tournament_melee_good_selection
-						days = 5
-					}
-				}
-				
-
-				50 = {
-					modifier = {
-						negative_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						negative_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						negative_traits_tournament_large = yes
-						add = 15
-					}
-
-					trigger_event = {
-						on_action = tournament_melee_bad_selection
-						days = 5
-					}
-				}
-			}
-		}
-
-		else = {
-			trigger_event = {
-				
-				id = tournament.0807
-				days = 5
-			}
-		}
-	}
-	option = {
-		
-	}
-}
-
-
-tournament.0806 = { #drainage pipe meme event
-	title = ""
-	desc = ""
-
-
-	override_background = {
-		event_background = terrain_activity
-
-	}
-	immediate = {
-
-		root = {
-			change_variable = {
-				name = EVENT_COUNTER
-				add = 1
-			}
-		}
-
-		if = {
-			limit = {
-				root = {
-					var:EVENT_COUNTER <= 3
-				}
-			}
-			random_list = {
-				50 = {
-					modifier = {
-						positive_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						positive_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						positive_traits_tournament_large = yes
-						add = 15
-					}
-					trigger_event = {
-						on_action = tournament_melee_good_selection
-						days = 5
-					}
-				}
-				
-
-				50 = {
-					modifier = {
-						negative_traits_tournament_small = yes
-						add = 5
-					}
-					modifier = {
-						negative_traits_tournament_medium = yes
-						add = 10
-					}
-					modifier = {
-						negative_traits_tournament_large = yes
-						add = 15
-					}
-
-					trigger_event = {
-						on_action = tournament_melee_bad_selection
-						days = 5
-					}
-				}
-			}
-		}
-		else = {
-			trigger_event = {			
-				id = tournament.0807
-				days = 5
-			}
-		}
-	}
-	option = {
-		
-	}
-}
-
-tournament.0807 = {
-
-	hidden = yes
-
-	immediate = {
-
-		change_variable = {
-			name = EVENT_COUNTER
-			add = 1
-		}
-
-		scope:activity = {
-			random_participant = {
-				limit = {
-					
-					is_alive = yes
-					is_imprisoned = no
-					is_incapable = no
-					NOR = {
-						this = root
-						has_character_flag = host_not_fighting
-					}
-				}
-				save_scope_as = opponent
-			}
-		}
-
-		random_list = {
-			0 = {
-
-				modifier = {
-					add = root.melee_chance
-				}
-
-			
-				root = {
-					save_scope_as = winner
-				}
-				scope:opponent = {
-					save_scope_as = loser
-				}
-			}
-
-			0 = {
-
-				modifier = {
-					add = scope:opponent.melee_chance
-				}
-
-				
-
-				root = {
-					save_scope_as = loser
-				}
-				scope:opponent = {
-					save_scope_as = winner
-				}
-			}
-		}
-
-		scope:winner = {
-			if = {
-				limit = {
-					has_variable = number_of_captures
-				}
-				change_variable = {
-					name = number_of_captures
-					add = 1
-				}
-			}
-			else = {
+			root = {
 				set_variable = {
-					name = number_of_captures
-					value = 1
-				}
-			}
-
-			if = {
-				limit = {
-					has_variable = gold_earned
-				}
-				change_variable = { 
-					name = gold_earned
-					add = scope:loser.ransom_value
-				}
-			}
-			else = {
-				set_variable = {
-					name = gold_earned
-					value = scope:loser.ransom_value
-				}
-			}
-		}
-		scope:loser = {
-			
-			if = {
-				limit ={
-					has_variable = number_of_times_captured
-				}
-				change_variable = {
-					name = number_of_times_captured
-					add = 1
-				}
-			}
-			else = {
-				set_variable = {
-					name = number_of_times_captured
-					value = 1
-				}
-			}
-
-			if = {
-				limit = {
-					has_variable = gold_earned
-				}
-				change_variable = { 
-					name = gold_earned
-					subtract = scope:loser.ransom_value
-				}
-			}
-			else = {
-				set_variable = {
-					name = gold_earned
+					name = EVENT_COUNTER		
 					value = 0
 				}
-				change_variable = {
-					name = gold_earned
-					subtract = scope:loser.ransom_value
-				}
 			}
-		}
 
-		if = {
-			limit = {
-				AND = {
-					var:EVENT_COUNTER <10
-					NOT = {
-						has_character_flag = host_not_fighting
+
+			random_list = {
+				50 = {
+					modifier = {
+						positive_traits_tournament_small = yes
+						add = 5
+					}
+					modifier = {
+						positive_traits_tournament_medium = yes
+						add = 10
+					}
+					modifier = {
+						positive_traits_tournament_large = yes
+						add = 15
+					}
+					trigger_event = {
+						on_action = tournament_melee_good_selection
+						days = 5
 					}
 				}
-			}
-			trigger_event = tournament.0807
-		}
+						
 
-		else_if = {
-			limit = {
-				NOT = {
-					has_character_flag = host_not_fighting
-				}
-			}
-			trigger_event = {
-				id = tournament.0808
-				days = 5
-			}
-		}
-
-	}
-
-}
-
-
-
-tournament.0808 = {
-	title = tournament.0808.title
-	desc = {
-		first_valid = {
-			triggered_desc = {
-				trigger = {
-					root.performance_rating = -1
-				}
-				desc = tournament.0808.desc.poor
-			}
-			triggered_desc = {
-				trigger = {
-					root.performance_rating = 0
-				}
-				desc = tournament.0808.desc.ok
-			}
-			triggered_desc = {
-				trigger = {
-					root.performance_rating = 2
-				}
-				desc = tournament.0808.desc.moderate
-			}
-			triggered_desc = { 
-				trigger = {
-					root.performance_rating = 5
-				}
-				desc = tournament.0808.desc.great
-			}
-		}
-
-	}
-	
-	left_portrait = {
-		character = root
-		triggered_animation = {
-			trigger = {
-				root.performance_rating = -1
-			}
-			animation = shame
-		}
-		triggered_animation = {
-			trigger = {
-				root.performance_rating = 0
-			}
-			animation = disgust
-		}
-		triggered_animation = {
-			trigger = {
-				root.performance_rating = 2
-			}
-			animation = personality_honorable
-		}
-		triggered_animation = {
-			trigger = {
-				root.performance_rating = 5
-			}
-			animation = personality_bold
-		}
-		animation = idle
-	}
-
-	override_background = {
-		event_background = corridor_night
-	}
-
-	immediate = {
-
-
-		set_variable = {
-			name = capture_diff
-			value = var:number_of_captures
-		}
-		change_variable = {
-			name = capture_diff
-			subtract = var:number_of_times_captured
-		}
-
-	}
-	option = {
-		if = {
-			limit = {
-				var:gold_earned >= 0
-			}
-			add_gold = var:gold_earned
-		}
-
-		else_if = {
-			limit = {
-				var:gold_earned < 0
-			}
-
-			remove_short_term_gold = root.abs_value
-
-		}
-	}
-
-}
-
-tournament.0809 = {
-	title = tournament.0809.title
-	desc = tournament.0809.desc
-
-	left_portrait = {
-		character = scope:activity.activity_owner
-		animation = ecstasy
-	}
-	# right_portrait = {
-	# 	character = scope:attendee
-	# 	triggered_animation = {
-	# 		trigger = {
-	# 			scope:attendee.performance_rating > 0
-	# 		}
-	# 		animation = happiness
-	# 	}
-	# 	animation = idle
-	# }
-
-	lower_left_portrait = scope:first_place
-	lower_center_portrait = scope:second_place
-	lower_right_portrait = scope:third_place
-
-	theme = feast_activity
-	override_background = {
-		event_background = throne_room_scope
-	}
-
-
-	immediate = {
-		play_music_cue = "mx_cue_meadandwine"
-
-
-		scope:activity = {
-			every_participant = {
-				limit = {
-					NOT = {
-						has_character_flag = host_not_fighting
+				50 = {
+					modifier = {
+						negative_traits_tournament_small = yes
+						add = 5
 					}
-					has_variable = capture_diff
-				}
-				add_to_list = participant_list
-
-			}
-		}
-
-		
-		root.melee_ranking = {
-			save_scope_as = THE_RANK
-		}
-
-	
-		ordered_in_list = {
-			list = participant_list
-			order_by = melee_ranking
-			max = 1
-			save_scope_as = first_place
-			remove_from_list = participant_list
-		}
-		ordered_in_list = {
-			list = participant_list
-			order_by = melee_ranking
-			max = 1
-			save_scope_as = second_place
-			remove_from_list = participant_list
-		}
-
-		ordered_in_list = {
-			list = participant_list
-			order_by = melee_ranking
-			max = 1
-			save_scope_as = third_place
-			remove_from_list = participant_list
-		}
-
-
-
-
-
-
-	}
-
-	option = { #First place
-		name = tournament.0809.option.a
-		trigger = {
-			root = scope:first_place
-		}
-		add_gold = melee_prize_first
-		add_prestige = melee_prestige_gain_large
-
-	}
-	option = { #Second place
-		name = tournament.0809.option.b
-		trigger = {
-			root = scope:second_place
-		}
-		add_gold = melee_prize_second
-		add_prestige = melee_prestige_gain_medium
-
-	}	
-	option = {#Third place
-		name = tournament.0809.option.c
-		trigger = {
-			root = scope:third_place
-		}
-		add_gold = melee_prize_third
-		add_prestige = melee_prestige_gain_small
-	}
-	option = { #Host
-		name = tournament.0809.option.d
-		trigger = {
-			root = scope:activity.activity_owner
-			NOR = {
-				root = scope:first_place
-				root = scope:second_place
-				root = scope:third_place
-			}
-		}
-		
-	}
-	option = {#Everyone else
-		name = tournament.0809.option.d
-		trigger = {
-			NOR = {
-				root = scope:activity.activity_owner
-				root = scope:first_place
-				root = scope:second_place
-				root = scope:third_place
-			}
-		}
-
-	}
-}
-
-
-
-
-
-tournament.0810 = {
-	title = tourmament.0810
-	left_portrait = root
-
-	trigger = {
-		exists = scope:activity
-	}
-
-	immediate = {
-
-		remove_variable = prowess_gained
-		remove_variable = gold_earned
-		remove_variable = number_of_captures
-		remove_variable = number_of_times_captured
-		remove_variable = capture_diff
-		remove_variable = EVENT_COUNTER
-		if = {
-			limit = {
-				root = scope:activity.activity_owner
-			}
-			remove_variable = num
-			if = {
-				limit = {
-					has_character_flag = host_not_fighting
-				}
-				remove_character_flag = host_not_fighting
-			}
-		}
-	}
-
-	option = {
-		if = {
-			limit = {
-				root = scope:activity.activity_owner
-			}
-			add_prestige = tournament_host_prestige
-		}
-		scope:activity = {
-			complete_activity = yes
-		}
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-tournament.0999 = {
-	hidden = yes
-
-	trigger = {
-		NOT = {
-			has_character_flag = host_not_fighting
-		}
-	}
-
-	immediate = {
-
-		root = {
-			set_variable = {
-				name = EVENT_COUNTER		
-				value = 0
-			}
-		}
-
-
-				random_list = {
-					50 = {
-						modifier = {
-							positive_traits_tournament_small = yes
-							add = 5
-						}
-						modifier = {
-							positive_traits_tournament_medium = yes
-							add = 10
-						}
-						modifier = {
-							positive_traits_tournament_large = yes
-							add = 15
-						}
-						trigger_event = {
-							on_action = tournament_melee_good_selection
-							days = 5
-						}
+					modifier = {
+						negative_traits_tournament_medium = yes
+						add = 10
 					}
-					
+					modifier = {
+						negative_traits_tournament_large = yes
+						add = 15
+					}
 
-					50 = {
-						modifier = {
-							negative_traits_tournament_small = yes
-							add = 5
-						}
-						modifier = {
-							negative_traits_tournament_medium = yes
-							add = 10
-						}
-						modifier = {
-							negative_traits_tournament_large = yes
-							add = 15
-						}
-
-						trigger_event = {
-							on_action = tournament_melee_bad_selection
-							days = 5
-						}
+					trigger_event = {
+						on_action = tournament_melee_bad_selection
+						days = 5
 					}
 				}
-			
-		
+			}		
+		}
 	}
-}
 
 
 

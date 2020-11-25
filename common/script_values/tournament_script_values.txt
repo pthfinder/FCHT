@@ -181,11 +181,22 @@ ransom_value = {
 
 
 
-melee_chance = {
-    value = 0
+melee_attack_chance = {
+    value = prowess
 
-    add = prowess
 
+    if = {
+        limit = {
+            has_variable = on_horseback
+        }
+        add = 20
+    }
+    if = {
+        limit = {
+            has_character_flag = initiative_bonus
+        }
+        add = 10
+    }
     if = {
         limit = {
             has_trait = intellect_good_1
@@ -242,9 +253,152 @@ melee_chance = {
         }
         subtract = 15
     }
+    
 
-    multiply = 10
 }
+
+melee_defense_chance = {
+    value = prowess
+
+
+    if = {
+        limit = {
+            has_variable = on_horseback
+        }
+        add = 20
+    }
+
+    if = {
+        limit = {
+            has_trait = intellect_good_1
+        }
+        add = 5
+    }
+    if = {
+        limit = {
+            has_trait = shrewd
+        }
+        add = 7
+    }
+    if = {
+        limit = {
+            has_trait = intellect_good_2
+        }
+        add = 10
+    }
+    if = {
+        limit = {
+            has_trait = intellect_good_3
+        }
+        add = 15
+    }
+
+    if = {
+        limit = {
+            has_trait = patient
+        }
+        add = 10
+    }
+
+    if = {
+        limit = {
+            has_trait = unyielding_defender
+        }
+        add = 5
+    }
+
+    if = {
+        limit = {
+            has_trait = aggressive_attacker
+        }
+        subtract = 5
+    }
+
+    if = {
+        limit = {
+            has_trait = intellect_bad_1
+        }
+        subtract = 5
+    }
+    if = {
+        limit = {
+            has_trait = dull
+        }
+        subtract = 7
+    }
+    if = {
+        limit = {
+            has_trait = intellect_bad_2
+        }
+        subtract = 10
+    }
+    if = {
+        limit = {
+            has_trait = intellect_bad_3
+        }
+        subtract = 15
+    }
+
+
+}
+
+
+knocked_off_chance_to_recover = {
+    value = 0
+
+    if = {
+        limit = {
+            OR = {
+                has_trait = possessed
+                has_trait = athletic
+                has_trait = whole_of_body
+                has_trait = physique_good_1 #hale
+            }
+
+        }
+        add = 5
+    }
+
+    if = {
+        limit = {
+            has_trait = strong
+            has_trait = physique_good_2 #Robust
+
+        }
+        add = 10
+    }
+
+    if = {
+        limit = {
+            has_trait = physique_good_3 #Herculean/Amazonian
+        }
+        add = 20
+    }
+
+
+    if = { # Too ill to continue.
+        limit = {
+            OR = {
+                has_trait = ill
+                has_trait = bubonic_plague
+                has_trait = cancer
+                has_trait = consumption
+                has_trait = gout_ridden
+                has_trait = leper
+                has_trait = great_pox
+                has_trait = small_pox
+                has_trait = typhus
+
+            }
+        }
+        subtract = 50
+    }
+
+}
+
+
+
+
 
 
 swordsmanship_upgrade_chance = {
@@ -1197,3 +1351,52 @@ tournament_host_prestige = {
         }
     }
 }
+
+
+tournament_injury_chance = {
+    value = 10
+
+    if = {
+        limit = {
+            has_trait = brave # The lionhearted are more likely to risk injury for glory.
+        }
+        add = 10
+    }
+    if = {
+        limit = {
+            has_trait = aggressive_attacker
+        }
+        add = 10
+    }
+
+    if = {
+        limit = {
+            has_trait = reckless
+        }
+        add = 10
+    }
+    
+    if = { # Have to be careful with these, dont want you to spiral into death.
+        limit = {
+            has_trait = wounded_1
+        }
+        add = 10
+    }
+    if = { # Have to be careful with these, dont want you to spiral into death.
+    limit = {
+        has_trait = wounded_2
+    }
+    add = 15
+}
+    if = { # Have to be careful with these, dont want you to spiral into death.
+    limit = {
+        has_trait = wounded_3
+    }
+    add = 20
+    }
+
+}
+
+
+
+

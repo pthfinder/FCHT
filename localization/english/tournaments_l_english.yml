@@ -19,6 +19,83 @@
  tournament.12.title:0 "The Inspiring Dance"
  tournament.12.desc:0 "Her smile.. Her scent.. This woman truly captivates me with her beauty and grace.\n As we dance it feels like time itself stops and yet before long, we part and move on to our next partners.. \n\nI did not catch her name, but this fair creature has inspired me to perform great feats in the upcoming events in her honor."
  tournament.12.option.a:0 "A woman's affection is only surpassed by honor in battle."
+ tournament.014.title:0 "A Tragic End to the Tournament"
+ tournament.014.desc:0 "The mood turns completely sour as we hear that the host of the tournament has suddenly died. No participant objects to the cancellation of the tournament, and everyone is now preparing to leave first thing in the morning."
+ tournament.014.option:0 "May [ROOT.GetCharacter.GetFaith.HighGodName] have mercy on their soul."
+
+
+
+ tournament.030.option.a:0 "Attack!"
+ tournament.030.option.a.tt:0 "You have a [THIS.Var('chance_of_attack_success').GetValue|0]% chance of success."
+ tournament.030.option.b:0 "Defend Yourself!"
+ tournament.030.option.b.tt:0 "You have a [THIS.Var('chance_of_defense_success').GetValue|0]% chance of success."
+ tournament.031.title:0 "A Clash of Knights!"
+ tournament.031.desc.a:0 "We are both on horseback, we knock them off, and capture them."
+ tournament.031.desc.b:0 "We are both on horseback, we knock them off but they recover and will enter a duel."
+ tournament.031.desc.c:0 "We are both on horseback, we get knocked off and get captured."
+ tournament.031.desc.d:0 "We are both on horseback, we get knocked off but recover and will enter a duel"
+ tournament.031.desc.e:0 "Opponent is on horseback, but we are not, we knock them off and capture them."
+ tournament.031.desc.f:0 "Opponent is on horseback, but we are not, we knock them off but they recover and will enter a duel"
+ tournament.031.desc.g:0 "Opponent is on horseback, but we are not, we are beat into submission."
+ tournament.031.desc.h:0  "Opponent is NOT on horseback, but we ARE, and we beat them into submission"
+ tournament.031.desc.i:0 " Opponent is NOT on horseback, but we ARE, and they knock us off and capture us"
+ tournament.031.desc.j:0 "Opponent is NOT on horseback, but we ARE, and they knock us off but we recover and will enter a duel"
+ tournament.031.desc.k:0 "Opponent is NOT on horseback, and NEITHER are we. Enter a duel immediately."
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  tournament.0800.option:0 "Well Fought, [opponent.GetFirstNameNoTooltip]!"
  tournament.0808.title:0 "The Tournament Ends!"
  tournament.0808.desc.poor:0 "Many more hours pass of hard fighting and just as the day begins to turn to night, the heralds declare the competition over. \n No man's performance is shamed so long as he fought bravely and honorably.\nYour performance was rather awful however. You captured and ransomed [ROOT.Char.MakeScope.Var('number_of_captures').GetValue|0] knights but got captured and ransomed [ROOT.Char.MakeScope.Var('number_of_times_captured').GetValue|0] times yourself."
@@ -39,3 +116,4 @@
  trait_formidable_fighter:0 "Formidable Fighter"
  trait_formidable_fighter_desc:0 "The Formidable Fighter has mastered the art of fighting."
  trait_formidable_fighter_character_desc:0 "[ROOT.GetCharacter.GetFirstNameNoTooltip] has mastered the art of fighting. They are practically unrivaled in skill and no man who values his life would challenge them to a duel."
+ 

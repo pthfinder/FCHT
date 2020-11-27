@@ -1,0 +1,288 @@
+remove_tournament.030_flags = {
+	if = {
+		limit = {
+			has_character_flag = got_knocked_off
+		}
+		remove_character_flag = got_knocked_off
+	}
+	if = {
+		limit = {
+			has_character_flag = tournament_duel
+		}
+		remove_character_flag = tournament_duel
+	}
+	if = {
+		limit = {
+			has_character_flag = got_captured
+		}
+		remove_character_flag = got_captured
+	}
+	if = {
+		limit = {
+			has_character_flag = captured_opponent
+		}
+		remove_character_flag = captured_opponent
+	}
+	if = {
+		limit = {
+			has_character_flag = knocked_opponent_off
+		}
+		remove_character_flag = knocked_opponent_off
+	}
+	if = {
+		limit = {
+			has_character_flag = beat_opponent_into_submission
+		}
+		remove_character_flag = beat_opponent_into_submission
+	}
+	if = {
+		limit = {
+			has_character_flag = got_beaten_into_submission
+		}
+		remove_character_flag = got_beaten_into_submission
+	}
+	if = {
+		limit = {
+			has_character_flag = opponent_attacking
+		}
+		remove_character_flag = opponent_attacking
+	}
+	if = {
+		limit = {
+			has_character_flag = is_in_melee_duel
+		}
+		remove_character_flag = is_in_melee_duel
+	}
+}
+
+remove_tournament.033_flags = {
+	if = {
+		limit = {
+			has_character_flag = won_duel
+		}
+		remove_character_flag = won_duel
+	}
+	if = {
+		limit = {
+			has_character_flag = drew_duel
+		}
+		remove_character_flag = drew_duel
+	}
+	if = {
+		limit = {
+			has_character_flag = lost_duel
+		}
+		remove_character_flag = lost_duel
+	}
+	if = {
+		limit = {
+			has_character_flag = opponent_defensive
+		}
+		remove_character_flag = opponent_defensive
+	}
+	if = {
+		limit = {
+			has_character_flag = opponent_balanced
+		}
+		remove_character_flag = opponent_balanced
+	}
+	if = {
+		limit = {
+			has_character_flag = opponent_aggressive
+		}
+		remove_character_flag = opponent_aggressive
+	}
+	if = {
+		limit = {
+			has_character_flag = defensive_stance
+		}
+		remove_character_flag = defensive_stance
+	}
+	if = {
+		limit = {
+			has_character_flag = balanced_stance
+		}
+		remove_character_flag = balanced_stance
+	}
+	if = {
+		limit = {
+			has_character_flag = aggressive_stance
+		}
+		remove_character_flag =  aggressive_stance
+	}
+
+	if = {
+		limit = {
+			has_character_flag = tournament_duel
+		}
+		remove_character_flag = tournament_duel
+	}
+	
+}
+
+tournament_update_stats_root_lost = {
+	if = {
+		limit = {
+			exists = scope:opponent
+		}
+		scope:opponent = {
+			if = {
+				limit = {
+					has_variable = number_of_captures
+				}
+				change_variable = {
+					name = number_of_captures
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = number_of_captures
+					value = 1
+				}
+			}
+
+			if = {
+				limit = {
+					has_variable = gold_earned
+				}
+				change_variable = { 
+					name = gold_earned
+					add = root.ransom_value
+				}
+			}
+			else = {
+				set_variable = {
+					name = gold_earned
+					value = root.ransom_value
+				}
+			}
+		}
+	}
+	if = {
+		limit = {
+			exists = root
+		}
+		root = {									
+			if = {
+				limit ={
+					has_variable = number_of_times_captured
+				}
+				change_variable = {
+					name = number_of_times_captured
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = number_of_times_captured
+					value = 1
+				}
+			}
+
+			if = {
+				limit = {
+					has_variable = gold_earned
+				}
+				change_variable = { 
+					name = gold_earned
+					subtract = root.ransom_value
+				}
+			}
+			else = {
+				set_variable = {
+					name = gold_earned
+					value = 0
+				}
+				change_variable = {
+					name = gold_earned
+					subtract = root.ransom_value
+				}
+			}
+		}
+	}
+}
+
+tournament_update_stats_root_won = {
+	if = {
+		limit = {
+			exists = root
+		}
+		root = {
+			if = {
+				limit = {
+					has_variable = number_of_captures
+				}
+				change_variable = {
+					name = number_of_captures
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = number_of_captures
+					value = 1
+				}
+			}
+
+			if = {
+				limit = {
+					has_variable = gold_earned
+				}
+				change_variable = { 
+					name = gold_earned
+					add = scope:opponent.ransom_value
+				}
+			}
+			else = {
+				set_variable = {
+					name = gold_earned
+					value = scope:opponent.ransom_value
+				}
+			}
+		}
+	}
+
+	if = {
+		limit = {
+			exists = scope:opponent
+		}
+		scope:opponent = {									
+			if = {
+				limit = {
+					has_variable = number_of_times_captured
+				}
+				change_variable = {
+					name = number_of_times_captured
+					add = 1
+				}
+			}
+			else = {
+				set_variable = {
+					name = number_of_times_captured
+					value = 1
+				}
+			}
+
+			if = {
+				limit = {
+					has_variable = gold_earned
+				}
+				change_variable = { 
+					name = gold_earned
+					subtract = this.ransom_value
+				}
+			}
+			else = {
+				set_variable = {
+					name = gold_earned
+					value = 0
+				}
+				change_variable = {
+					name = gold_earned
+					subtract = this.ransom_value
+				}
+			}
+		}
+	}
+}

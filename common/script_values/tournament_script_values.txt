@@ -397,7 +397,234 @@ knocked_off_chance_to_recover = {
 }
 
 
+tournament_injury_chance = {
+    value = 10
 
+    if = {
+        limit = {
+            has_trait = brave # The lionhearted are more likely to risk injury for glory.
+        }
+        add = 10
+    }
+    if = {
+        limit = {
+            has_trait = aggressive_attacker
+        }
+        add = 10
+    }
+
+    if = {
+        limit = {
+            has_trait = reckless
+        }
+        add = 10
+    }
+    
+    if = { # Have to be careful with these, dont want you to spiral into death.
+        limit = {
+            has_trait = wounded_1
+        }
+        add = 10
+    }
+    if = { # Have to be careful with these, dont want you to spiral into death.
+    limit = {
+        has_trait = wounded_2
+    }
+    add = 15
+    }
+    if = { # Have to be careful with these, dont want you to spiral into death.
+    limit = {
+        has_trait = wounded_3
+    }
+    add = 20
+    }
+
+}
+
+
+
+
+aggressive_stance_chance = {
+    value = 0
+
+    if = {
+        limit = {
+            has_trait = wrathful
+        }
+        add = 2
+    }
+    if = {
+        limit = {
+            has_trait = arrogant
+        }
+        add = 2
+    }
+    if = {
+        limit = {
+            has_trait = impatient
+        }
+        add = 5
+    }
+    if = {
+        limit = {
+            has_trait = aggressive_attacker
+        }
+        add = 5
+    }
+    if = {
+        limit = {
+            has_trait = reckless
+        }
+        add = 10
+    }
+    if = {
+        limit = {
+            has_trait = berserker
+        }
+        add = 100
+    }
+
+}
+
+balanced_stance_chance = {
+    value = 0
+    if = {
+        limit = {
+            has_trait = calm
+        }
+        add = 2
+    }
+    if = {
+        limit = {
+            has_trait = fickle
+        }
+        add = 2
+    }
+    if = {
+        limit = {
+            has_trait = flexible_leader
+        }
+        add = 3
+    }
+    if = {
+        limit = {
+            has_trait = temperate
+        }
+        add = 5
+    }
+    if = {
+        limit = {
+            has_trait = cautious_leader
+        }
+        add = 10
+    }
+
+
+}
+
+defensive_stance_chance = {
+    value = 0
+    if = {
+        limit = {
+            has_trait = calm
+        }
+        add = 2
+    }
+    if = {
+        limit = {
+            has_trait = shy
+        }
+        add = 2
+    }
+    if = {
+        limit = {
+            has_trait = patient
+        }
+        add = 3
+    }
+    if = {
+        limit = {
+            has_trait = unyielding_defender
+        }
+        add = 10
+    }
+
+}
+
+
+duel_stance_modifier = {
+    value = 0
+    if = { # If your opponent chose aggressive stance.
+        limit = {
+            has_character_flag = opponent_aggressive
+        }
+        if = {
+            limit = {
+                has_character_flag = aggressive_stance
+            }
+        }
+        else_if = {
+            limit = {
+                has_character_flag = balanced_stance
+            }
+            add = 2
+        }
+        else_if = {
+            limit = {
+                has_character_flag = defensive_stance
+            }
+            subtract = 5
+
+            
+        }
+    }
+    else_if = { # If your opponent chose balanced stance.
+        limit = {
+            has_character_flag = opponent_balanced
+        }
+        if = {
+            limit = {
+                has_character_flag = aggressive_stance
+            }
+            add = 1
+        }
+        else_if = {
+            limit = {
+                has_character_flag = balanced_stance
+            }
+            add = 1
+        }
+        else_if = {
+            limit = {
+                has_character_flag = defensive_stance
+            }
+            add = 1
+            
+        }
+    }
+    else_if = {  # If your opponent chose defensive stance.
+        limit = {
+            has_character_flag = opponent_defensive
+        }
+        if = {
+            limit = {
+                has_character_flag = aggressive_stance
+            }
+            subtract = 5
+        }
+        else_if = {
+            limit = {
+                has_character_flag = balanced_stance
+            }
+            add = 2
+        }
+        else_if = {
+            limit = {
+                has_character_flag = defensive_stance
+            }
+        }
+    }
+}
 
 
 
@@ -877,6 +1104,13 @@ performance_rating = {
 }
 
 
+duel_stance_modifier_abs_value = {
+    value = root.duel_stance_modifier
+
+
+    multiply = -1
+
+}
 
 abs_value = {
     value = 0
@@ -1351,52 +1585,5 @@ tournament_host_prestige = {
         }
     }
 }
-
-
-tournament_injury_chance = {
-    value = 10
-
-    if = {
-        limit = {
-            has_trait = brave # The lionhearted are more likely to risk injury for glory.
-        }
-        add = 10
-    }
-    if = {
-        limit = {
-            has_trait = aggressive_attacker
-        }
-        add = 10
-    }
-
-    if = {
-        limit = {
-            has_trait = reckless
-        }
-        add = 10
-    }
-    
-    if = { # Have to be careful with these, dont want you to spiral into death.
-        limit = {
-            has_trait = wounded_1
-        }
-        add = 10
-    }
-    if = { # Have to be careful with these, dont want you to spiral into death.
-    limit = {
-        has_trait = wounded_2
-    }
-    add = 15
-}
-    if = { # Have to be careful with these, dont want you to spiral into death.
-    limit = {
-        has_trait = wounded_3
-    }
-    add = 20
-    }
-
-}
-
-
 
 

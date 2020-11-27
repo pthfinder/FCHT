@@ -149,3 +149,180 @@ negative_traits_tournament_large = { #These non-prowess affecting traits give ch
 	}
 }
 
+tournament.030.outcome.a = {
+	AND = {
+		scope:opponent = {
+			has_variable = on_horseback
+		}
+		root = {
+			AND = {
+				has_variable = on_horseback
+				has_character_flag = knocked_opponent_off
+				has_character_flag = captured_opponent
+			}
+		}
+	}
+}
+
+
+tournament.030.outcome.b = {
+	AND = {
+		scope:opponent = {
+			has_variable = on_horseback
+		}
+		root = {
+			AND = {
+				has_variable = on_horseback
+				has_character_flag = knocked_opponent_off
+				has_character_flag = tournament_duel
+			}
+		}
+	}
+}
+
+tournament.030.outcome.c = {
+	AND = {
+		scope:opponent = {
+			has_variable = on_horseback
+		}
+		root = {
+			has_variable = on_horseback
+			has_character_flag = got_knocked_off
+			has_character_flag = got_captured
+		}
+	}
+}
+
+tournament.030.outcome.d = {
+	AND = {
+		scope:opponent = {
+			has_variable = on_horseback
+		}
+		root = {
+			AND = {
+				has_variable = on_horseback
+				has_character_flag = got_knocked_off
+				has_character_flag = tournament_duel
+			}
+		}
+	}
+}
+
+tournament.030.outcome.e = {
+	AND = {
+		scope:opponent = {
+			has_variable = on_horseback
+		}
+		root = {
+			AND = {
+				NOT = {
+					has_variable = on_horseback
+				}
+				has_character_flag = knocked_opponent_off
+				has_character_flag = captured_opponent
+			}
+		}
+	}
+}
+
+tournament.030.outcome.f = {
+	AND = {
+		scope:opponent = {
+			has_variable = on_horseback
+		}
+		root = {
+			AND = {
+				NOT = {
+					has_variable = on_horseback
+				}
+				has_character_flag = knocked_opponent_off
+				has_character_flag = tournament_duel
+			}
+		}
+	}
+}
+
+tournament.030.outcome.g = {
+	AND = {
+		scope:opponent = {
+			has_variable = on_horseback
+		}
+		root = {
+			AND = {
+				NOT = {
+					has_variable = on_horseback
+				}
+				has_character_flag = got_beaten_into_submission
+			}									
+		}
+	}
+}
+
+
+tournament.030.outcome.h = {
+	AND = {
+		scope:opponent = {
+			NOT = {
+				has_variable = on_horseback
+			}
+		}
+		root = {
+			AND = {
+				has_variable = on_horseback
+				has_character_flag = beat_opponent_into_submission
+			}
+		}
+	}
+}
+
+tournament.030.outcome.i = {
+	AND = {
+		scope:opponent = {
+			NOT = {
+				has_variable = on_horseback
+			}
+		}
+		root = {
+			AND = {
+				has_variable = on_horseback
+				has_character_flag = got_knocked_off
+				has_character_flag = got_captured 
+			}
+		}
+	}
+}
+
+tournament.030.outcome.j = {
+	AND = {
+		scope:opponent = {
+			NOT = {
+				has_variable = on_horseback
+			}
+		}
+		root = {
+			AND = {
+				has_variable = on_horseback
+				has_character_flag = got_knocked_off
+				has_character_flag = tournament_duel
+			}
+		}
+	}
+}
+
+tournament.030.outcome.k = {
+	AND = {
+		scope:opponent = {
+			NOT = {
+				has_variable = on_horseback
+			}
+		}
+		root = {
+			AND = {
+				NOT = {
+					has_variable = on_horseback
+				}
+			}
+			has_character_flag = tournament_duel
+		}
+	}
+}

@@ -398,7 +398,7 @@ knocked_off_chance_to_recover = {
 
 
 tournament_injury_chance = {
-    value = 10
+    value = 20
 
     if = {
         limit = {

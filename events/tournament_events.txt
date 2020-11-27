@@ -1324,12 +1324,78 @@ tournament.13 = { # Regular Dance
 									# Update stats for winner(root wins)
 									tournament_update_stats_root_won = yes
 
+									random = {
+										chance = root.tournament_injury_chance
+										if = {
+											limit = {
+												NOR = {
+													has_trait = wounded_1
+													has_trait = wounded_2
+													has_trait = wounded_3
+													has_trait = maimed
+												}
+											}
+											add_character_flag = wounded_1_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_1
+											}
+											add_character_flag = wounded_2_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_2
+											}
+											add_character_flag = wounded_3_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_3
+											}
+											add_character_flag = maimed_in_fight
+										}
+									}
+
 								}								
 
 
 								50 = { # They recover, and pull us down, we duel.
 									modifier = {
 										add = scope:opponent.knocked_off_chance_to_recover
+									}
+
+									random = {
+										chance = root.tournament_injury_chance
+										if = {
+											limit = {
+												NOR = {
+													has_trait = wounded_1
+													has_trait = wounded_2
+													has_trait = wounded_3
+													has_trait = maimed
+												}
+											}
+											add_character_flag = wounded_1_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_1
+											}
+											add_character_flag = wounded_2_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_2
+											}
+											add_character_flag = wounded_3_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_3
+											}
+											add_character_flag = maimed_in_fight
+										}
 									}
 									add_character_flag = tournament_duel					
 								}
@@ -1351,12 +1417,93 @@ tournament.13 = { # Regular Dance
 
 									# Update stats for winner(opponent wins)
 									tournament_update_stats_root_lost = yes
+
+									random = {
+										chance = root.tournament_injury_chance
+										if = {
+											limit = {
+												NOR = {
+													has_trait = wounded_1
+													has_trait = wounded_2
+													has_trait = wounded_3
+													has_trait = maimed
+												}
+											}
+											add_character_flag = wounded_1_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_1
+											}
+											add_character_flag = wounded_2_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_2
+											}
+											add_character_flag = wounded_3_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_3
+											}
+											add_character_flag = maimed_in_fight
+										}
+									}
+
 								}
 								50 = { # We recover, and pull them down, we duel.
 
 									modifier = {
 										add = root.knocked_off_chance_to_recover
 									}
+
+									random = {
+										chance = root.tournament_injury_chance
+										if = {
+											limit = {
+												NOR = {
+													has_trait = wounded_1
+													has_trait = wounded_2
+													has_trait = wounded_3
+													has_trait = maimed
+												}
+											}
+											add_character_flag = wounded_1_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_1
+											}
+											add_character_flag = wounded_2_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_2
+											}
+											add_character_flag = wounded_3_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_3
+											}
+											add_character_flag = maimed_in_fight
+										}
+									}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 									add_character_flag = tournament_duel
 								}
 							}
@@ -1372,20 +1519,114 @@ tournament.13 = { # Regular Dance
 							add_character_flag = knocked_opponent_off
 
 
+
 							random_list = { # If they are knocked off, there is a chance they can recover and enter a duel.
 								40 = { # They don't recover, we capture them.
 
 									add_character_flag = captured_opponent
 
+
+									random = {
+										chance = root.tournament_injury_chance
+										if = {
+											limit = {
+												NOR = {
+													has_trait = wounded_1
+													has_trait = wounded_2
+													has_trait = wounded_3
+													has_trait = maimed
+												}
+											}
+											add_character_flag = wounded_1_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_1
+											}
+											add_character_flag = wounded_2_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_2
+											}
+											add_character_flag = wounded_3_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_3
+											}
+											add_character_flag = maimed_in_fight
+										}
+									}
+
+
+
+
+
+
+
+
+
+
+
+
+
 									# Update stats for winner(root wins)
 
 									tournament_update_stats_root_won = yes
+
+
 
 								}
 								50 = { # They recover, duel.
 									modifier = {
 										add = scope:opponent.knocked_off_chance_to_recover
 									}
+
+
+									random = {
+										chance = root.tournament_injury_chance
+										if = {
+											limit = {
+												NOR = {
+													has_trait = wounded_1
+													has_trait = wounded_2
+													has_trait = wounded_3
+													has_trait = maimed
+												}
+											}
+											add_character_flag = wounded_1_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_1
+											}
+											add_character_flag = wounded_2_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_2
+											}
+											add_character_flag = wounded_3_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_3
+											}
+											add_character_flag = maimed_in_fight
+										}
+									}
+
+
+
+
+
+
+
+
+
+
+
 									add_character_flag = tournament_duel					
 								}
 							}		
@@ -1394,6 +1635,41 @@ tournament.13 = { # Regular Dance
 							modifier = {
 								add = scope:opponent.melee_defense_chance
 							}
+
+							random = {
+								chance = root.tournament_injury_chance
+								if = {
+									limit = {
+										NOR = {
+											has_trait = wounded_1
+											has_trait = wounded_2
+											has_trait = wounded_3
+											has_trait = maimed
+										}
+									}
+									add_character_flag = wounded_1_in_fight
+								}
+								else_if = {
+									limit = {
+										has_trait = wounded_1
+									}
+									add_character_flag = wounded_2_in_fight
+								}
+								else_if = {
+									limit = {
+										has_trait = wounded_2
+									}
+									add_character_flag = wounded_3_in_fight
+								}
+								else_if = {
+									limit = {
+										has_trait = wounded_3
+									}
+									add_character_flag = maimed_in_fight
+								}
+							}
+
+
 							add_character_flag = got_beaten_into_submission
 
 							tournament_update_stats_root_lost = yes
@@ -1417,6 +1693,40 @@ tournament.13 = { # Regular Dance
 							}
 							add_character_flag = beat_opponent_into_submission
 
+
+							random = {
+								chance = root.tournament_injury_chance
+								if = {
+									limit = {
+										NOR = {
+											has_trait = wounded_1
+											has_trait = wounded_2
+											has_trait = wounded_3
+											has_trait = maimed
+										}
+									}
+									add_character_flag = wounded_1_in_fight
+								}
+								else_if = {
+									limit = {
+										has_trait = wounded_1
+									}
+									add_character_flag = wounded_2_in_fight
+								}
+								else_if = {
+									limit = {
+										has_trait = wounded_2
+									}
+									add_character_flag = wounded_3_in_fight
+								}
+								else_if = {
+									limit = {
+										has_trait = wounded_3
+									}
+									add_character_flag = maimed_in_fight
+								}
+							}
+
 								tournament_update_stats_root_won = yes
 
 						}
@@ -1430,6 +1740,38 @@ tournament.13 = { # Regular Dance
 							random_list = { # If we are knocked off, there is a chance we can recover and enter a duel.
 								40 = { # We don't recover, they capture us
 
+								random = {
+									chance = root.tournament_injury_chance
+									if = {
+										limit = {
+											NOR = {
+												has_trait = wounded_1
+												has_trait = wounded_2
+												has_trait = wounded_3
+												has_trait = maimed
+											}
+										}
+										add_character_flag = wounded_1_in_fight
+									}
+									else_if = {
+										limit = {
+											has_trait = wounded_1
+										}
+										add_character_flag = wounded_2_in_fight
+									}
+									else_if = {
+										limit = {
+											has_trait = wounded_2
+										}
+										add_character_flag = wounded_3_in_fight
+									}
+									else_if = {
+										limit = {
+											has_trait = wounded_3
+										}
+										add_character_flag = maimed_in_fight
+									}
+								}
 									add_character_flag = got_captured
 									# Update stats for winner(opponent wins)
 										tournament_update_stats_root_lost = yes
@@ -1438,7 +1780,41 @@ tournament.13 = { # Regular Dance
 									modifier = {
 										add = root.knocked_off_chance_to_recover
 									}
-									add_character_flag = tournament_duel					
+									
+									add_character_flag = tournament_duel	
+									
+									random = {
+										chance = root.tournament_injury_chance
+										if = {
+											limit = {
+												NOR = {
+													has_trait = wounded_1
+													has_trait = wounded_2
+													has_trait = wounded_3
+													has_trait = maimed
+												}
+											}
+											add_character_flag = wounded_1_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_1
+											}
+											add_character_flag = wounded_2_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_2
+											}
+											add_character_flag = wounded_3_in_fight
+										}
+										else_if = {
+											limit = {
+												has_trait = wounded_3
+											}
+											add_character_flag = maimed_in_fight
+										}
+									}
 								}
 							}
 						}
@@ -1482,6 +1858,45 @@ tournament.13 = { # Regular Dance
 					has_character_flag = tournament_duel
 				}
 			}
+
+			if = {
+				limit = {
+					has_character_flag = wounded_1_in_fight
+				}
+				add_trait = wounded_1
+				remove_character_flag = wounded_1_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_2_in_fight
+				}
+				add_trait = wounded_2
+				remove_character_flag = wounded_2_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_3_in_fight
+				}
+				add_trait = wounded_3
+				remove_character_flag = wounded_3_in_fight
+			}
+
+			if = {
+				limit = {
+					has_character_flag = maimed_in_fight
+				}
+				add_trait = maimed
+				remove_character_flag = maimed_in_fight
+			}
+
+
+
+
+
+
+
+
+
 			hidden_effect = {
 				remove_tournament.030_flags = yes
 			}
@@ -1495,10 +1910,43 @@ tournament.13 = { # Regular Dance
 			trigger = {
 				has_character_flag = tournament_duel
 			}
+
+			if = {
+				limit = {
+					has_character_flag = wounded_1_in_fight
+				}
+				add_trait = wounded_1
+				remove_character_flag = wounded_1_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_2_in_fight
+				}
+				add_trait = wounded_2
+				remove_character_flag = wounded_2_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_3_in_fight
+				}
+				add_trait = wounded_3
+				remove_character_flag = wounded_3_in_fight
+			}
+
+			if = {
+				limit = {
+					has_character_flag = maimed_in_fight
+				}
+				add_trait = maimed
+				remove_character_flag = maimed_in_fight
+			}
+
 			hidden_effect = {
 				add_character_flag = aggressive_stance
 			}
+
 			trigger_event = tournament.032
+
 			ai_chance = {
 				base = 33
 				modifier = {
@@ -1512,10 +1960,43 @@ tournament.13 = { # Regular Dance
 			trigger = {
 				has_character_flag = tournament_duel
 			}
+
+			if = {
+				limit = {
+					has_character_flag = wounded_1_in_fight
+				}
+				add_trait = wounded_1
+				remove_character_flag = wounded_1_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_2_in_fight
+				}
+				add_trait = wounded_2
+				remove_character_flag = wounded_2_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_3_in_fight
+				}
+				add_trait = wounded_3
+				remove_character_flag = wounded_3_in_fight
+			}
+
+			if = {
+				limit = {
+					has_character_flag = maimed_in_fight
+				}
+				add_trait = maimed
+				remove_character_flag = maimed_in_fight
+			}
+
 			hidden_effect = {
 				add_character_flag = balanced_stance
 			}
+
 			trigger_event = tournament.032
+
 			ai_chance = {
 				base = 33
 				modifier = {
@@ -1530,6 +2011,37 @@ tournament.13 = { # Regular Dance
 			trigger = {
 				has_character_flag = tournament_duel
 			}
+
+			if = {
+				limit = {
+					has_character_flag = wounded_1_in_fight
+				}
+				add_trait = wounded_1
+				remove_character_flag = wounded_1_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_2_in_fight
+				}
+				add_trait = wounded_2
+				remove_character_flag = wounded_2_in_fight
+			}
+			if = {
+				limit = {
+					has_character_flag = wounded_3_in_fight
+				}
+				add_trait = wounded_3
+				remove_character_flag = wounded_3_in_fight
+			}
+
+			if = {
+				limit = {
+					has_character_flag = maimed_in_fight
+				}
+				add_trait = maimed
+				remove_character_flag = maimed_in_fight
+			}
+
 			hidden_effect = {
 				add_character_flag = defensive_stance
 			}
@@ -1607,6 +2119,13 @@ tournament.13 = { # Regular Dance
 						add = root.duel_stance_modifier_abs_value
 					}
 					add_character_flag = won_duel
+
+
+					random = {
+						chance = root.swordsmanship_upgrade_chance
+						add_character_flag = improve_fighting_skill
+					}
+					
 				}
 
 				0 = { # Draw?
@@ -1703,6 +2222,22 @@ tournament.13 = { # Regular Dance
 
 		immediate = {
 			
+			#Chance to increase prowess skill if you haven't already increased it twice this tournament. 
+
+			if = {
+				limit = {
+					var:prowess_gained < 2
+				}
+				random = {
+					chance = root.prowess_gain_chance
+					add_prowess_skill =1
+					change_variable = {
+						name = prowess_gained
+						add = 1
+					}
+				}	
+			}
+
 			
 		}
 
@@ -1716,6 +2251,35 @@ tournament.13 = { # Regular Dance
 				remove_tournament.033_flags = yes	
 				tournament_update_stats_root_won = yes
 			}
+
+			# Improve fighting skill if triggered.
+			
+			if = {
+				limit = {
+					has_character_flag = improve_fighting_skill
+				}
+				tournament_upgrade_swordsmanship = yes
+			}
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			trigger_event = tournament.0999		
 		}
 

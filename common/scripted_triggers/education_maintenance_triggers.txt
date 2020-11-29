@@ -1,0 +1,21 @@
+martial_education_valid = {
+	OR = {
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_male_dominated
+			}
+			is_male = yes
+		}
+		#In female dominated societies, only women can participate.
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_female_dominated
+			}
+			is_female = yes
+		}
+		#In equal gendered societies, anyone can participate.
+		faith = {
+			has_doctrine = doctrine_gender_equal
+		}
+	}
+}

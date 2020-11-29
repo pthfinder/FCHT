@@ -1,0 +1,4 @@
+death_tournament_accident = {
+	public_knowledge = yes
+	icon = "death_murder.dds"
+}

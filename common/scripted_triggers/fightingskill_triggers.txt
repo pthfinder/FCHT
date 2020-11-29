@@ -1,0 +1,46 @@
+valid_char_fightingskill = {
+	is_adult = yes
+	OR = {
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_male_dominated
+			}
+			is_male = yes
+		}
+		#In female dominated societies, only women can participate.
+		AND = {
+			faith = {
+				has_doctrine = doctrine_gender_female_dominated
+			}
+			is_female = yes
+		}
+		#In equal gendered societies, anyone can participate.
+		faith = {
+			has_doctrine = doctrine_gender_equal
+		}
+	}
+}
+
+
+
+valid_char_fightingskill_education = {
+	age >= 8
+	is_adult = no
+	is_imprisoned = no
+	is_incapable = no
+
+	NOR = {
+		has_trait = ill
+		has_trait = bubonic_plague
+		has_trait = cancer
+		has_trait = consumption
+		has_trait = great_pox
+		has_trait = gout_ridden
+		has_trait = leper
+		has_trait = pneumonic
+		has_trait = smallpox
+		has_trait = typhus
+		has_trait = blind #lol.
+	}
+
+}

@@ -1,7 +1,7 @@
 poor_fighter = {
 	index = 600
 	negate_health_penalty_add = 0.25
-	prowess = 3
+	prowess = 2
 
 	ruler_designer_cost = 20
 
@@ -31,7 +31,7 @@ poor_fighter = {
 trained_fighter = {
 	index = 601
 	negate_health_penalty_add = 0.50
-	prowess = 6
+	prowess = 4
 	ruler_designer_cost = 40
 
 	desc = {
@@ -61,7 +61,7 @@ trained_fighter = {
 skilled_fighter = {
 	index = 602
 	negate_health_penalty_add = 0.75
-	prowess = 9
+	prowess = 6
 	ruler_designer_cost = 60
 
 	desc = {
@@ -90,7 +90,7 @@ skilled_fighter = {
 formidable_fighter = {
 	index = 603
 	negate_health_penalty_add = 1
-	prowess = 15
+	prowess = 10
 	ruler_designer_cost = 80
 
 	desc = {

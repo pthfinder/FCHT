@@ -29,7 +29,7 @@ tournament_melee_good_selection = {
 		# 1 = tournament.0800
 		# 1 = tournament.0802 
 		# 1 = tournament.0804 
-		1000 = tournament.30
+		100 = tournament.30
 	}
 }
 tournament_melee_bad_selection = {
@@ -41,7 +41,9 @@ tournament_melee_bad_selection = {
 		# 1 = tournament.0803
 		# 1 = tournament.0805
 		# 1 = tournament.0806
-		1000 = tournament.30
+		100 = tournament.30
+		5 = tournament.035 # Root gets killed.
+
 	}
 }
 

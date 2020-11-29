@@ -1,4 +1,6 @@
 ﻿l_english:
+ death_tournament_accident:0 "died during a tournament"
+ death_tournament_accident_killer:0 "was killed by [TARGET_CHARACTER.GetUIName] during a tournament."
  local_tournament:0 "Local Tournament"
  local_tournament_name:0 "Local Tournament of [ACTIVITY.GetLocation.GetNameNoTooltip]"
  local_tournament_host:0 "Host"
@@ -41,6 +43,8 @@
  tournament.031.desc.i:0 " Opponent is NOT on horseback, but we ARE, and they knock us off and capture us"
  tournament.031.desc.j:0 "Opponent is NOT on horseback, but we ARE, and they knock us off but we recover and will enter a duel"
  tournament.031.desc.k:0 "Opponent is NOT on horseback, and NEITHER are we. Enter a duel immediately."
+ tournament.035.option.a:0 "[death_rattle.GetFirstNameNoTooltip].."
+ tournament.035.option.b:0 "Hmmfgh.."
 
 
  

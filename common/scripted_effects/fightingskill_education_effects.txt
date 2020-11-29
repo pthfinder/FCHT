@@ -1,0 +1,42 @@
+education_upgrade_swordsmanship = {
+	if = {
+		limit = {
+			NOR = {
+				has_trait = poor_fighter
+				has_trait = trained_fighter
+				has_trait = skilled_fighter
+				has_trait = formidable_fighter
+			}
+		}
+		add_trait = poor_fighter
+
+	}
+	else_if = {
+		limit = {
+			has_trait = poor_fighter
+		}
+		hidden_effect = {
+			remove_trait = poor_fighter
+		}
+		add_trait = trained_fighter
+	}
+	else_if = {
+		limit = {
+			has_trait = trained_fighter
+		}
+		hidden_effect = {
+			remove_trait = trained_fighter
+		}
+		add_trait = skilled_fighter
+
+	}
+	else_if = {
+		limit = {
+			has_trait = skilled_fighter
+		}
+		remove_trait = skilled_fighter
+
+		add_trait = formidable_fighter
+	}
+
+}

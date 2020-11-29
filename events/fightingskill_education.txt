@@ -1,0 +1,192 @@
+namespace = fightingskill_education
+
+
+
+fightingskill_education.01 = {
+	hidden = yes
+
+	trigger = {
+		valid_char_fightingskill_education = yes
+		any_living_character = {
+			has_relation_ward = root
+		}
+		NOT = {
+			has_character_flag = had_fightskill_education.01
+		}	
+	}
+
+	immediate = {
+
+		every_living_character = {
+			limit = {
+				has_relation_ward = root
+			}
+			save_scope_as = guardian
+		}
+		
+
+
+		if = { # There still has to be something the guardian can teach the child.
+			limit = {
+				OR = {
+					AND = {
+						scope:guardian = {
+							has_trait = poor_fighter
+						}
+						root = {
+							NOR = {
+								has_trait = poor_fighter
+								has_trait = trained_fighter
+								has_trait = skilled_fighter
+								has_trait = formidable_fighter
+							}
+						}
+					}
+					AND = {
+						scope:guardian = {
+							has_trait = trained_fighter
+						}
+						root = {
+							NOR = {
+								has_trait = trained_fighter
+								has_trait = skilled_fighter
+								has_trait = formidable_fighter
+							}
+						}
+					}
+					AND = {
+						scope:guardian = {
+							has_trait = skilled_fighter
+						}
+						root = {
+							NOR = {
+								has_trait = skilled_fighter
+								has_trait = formidable_fighter
+							}
+						}
+					}
+					AND = {
+						scope:guardian = {
+							has_trait = formidable_fighter
+						}
+						root = {
+							NOR = {
+								has_trait = formidable_fighter
+							}
+						}
+					}
+				}
+			}
+
+			random_list = {
+				0 = {
+					# Your training pays off
+	
+					modifier = { # Take into account the traits of the child.
+						add = root.fightskill_education_increase_chance
+					}
+	
+					modifier = {
+						NOR = {
+							has_trait = poor_fighter
+							has_trait = trained_fighter
+							has_trait = skilled_fighter
+							has_trait = formidable_fighter
+						}
+						add = 10
+					}
+					modifier = {
+						has_trait = poor_fighter
+						add = 8
+					}
+
+					modifier = {
+						has_trait = trained_fighter
+
+						add = 4
+					}
+
+					modifier = {
+						has_trait = skilled_fighter
+						add = 1
+					}
+
+
+					modifier = { # Take into account the traits of the guardian
+						add = scope:guardian.fightskill_education_increase_chance
+					}
+
+					modifier = {
+						scope:guardian = {
+							has_trait = poor_fighter
+						}
+						add = 1
+					}
+					modifier = {
+						scope:guardian = {
+							has_trait = trained_fighter
+						}
+						add = 4
+					}
+					modifier = {
+						scope:guardian = {
+							has_trait = skilled_fighter
+						}
+						add = 6
+					}
+					modifier = {
+						scope:guardian = {
+							has_trait = formidable_fighter
+						}
+						add = 10
+					}
+
+					add_character_flag = {
+						flag = had_fightskill_education.01
+						days = 487  # Child gets the event six times before adulthood.
+					}
+					
+					trigger_event = fightingskill_education.02
+		
+				}
+		
+				0 = { # Your training goes badly.
+	
+					add_character_flag = {
+						flag = had_fightskill_education.01
+						days = 487  # Child gets the event six times before adulthood.
+					}
+				}
+			}
+		}
+
+
+	
+	}
+}
+
+fightingskill_education.02 = {  # Successful training
+	title = fightingskill_education.02.title
+	desc = fightingskill_education.02.desc  # Consider adding several different titles descs and option names for flavor.
+
+	trigger = {
+		valid_char_fightingskill_education = yes
+	}
+	theme = education
+
+	override_background = {
+		event_background = courtyard
+	}
+	immediate = {
+		
+		#has_focus = education_martial
+
+
+	}
+
+
+	option = {
+		name = fightingskill_education.02.option.a
+		education_upgrade_swordsmanship = yes		
+	}
+}

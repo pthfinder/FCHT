@@ -5,10 +5,9 @@ host_tournament_decision = { #Probably want several different types of hastilude
 
 
 	#cost = { gold = tournamentscriptedvalue }
-	cost = { gold = 5 } #testing purposes.
 
 	# cooldown = { days = tournamentscriptedvalue }
-	cooldown = { days = 5 } #testing purposes
+	cooldown = { days = 730 } #testing purposes
 	desc = "test"
 	selection_tooltip = "selection tt test"
 

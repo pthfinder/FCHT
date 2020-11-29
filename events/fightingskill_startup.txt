@@ -1,0 +1,331 @@
+namespace = fightingskill_startup
+
+    
+
+fightingskill_startup.01 = {
+    hidden = yes
+        trigger = {
+            valid_char_fightingskill = yes
+        }
+    immediate = {
+
+         set_variable = {
+          name = fighting_skill_value
+           value = 0
+          }
+
+          if = {
+              limit = {
+                  has_trait = education_martial_1 # Misguided Warrior
+              }
+              change_variable = {
+                  name = fighting_skill_value
+                  add = 1
+              }
+          }
+          if = {
+            limit = {
+                has_trait = education_martial_2 # Tough Soldier
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = education_martial_3 # Skilled Tactician
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 4
+            }
+        }
+        if = {
+            limit = {
+                has_trait = education_martial_4 # Brilliant Strategist
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 7
+            }
+        }
+        if = {
+            limit = {
+                has_trait = brave
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = diligent
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = giant
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 2
+            }
+        }
+
+        if = {
+            limit = {
+                has_trait = strong
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_1
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_2
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = intellect_good_3
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 3
+            }
+        }
+        if = {
+            limit = {
+                has_trait = shrewd
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = physique_good_1
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = physique_good_2
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = physique_good_3
+            }
+            change_variable = {
+                name = fighting_skill_value
+                add = 4
+            }
+        }
+        if = {
+            limit = {
+                has_trait = craven
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = lazy
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = dwarf
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = weak
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = dull
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_1
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = intellect_bad_2
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 2
+            }
+        }
+
+        if = {
+            limit = {
+                has_trait = intellect_bad_3
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 3
+            }
+        }
+        if = {
+            limit = {
+                has_trait = physique_bad_1
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = physique_bad_2
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 2
+            }
+        }
+        if = {
+            limit = {
+                has_trait = physique_bad_3
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 4
+            }
+        }
+        if = {
+            limit = {
+                has_trait = clubfooted
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = dwarf
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 4
+            }
+        }
+        if = {
+            limit = {
+                has_trait = hunchbacked
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 3
+            }
+        }
+        if = {
+            limit = {
+                has_trait = wheezing
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 1
+            }
+        }
+        if = {
+            limit = {
+                has_trait = spindly
+            }
+            change_variable = {
+                name = fighting_skill_value
+                subtract = 1
+            }
+        }
+
+
+
+        if = {
+            limit = {
+                var:fighting_skill_value >= 8
+            }
+            add_trait = formidable_fighter
+        }
+        else_if = {
+            limit = {
+                var:fighting_skill_value >= 6
+            }
+            add_trait = skilled_fighter
+        }
+        else_if = {
+            limit = {
+                var:fighting_skill_value >=4
+            }
+            add_trait = trained_fighter
+        }
+        else_if = {
+            limit = {
+                var:fighting_skill_value >=2
+            }
+            add_trait = poor_fighter
+        }
+
+
+        remove_variable = fighting_skill_value
+    }
+}
+
+

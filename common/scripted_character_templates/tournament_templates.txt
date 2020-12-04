@@ -1,0 +1,52 @@
+﻿
+
+tournament_knight = {
+	age = { 18 40 }
+
+	martial = {
+		min_template_decent_skill
+		max_template_decent_skill
+	}
+	prowess = {
+		min_template_decent_skill
+		max_template_decent_skill
+	}
+	random_traits_list = {
+		count =1
+		education_martial_2 = {}
+		education_martial_3 = {}
+		education_martial_4 = {}
+	}
+	random_traits_list = {
+		count = 3
+		lustful = {}
+		chaste = {}
+		wrathful = {}
+		arrogant = {}
+		impatient = {}
+		patient = {}
+		impatient = {}
+		ambitious = {}
+		cynical = {}
+		zealous = {}
+		stubborn = {}
+		honest = {}
+		gregarious = {}
+		trusting = {}
+		compassionate = {}
+		generous = {}
+		humble = {}
+		calm = {}
+		brave = {}
+		just = {}
+	}
+	random_traits_list = {
+		count = 1
+		trained_fighter = {}
+		skilled_fighter = {}
+		formidable_fighter = {}
+
+	}
+	random_traits = yes
+}
+

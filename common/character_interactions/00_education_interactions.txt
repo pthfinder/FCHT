@@ -123,7 +123,7 @@ educate_child_interaction = {
 				}
 				add_to_list = characters
 			}
-			every_courtier = {
+			every_courtier = { # Check your courtiers
 				limit = {
 					is_physically_able_adult = yes
 					num_of_relation_ward < 2
@@ -131,6 +131,24 @@ educate_child_interaction = {
 					NOT = { has_trait = incapable }
 				}
 				add_to_list = characters
+			}
+			every_vassal = {   # Check your vassals
+				limit = {
+					is_physically_able_adult = yes
+					num_of_relation_ward < 2
+					is_imprisoned = no
+					NOT = { has_trait = incapable }
+				}
+				add_to_list = characters
+				every_courtier = { # Check your vassal's courtiers
+					limit = {
+						is_physically_able_adult = yes
+						num_of_relation_ward < 2
+						is_imprisoned = no
+						NOT = { has_trait = incapable }
+					}
+					add_to_list = characters
+				}
 			}
 		}
 	}
@@ -446,144 +464,142 @@ educate_child_interaction = {
 			add = scope:secondary_recipient.age
 		}
 
-		# If the child wants a martial education, priortize guardians with high fighting skill and high martial education.
+		# Prioritize characters with intellect traits, as it gives the biggest buff to education
 
-		modifier = {  
+		modifier = {
+			add = 2000
+			scope:secondary_actor = {
+				has_trait = intellect_good_3
+			}
+		}
+
+		modifier = {
+			add = 1000
+			scope:secondary_actor = {
+				has_trait = intellect_good_2
+			}
+		}
+
+		modifier = {
 			add = 500
+			scope:secondary_actor = {
+				OR = {
+					has_trait = intellect_good_1
+					has_trait = shrewd
+				}
+			}
+		}
+
+		# Learning gives half as much of a buff as the primary skill, give a buff accordingly.
+
+		modifier = {
+			scope:secondary_recipient = {
+				NOT = {
+					has_focus = education_learning
+				}		
+			}
+			add = {
+				value =scope:secondary_actor.learning
+				multiply = 5
+			}
+		}
+
+
+
+
+		
+		# If the child wants a diplomatic education, priortize guardians with
+		# a high diplomacy skill
+
+		modifier = {
+			scope:secondary_recipient = {
+				has_focus = education_diplomacy
+			}
+			add = {
+				value = scope:secondary_actor.diplomacy
+				multiply = 30
+			}
+			
+		}
+				# If the child wants a martial education, priortize guardians with high martial education.
+
+		modifier = {
+			scope:secondary_recipient = {
+				has_focus = education_martial
+			}
+
+			add = {
+				value =scope:secondary_actor.martial
+				multiply = 30
+			}
+		}
+
+		modifier = {
 			scope:secondary_recipient = {
 				has_focus = education_martial
 			}
 			scope:secondary_actor = {
 				has_trait = formidable_fighter
 			}
+			add = 500
 		}
-		modifier = { 
-			add =  400
+		
+		modifier = {
 			scope:secondary_recipient = {
 				has_focus = education_martial
 			}
 			scope:secondary_actor = {
 				has_trait = skilled_fighter
 			}
+			add = 400
 		}
-		modifier = {  
-			add = 200
+		
+		modifier = {
 			scope:secondary_recipient = {
-				has_focus = education_martial 
+				has_focus = education_martial
 			}
 			scope:secondary_actor = {
 				has_trait = trained_fighter
 			}
-		}
-
-		modifier = {
-			add = 400
-			scope:secondary_recipient = {
-				has_focus = education_martial
-			}
-			scope:secondary_actor = {
-				has_trait = education_martial_4  # Brillitant Strategist
-			}
-		}
-		modifier = {
 			add = 300
-			scope:secondary_recipient = {
-				has_focus = education_martial
-			}
-			scope:secondary_actor = {
-				has_trait = education_martial_3 # Skilled Tactician
-			}
 		}
-
-
-
-		# If the child wants a diplomatic education, priortize guardians with
-		# a high diplomacy skill
-
-		modifier = {
-			add = 500
-			scope:secondary_recipient = {
-				has_focus = education_diplomacy
-			}
-			scope:secondary_actor = {
-				has_trait = education_diplomacy_4 # Grey Eminence
-			}
-		}
-		modifier = {
-			add = 400
-			scope:secondary_recipient = {
-				has_focus = education_diplomacy
-			}
-			scope:secondary_actor = {
-				has_trait = education_diplomacy_3 # Charismatic Negotiator
-			}
-		}
-
-		# If the child wants a administrative education, priortize guardians with
+				# If the child wants a administrative education, priortize guardians with
 		# a high stewardship skill
-
 		modifier = {
-			add = 500
 			scope:secondary_recipient = {
 				has_focus = education_stewardship
 			}
-			scope:secondary_actor = {
-				has_trait = education_stewardship_4 # Midas Touched
+			add = {
+				value =scope:secondary_actor.stewardship
+				multiply = 30
 			}
 		}
+		# If the child wants an intrigue education, prioritize guardians with a high intrigue skill.
 		modifier = {
-			add = 400
-			scope:secondary_recipient = {
-				has_focus = education_stewardship
-			}
-			scope:secondary_actor = {
-				has_trait = education_stewardship_3 # Fortune Builder
-			}
-		}
-
-
-		modifier = {
-			add = 500
 			scope:secondary_recipient = {
 				has_focus = education_intrigue
 			}
-			scope:secondary_actor = {
-				has_trait = education_intrigue_4 # Elusive Shadow
-			}
-		}
-		modifier = {
-			add = 400
-			scope:secondary_recipient = {
-				has_focus = education_intrigue
-			}
-			scope:secondary_actor = {
-				has_trait = education_intrigue_3 # Intricate Webweaver
+			add = {
+				value = scope:secondary_actor.intrigue
+				multiply = 30
 			}
 		}
 
-
+		# IF the child wants a learning education, prioritize guardians with a high learning skill.
 		modifier = {
-			add = 500
 			scope:secondary_recipient = {
 				has_focus = education_learning
 			}
-			scope:secondary_actor = {
-				has_trait = education_learning_4 # Mastermind Philosopher
-			}
-		}
-		modifier = {
-			add = 400
-			scope:secondary_recipient = {
-				has_focus = education_learning
-			}
-			scope:secondary_actor = {
-				has_trait = education_learning_3 # Astute Intellectual
+			add = {
+				value = scope:secondary_actor.learning
+				multiply = 30
 			}
 		}
 
-				
+
+		
 		modifier = { # Prefer to educate your own heirs
-			add = 200
+			add = 50
 			scope:actor = scope:secondary_actor
 			scope:secondary_recipient = {
 				is_heir_of = scope:actor
@@ -604,28 +620,17 @@ educate_child_interaction = {
 		# }
 
 		
-		# Prioritize guardians that have good personality traits.
 
-		modifier = {
-			add = 50
-			scope:secondary_actor = {
-				OR = {
-					has_trait = diligent
-					has_trait = patient
-					has_trait = ambitious
-				}			
-			}
-		}
 
 		modifier = { # Generally prefer your own flesh & blood to educate children
-			add = 100
+			add = 50
 			exists = scope:secondary_actor.dynasty
 			exists = scope:actor.dynasty
 			scope:secondary_actor.dynasty = scope:actor.dynasty
 		}
 		
 		modifier = { # Also prefer friends & lovers
-			add = 100
+			add = 50
 			scope:secondary_actor = {
 				OR = {
 					has_relation_lover = scope:actor

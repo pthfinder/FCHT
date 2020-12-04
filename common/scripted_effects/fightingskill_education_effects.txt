@@ -1,4 +1,4 @@
-education_upgrade_swordsmanship = {
+﻿education_upgrade_swordsmanship = {
 	if = {
 		limit = {
 			NOR = {

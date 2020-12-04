@@ -1,4 +1,4 @@
-namespace = education_maintenance
+﻿namespace = education_maintenance
 
 # Changes the education focus of any AI who has a martial focus and shouldnt.
 # This is a big problem at the start of the game where practically every female with the
@@ -107,6 +107,7 @@ education_maintenance.01 = {
 				}
 
 				modifier = {
+					add = 4
 					has_trait = deceitful
 				}
 				
@@ -137,11 +138,25 @@ education_maintenance.01 = {
 				}
 
 				modifier = {
-					add = 10
+					add = 10 
 					has_trait = curious
 					has_trait = pensive
 				}
 			}		
 		}
+
+
+		if = {
+			limit = {
+				good_guardian_for_ai = no
+			}
+			every_living_character = {
+				limit = {
+					has_relation_ward = root
+				}
+				remove_relation_ward = root
+			}
+		}
 	}	
 }
+

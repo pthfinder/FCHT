@@ -116,7 +116,12 @@ education_martial = {
 	skill = martial
 
 	is_valid = {
-		martial_education_valid = yes
+		OR = {		
+			root.liege = {
+				is_ai = no
+			}
+			martial_education_valid = yes
+		}	
 	}
 	
 	desc = {

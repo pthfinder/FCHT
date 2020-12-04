@@ -1,4 +1,4 @@
-remove_tournament.030_flags = {
+﻿remove_tournament.030_flags = {
 	if = {
 		limit = {
 			has_character_flag = got_knocked_off

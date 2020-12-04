@@ -1,4 +1,4 @@
-namespace = fightingskill_startup
+﻿namespace = fightingskill_startup
 
     
 

@@ -1,4 +1,4 @@
-poor_fighter = {
+﻿poor_fighter = {
 	index = 600
 	negate_health_penalty_add = 0.25
 	prowess = 2

@@ -1,4 +1,4 @@
-fightskill_education_increase_chance = {
+﻿fightskill_education_increase_chance = {
 	value = 0
 	
 	# On a scale of 100.

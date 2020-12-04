@@ -1,4 +1,4 @@
-
+﻿
  #
 ai_consider_hosting_tournament = {
 	is_adult = yes

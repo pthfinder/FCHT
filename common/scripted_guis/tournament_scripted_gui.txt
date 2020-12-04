@@ -1,4 +1,4 @@
-activate_tournament_gui = {
+﻿activate_tournament_gui = {
 	scope = character
 	is_shown = {
 		has_variable = activated_tournament_gui

@@ -1,4 +1,4 @@
-tournament_invite_weight = {
+﻿tournament_invite_weight = {
     value = 0
     if = {
         limit = {

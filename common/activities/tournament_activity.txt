@@ -1,4 +1,4 @@
-	# == Structure ==
+﻿	# == Structure ==
 
 	# name_of_activity = {
 
@@ -123,6 +123,7 @@
 		}
 
 
+
 		on_activate = {
 			# Remove the invitation flag from those who didnt get an invite after all.
 			every_in_list = {
@@ -132,23 +133,47 @@
 				}
 				remove_character_flag = invited_to_tournament
 			}
-
 			activity_owner = {
 				if = {
 					limit = {
-						# Check that people other than the host have joined the tournament.
+						# Initially considered your tournament simply failing if you didn't meet the number requirement, but found that it led to tournaments failing all the time, 
+						#will now just fill out with random characters.
 						var:num <15
-
 					}
+
+					# First generate a bunch of knights and add them to the tournament Then start the tournament through 03.
+
 					trigger_event = tournament.03
-				}
-			
-			else = {
-				trigger_event = tournament.04
-				
+
+					
+				}		
+				else = {
+					# Just start the tournament right away.
+					trigger_event = tournament.04
+					
 				}
 			}
+			
+			every_participant = {
+				trigger_event = {
+					on_action = tournament_feast_event_selection
+					days = 10
+				}
+				trigger_event = {
+					id = tournament.0100
+					days = 30
+				}
+				trigger_event = {
+					id = tournament.0101
+					days = 31
+				}
+				add_character_flag = tournament_got_events
+			}
+			every_player = {
+				trigger_event = tournament.99
+			}
 		}
+
 
 		on_complete = {
 			activity_owner = {
@@ -295,7 +320,7 @@
 				
 			}
 			ordered_in_list = {
-				max = 30
+				max = 75
 				list = tournament_invite_list
 				order_by = tournament_invite_weight
 
@@ -322,16 +347,43 @@
 			activity_owner = {
 				if = {
 					limit = {
-						# Check that people other than the host have joined the tournament.
+						# Initially considered your tournament simply failing if you didn't meet the number requirement, but found that it led to tournaments failing all the time, 
+						#will now just fill out with random characters.
 						var:num <30
-
 					}
+
+					# First generate a bunch of knights and add them to the tournament Then start the tournament through 03.
+
 					trigger_event = tournament.03
+
+					
 				}		
 				else = {
+					# Just start the tournament right away.
 					trigger_event = tournament.04
 					
 				}
+			}
+
+			every_participant = {
+				trigger_event = {
+					on_action = tournament_feast_event_selection
+					days = 10
+				}
+				trigger_event = {
+					id = tournament.0100
+					days = 30
+				}
+				trigger_event = {
+					id = tournament.0101
+					days = 31
+				}
+				add_character_flag = tournament_got_events
+			}
+			
+
+			every_player = {
+				trigger_event = tournament.99
 			}
 		}
 
@@ -495,16 +547,41 @@
 			activity_owner = {
 				if = {
 					limit = {
-						# Check that people other than the host have joined the tournament.
+						# Initially considered your tournament simply failing if you didn't meet the number requirement, but found that it led to tournaments failing all the time, 
+						#will now just fill out with random characters.
 						var:num <50
 					}
+
+					# First generate a bunch of knights and add them to the tournament Then start the tournament through 03.
+
 					trigger_event = tournament.03
-				}
-			
+
+					
+				}		
 				else = {
+					# Just start the tournament right away.
 					trigger_event = tournament.04
 					
 				}
+			}
+			
+			every_participant = {
+				trigger_event = {
+					on_action = tournament_feast_event_selection
+					days = 10
+				}
+				trigger_event = {
+					id = tournament.0100
+					days = 30
+				}
+				trigger_event = {
+					id = tournament.0101
+					days = 31
+				}
+				add_character_flag = tournament_got_events
+			}
+			every_player = {
+				trigger_event = tournament.99
 			}
 		}
 

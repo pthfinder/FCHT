@@ -1,12 +1,10 @@
-host_tournament_decision = { #Probably want several different types of hastiludes, not all cultures did the same thing, and they changed through time.
+﻿host_tournament_decision = { #Probably want several different types of hastiludes, not all cultures did the same thing, and they changed through time.
 	picture = "gfx/interface/illustrations/decisions/decision_misc.dds"
 	
 
 
 
-	#cost = { gold = tournamentscriptedvalue }
 
-	# cooldown = { days = tournamentscriptedvalue }
 	cooldown = { days = 730 } #testing purposes
 	desc = "test"
 	selection_tooltip = "selection tt test"
@@ -20,8 +18,10 @@ host_tournament_decision = { #Probably want several different types of hastilude
 			has_character_flag = attending_tournament
 		}
 	}
+	
 	is_valid_showing_failures_only = {
 		is_available_adult = yes
+
 	}
 
 	ai_check_interval = 24

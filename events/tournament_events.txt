@@ -1,7 +1,7 @@
-
+﻿
 namespace = tournament
 
-tournament.99 = {
+tournament.99 = {   # Event that keeps the "View Upcoming Tournaments" free from old/invalid tournaments.
 	hidden = yes
 
 	immediate = {
@@ -307,42 +307,111 @@ tournament.02 = {
 	}
 }
 
-# Event for failed tournament, nobody showed up..
 tournament.03 = {
-	type = character_event
-	title = "tournament failed"
-	desc = tournament.03.desc
-	theme = crown
 
-	left_portrait = {
-		character = scope:activity.activity_owner
-		animation = sadness
-	}
+	hidden = yes
+
 	immediate = {
 
-		scope:activity = {
-			activity_owner = {
-				remove_character_flag = holding_tournament
+		if = {
+			limit = {
+				OR = {
+					scope:activity.activity_owner = {
+						AND = {
+							in_activity_type = local_tournament
+							var:num < 15
+						}
+					}
+					
+					scope:activity.activity_owner = {
+						AND = {
+							in_activity_type = regional_tournament
+							var:num < 30
+						}
+					}
+					scope:activity.activity_owner = {
+						AND = {
+							in_activity_type = grand_tournament
+							var:num < 50
+						}
+					}
+				}
 			}
-			every_participant = {
-				remove_character_flag = invited_to_tournament
+
+
+			if = {
+				limit = {
+					scope:activity.activity_owner = {
+						faith = {
+							has_doctrine = doctrine_gender_male_dominated
+						}
+					}
+				}
+				create_character = {
+					template = tournament_knight
+					gender = male
+					culture = scope:activity.activity_owner.culture
+					faith = scope:activity.activity_owner.faith
+					location = scope:activity.activity_province
+					save_scope_as = tournament_knight
+				}
 			}
 	
+			else_if = {
+				limit = {
+					scope:activity.activity_owner = {
+						faith = {
+							has_doctrine = doctrine_gender_female_dominated
+						}
+					}
+				}
+				create_character = {
+					template = tournament_knight
+					gender = female
+					culture = scope:activity.activity_owner.culture
+					faith = scope:activity.activity_owner.faith
+					location = scope:activity.activity_province
+					save_scope_as = tournament_knight
+				}
+			}
+
+			else_if = {
+				limit = {
+					scope:activity.activity_owner = {
+						faith = {
+							has_doctrine = doctrine_gender_equal
+						}
+					}
+				}
+				create_character = {
+					template = tournament_knight
+					gender_female_chance = 50
+					culture = scope:activity.activity_owner.culture
+					faith = scope:activity.activity_owner.faith
+					location = scope:activity.activity_province
+					save_scope_as = tournament_knight
+				}
+			}
+
+			scope:activity = {
+				invite_character_to_activity = scope:tournament_knight
+				accept_invitation_for_character = scope:tournament_knight
+			}
+
+			change_variable = {
+				name = num
+				add = 1
+			}
+			trigger_event = tournament.03
 		}
-
-
-		every_player = {
-			trigger_event = tournament.99
-		}
-	}
-
-	option = {
-		name = tournament.03.option
-		stress_impact = {
-			base = minor_stress_impact_gain
+		else = {
+			trigger_event = tournament.04
 		}
 	}
 }
+
+
+
 
 tournament.04 = { # Tournament is about to start, knights have arrived.
 	type = character_event
@@ -357,51 +426,32 @@ tournament.04 = { # Tournament is about to start, knights have arrived.
 
 	immediate = {
 
-		if = {
-			limit = {
-				NOT = {
-					has_global_variable = jousting_era
+		#Failsafe - fires the events for everyone who didnt get the events initially for whatever reason.
+		scope:activity = {
+			every_participant = {
+				limit = {
+					NOT = {
+						has_character_flag = tournament_got_events
+					}
+				}
+				trigger_event = {
+					on_action = tournament_feast_event_selection
+					days = 10
+				}
+				trigger_event = {
+					id = tournament.0100
+					days = 30
+				}
+				trigger_event = {
+					id = tournament.0101
+					days = 31
 				}
 			}
-			scope:activity = {
-				every_participant = {
-					trigger_event = {
-						on_action = tournament_feast_event_selection
-						days = 10
-					}
-					# trigger_event = {
-					# 	id = tournament.0809
-					# 	days = 65
-					# }
-					# trigger_event = { # Closing Feast
-					# on_action = tournament_closing_selection 
-					# days = 70
-					# }
-					if = {
-						limit = {
-							NOT = {
-								has_character_flag = host_not_fighting
-							}
-						}
-						trigger_event = {
-							id = tournament.0100
-							days = 30
-						}
-						trigger_event = {
-							id = tournament.0101
-							days = 31
-						}
-					}
-
-				}
-			}
+			
 		}
-
-
-		every_player = {
-			trigger_event = tournament.99
-		}
+		
 	}
+
 
 	option = {
 		name = tournament.04.option.a
@@ -457,13 +507,78 @@ tournament.05 = {
 	}
 }
 
-
 tournament.07 = { #You get drunk and kill someone
 
+	left_portrait = {
+		character = root
+		animation = rage
+	}
+	right_portrait = {
+		character = scope:tournament_attendant_dead
+		animation = severelyinjured
+	}
+
+	lower_left_portrait = scope:witness_1
+	lower_center_portrait = scope:witness_2
+	lower_right_portrait = scope:witness_3
 
 
+	trigger = {
+		NOT = {
+			has_trait = temperate
+		}
+	}
 	immediate = {
 		
+		scope:activity = {
+			random_participant = {
+				limit = {
+					is_ai = yes
+					NOT = {
+						this = scope:activity.activity_owner
+					}
+				}
+				save_scope_as = tournament_attendant_dead
+			}
+		}
+		
+		scope:activity = {
+			random_participant = {
+				limit = {
+					is_ai = yes
+					NOT = {
+						this = scope:tournament_attendant_dead
+					}
+				}
+				save_scope_as = witness_1
+			}
+		}
+		scope:activity = {
+			random_participant = {
+				limit = {
+					is_ai = yes
+					NOR = {
+						this = scope:tournament_attendant_dead
+						this = scope:witness_1
+					}
+				}
+				save_scope_as = witness_2
+			}
+		}
+		scope:activity = {
+			random_participant = {
+				limit = {
+					is_ai = yes
+					NOR = {
+						this = scope:tournament_attendant_dead
+						this = scope:witness_1
+						this = scope:witness_2
+					}
+				}
+				save_scope_as = witness_3
+			}
+		}
+
 		scope:activity = {
 			every_participant = {
 				limit = {
@@ -479,12 +594,238 @@ tournament.07 = { #You get drunk and kill someone
 	}
 
 	option = {
+		name = "No, wait! It was an accident!"
+		stress_impact = {
+			just = major_stress_impact_gain
+			forgiving = major_stress_impact_gain
+			compassionate = major_stress_impact_gain
+		}
+		hidden_effect = {
+			root = {
+				add_character_flag = kicked_out_of_tournament
+			}
+		}
+		
+
 
 	}
 }
-tournament.08 = { # Befriend Feast
+tournament.08 = { # Make a friend during the tournaments feast
 	title = tournament.08.title
-	desc = tournament.08.desc
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { 
+					has_variable = brave
+				} 
+				desc = tournament.08.desc.0 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = craven
+				} 
+				desc = tournament.08.desc.1 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = calm
+				} 
+				desc = tournament.08.desc.2 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = wrathful
+				} 
+				desc = tournament.08.desc.3 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = chaste
+				} 
+				desc = tournament.08.desc.4 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = lustful
+				} 
+				desc = tournament.08.desc.5 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = content
+				} 
+				desc = tournament.08.desc.6 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = ambitious
+				} 
+				desc = tournament.08.desc.7 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = diligent
+				} 
+				desc = tournament.08.desc.8 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = lazy
+				} 
+				desc = tournament.08.desc.9 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = fickle
+				} 
+				desc = tournament.08.desc.10 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = stubborn
+				} 
+				desc = tournament.08.desc.11 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = forgiving
+				} 
+				desc = tournament.08.desc.12 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = vengeful
+				} 
+				desc = tournament.08.desc.13 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = generous
+				} 
+				desc = tournament.08.desc.14 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = greedy
+				} 
+				desc = tournament.08.desc.15 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = gregarious
+				} 
+				desc = tournament.08.desc.16 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = shy
+				} 
+				desc = tournament.08.desc.17 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = honest
+				} 
+				desc = tournament.08.desc.18 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = deceitful
+				} 
+				desc = tournament.08.desc.19 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = humble
+				} 
+				desc = tournament.08.desc.20 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = arrogant
+				} 
+				desc = tournament.08.desc.21 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = just
+				} 
+				desc = tournament.08.desc.22 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = arbitrary
+				} 
+				desc = tournament.08.desc.23 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = patient
+				} 
+				desc = tournament.08.desc.24 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = impatient
+				} 
+				desc = tournament.08.desc.25 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = temperate
+				} 
+				desc = tournament.08.desc.26 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = gluttonous
+				} 
+				desc = tournament.08.desc.27 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = trusting
+				} 
+				desc = tournament.08.desc.28 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = paranoid
+				} 
+				desc = tournament.08.desc.29 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = zealous
+				} 
+				desc = tournament.08.desc.30 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = cynical
+				} 
+				desc = tournament.08.desc.31 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = compassionate
+				} 
+				desc = tournament.08.desc.32 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = callous
+				} 
+				desc = tournament.08.desc.33 
+			}
+			triggered_desc = {
+				trigger = { 
+					has_variable = sadistic
+				} 
+				desc = tournament.08.desc.34 
+			}
+		}
+	}
 	theme = feast_activity
 
 	left_portrait = {
@@ -507,18 +848,27 @@ tournament.08 = { # Befriend Feast
 					has_relation_soldier_friend = root
 					has_relation_nemesis = root
 					has_relation_rival = root
-					this = root	
+					this = root
+					has_character_flag = made_a_friend_during_tournament	
 				}
 				number_of_personality_traits_in_common = {
 					target = root
 					value >0
 				}
+
 			}
 		}
 	}
 
 	immediate = {
 		play_music_cue = "mx_cue_low_key_positive"
+
+		root = {
+			add_character_flag = {
+				flag = made_a_friend_during_tournament
+				years = 3
+			}
+		}
 		scope:activity = {
 			random_participant = {
 				limit = {
@@ -537,26 +887,764 @@ tournament.08 = { # Befriend Feast
 						value >0
 					}
 				}
+				add_character_flag = {
+					flag = made_a_friend_during_tournament
+					years = 3
+				}
+
 				save_scope_as = tournament_friend
 			}
 		}
-
-
-				trigger_event = {
-					on_action = tournament_dance_event_selection
-					days = 10
+	root = {		
+		if = { 
+			limit = { 
+				AND = { 
+					has_trait = brave 
+					scope:tournament_friend = { 
+						has_trait = brave   
+					}
 				}
+			}
+			set_variable = {
+				name = brave
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = craven 
+					scope:tournament_friend = { 
+						has_trait = craven   
+					}
+				}
+			}
+			set_variable = {
+				name = craven
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = calm 
+					scope:tournament_friend = { 
+						has_trait = calm   
+					}
+				}
+			}
+			set_variable = {
+				name = calm
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = wrathful 
+					scope:tournament_friend = { 
+						has_trait = wrathful   
+					}
+				}
+			}
+			set_variable = {
+				name = wrathful
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = chaste 
+					scope:tournament_friend = { 
+						has_trait = chaste   
+					}
+				}
+			}
+			set_variable = {
+				name = chaste
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = lustful 
+					scope:tournament_friend = { 
+						has_trait = lustful   
+					}
+				}
+			}
+			set_variable = {
+				name = lustful
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = content 
+					scope:tournament_friend = { 
+						has_trait = content   
+					}
+				}
+			}
+			set_variable = {
+				name = content
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = ambitious 
+					scope:tournament_friend = { 
+						has_trait = ambitious   
+					}
+				}
+			}
+			set_variable = {
+				name = ambitious
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = diligent 
+					scope:tournament_friend = { 
+						has_trait = diligent   
+					}
+				}
+			}
+			set_variable = {
+				name = diligent
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = lazy 
+					scope:tournament_friend = { 
+						has_trait = lazy   
+					}
+				}
+			}
+			set_variable = {
+				name = lazy
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = fickle 
+					scope:tournament_friend = { 
+						has_trait = fickle   
+					}
+				}
+			}
+			set_variable = {
+				name = fickle
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = stubborn 
+					scope:tournament_friend = { 
+						has_trait = stubborn   
+					}
+				}
+			}
+			set_variable = {
+				name = stubborn
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = forgiving 
+					scope:tournament_friend = { 
+						has_trait = forgiving   
+					}
+				}
+			}
+			set_variable = {
+				name = forgiving
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = vengeful 
+					scope:tournament_friend = { 
+						has_trait = vengeful   
+					}
+				}
+			}
+			set_variable = {
+				name = vengeful
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = generous 
+					scope:tournament_friend = { 
+						has_trait = generous   
+					}
+				}
+			}
+			set_variable = {
+				name = generous
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = greedy 
+					scope:tournament_friend = { 
+						has_trait = greedy   
+					}
+				}
+			}
+			set_variable = {
+				name = greedy
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = gregarious 
+					scope:tournament_friend = { 
+						has_trait = gregarious   
+					}
+				}
+			}
+			set_variable = {
+				name = gregarious
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = shy 
+					scope:tournament_friend = { 
+						has_trait = shy   
+					}
+				}
+			}
+			set_variable = {
+				name = shy
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = honest 
+					scope:tournament_friend = { 
+						has_trait = honest   
+					}
+				}
+			}
+			set_variable = {
+				name = honest
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = deceitful 
+					scope:tournament_friend = { 
+						has_trait = deceitful   
+					}
+				}
+			}
+			set_variable = {
+				name = deceitful
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = humble 
+					scope:tournament_friend = { 
+						has_trait = humble   
+					}
+				}
+			}
+			set_variable = {
+				name = humble
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = arrogant 
+					scope:tournament_friend = { 
+						has_trait = arrogant   
+					}
+				}
+			}
+			set_variable = {
+				name = arrogant
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = just 
+					scope:tournament_friend = { 
+						has_trait = just   
+					}
+				}
+			}
+			set_variable = {
+				name = just
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = arbitrary 
+					scope:tournament_friend = { 
+						has_trait = arbitrary   
+					}
+				}
+			}
+			set_variable = {
+				name = arbitrary
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = patient 
+					scope:tournament_friend = { 
+						has_trait = patient   
+					}
+				}
+			}
+			set_variable = {
+				name = patient
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = impatient 
+					scope:tournament_friend = { 
+						has_trait = impatient   
+					}
+				}
+			}
+			set_variable = {
+				name = impatient
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = temperate 
+					scope:tournament_friend = { 
+						has_trait = temperate   
+					}
+				}
+			}
+			set_variable = {
+				name = temperate
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = gluttonous 
+					scope:tournament_friend = { 
+						has_trait = gluttonous   
+					}
+				}
+			}
+			set_variable = {
+				name = gluttonous
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = trusting 
+					scope:tournament_friend = { 
+						has_trait = trusting   
+					}
+				}
+			}
+			set_variable = {
+				name = trusting
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = paranoid 
+					scope:tournament_friend = { 
+						has_trait = paranoid   
+					}
+				}
+			}
+			set_variable = {
+				name = paranoid
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = zealous 
+					scope:tournament_friend = { 
+						has_trait = zealous   
+					}
+				}
+			}
+			set_variable = {
+				name = zealous
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = cynical 
+					scope:tournament_friend = { 
+						has_trait = cynical   
+					}
+				}
+			}
+			set_variable = {
+				name = cynical
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = compassionate 
+					scope:tournament_friend = { 
+						has_trait = compassionate   
+					}
+				}
+			}
+			set_variable = {
+				name = compassionate
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = callous 
+					scope:tournament_friend = { 
+						has_trait = callous   
+					}
+				}
+			}
+			set_variable = {
+				name = callous
+				value = yes
+			}
+		}
+		
+		else_if = { 
+			limit = { 
+				AND = { 
+					has_trait = sadistic 
+					scope:tournament_friend = { 
+						has_trait = sadistic   
+					}
+				}
+			}
+			set_variable = {
+				name = sadistic
+				value = yes
+			}
+		}
+	}
+		
+		
+	
+		trigger_event = {
+			on_action = tournament_dance_event_selection
+			days = 10
+		}
 			
-		
-		
-
-
-
-
 	}
 
 	option = {
-		name = tournament.08.option.a
+		name = { 
+			trigger = {  
+				 has_variable = brave 
+			} 
+			text = tournament.08.option.0
+		}
+		name = { 
+			trigger = {  
+				 has_variable = craven 
+			} 
+			text = tournament.08.option.1
+		}
+		name = { 
+			trigger = {  
+				 has_variable = calm 
+			} 
+			text = tournament.08.option.2
+		}
+		name = { 
+			trigger = {  
+				 has_variable = wrathful 
+			} 
+			text = tournament.08.option.3
+		}
+		name = { 
+			trigger = {  
+				 has_variable = chaste 
+			} 
+			text = tournament.08.option.4
+		}
+		name = { 
+			trigger = {  
+				 has_variable = lustful 
+			} 
+			text = tournament.08.option.5
+		}
+		name = { 
+			trigger = {  
+				 has_variable = content 
+			} 
+			text = tournament.08.option.6
+		}
+		name = { 
+			trigger = {  
+				 has_variable = ambitious 
+			} 
+			text = tournament.08.option.7
+		}
+		name = { 
+			trigger = {  
+				 has_variable = diligent 
+			} 
+			text = tournament.08.option.8
+		}
+		name = { 
+			trigger = {  
+				 has_variable = lazy 
+			} 
+			text = tournament.08.option.9
+		}
+		name = { 
+			trigger = {  
+				 has_variable = fickle 
+			} 
+			text = tournament.08.option.10
+		}
+		name = { 
+			trigger = {  
+				 has_variable = stubborn 
+			} 
+			text = tournament.08.option.11
+		}
+		name = { 
+			trigger = {  
+				 has_variable = forgiving 
+			} 
+			text = tournament.08.option.12
+		}
+		name = { 
+			trigger = {  
+				 has_variable = vengeful 
+			} 
+			text = tournament.08.option.13
+		}
+		name = { 
+			trigger = {  
+				 has_variable = generous 
+			} 
+			text = tournament.08.option.14
+		}
+		name = { 
+			trigger = {  
+				 has_variable = greedy 
+			} 
+			text = tournament.08.option.15
+		}
+		name = { 
+			trigger = {  
+				 has_variable = gregarious 
+			} 
+			text = tournament.08.option.16
+		}
+		name = { 
+			trigger = {  
+				 has_variable = shy 
+			} 
+			text = tournament.08.option.17
+		}
+		name = { 
+			trigger = {  
+				 has_variable = honest 
+			} 
+			text = tournament.08.option.18
+		}
+		name = { 
+			trigger = {  
+				 has_variable = deceitful 
+			} 
+			text = tournament.08.option.19
+		}
+		name = { 
+			trigger = {  
+				 has_variable = humble 
+			} 
+			text = tournament.08.option.20
+		}
+		name = { 
+			trigger = {  
+				 has_variable = arrogant 
+			} 
+			text = tournament.08.option.21
+		}
+		name = { 
+			trigger = {  
+				 has_variable = just 
+			} 
+			text = tournament.08.option.22
+		}
+		name = { 
+			trigger = {  
+				 has_variable = arbitrary 
+			} 
+			text = tournament.08.option.23
+		}
+		name = { 
+			trigger = {  
+				 has_variable = patient 
+			} 
+			text = tournament.08.option.24
+		}
+		name = { 
+			trigger = {  
+				 has_variable = impatient 
+			} 
+			text = tournament.08.option.25
+		}
+		name = { 
+			trigger = {  
+				 has_variable = temperate 
+			} 
+			text = tournament.08.option.26
+		}
+		name = { 
+			trigger = {  
+				 has_variable = gluttonous 
+			} 
+			text = tournament.08.option.27
+		}
+		name = { 
+			trigger = {  
+				 has_variable = trusting 
+			} 
+			text = tournament.08.option.28
+		}
+		name = { 
+			trigger = {  
+				 has_variable = paranoid 
+			} 
+			text = tournament.08.option.29
+		}
+		name = { 
+			trigger = {  
+				 has_variable = zealous 
+			} 
+			text = tournament.08.option.30
+		}
+		name = { 
+			trigger = {  
+				 has_variable = cynical 
+			} 
+			text = tournament.08.option.31
+		}
+		name = { 
+			trigger = {  
+				 has_variable = compassionate 
+			} 
+			text = tournament.08.option.32
+		}
+		name = { 
+			trigger = {  
+				 has_variable = callous 
+			} 
+			text = tournament.08.option.33
+		}
+		name = { 
+			trigger = {  
+				 has_variable = sadistic 
+			} 
+			text = tournament.08.option.34
+		}
+		
+		
+
 		set_relation_friend = scope:tournament_friend
 
 		ai_chance = {
@@ -564,24 +1652,220 @@ tournament.08 = { # Befriend Feast
 		}
 
 	}
-	option = { # Arrogant Nobleman refuses to be friends with a lowborn, even if they are a knight.
-	name = tournament.08.option.b
-		trigger = {
-			AND = {
-				root = {
-					AND = {
-						is_lowborn = no
-						has_trait = arrogant
-					}
-				}
-				scope:tournament_friend = {
-					is_lowborn = yes
-				}
-			}
 
-		}
-		ai_chance = {
-			base = 100
+
+	after = {
+		root = {
+			if = {
+				limit = { 
+					has_variable = brave
+				} 
+				remove_variable = brave 
+			}
+			else_if = {
+				limit = { 
+					has_variable = craven
+				} 
+				remove_variable = craven 
+			}
+			else_if = {
+				limit = { 
+					has_variable = calm
+				} 
+				remove_variable = calm 
+			}
+			else_if = {
+				limit = { 
+					has_variable = wrathful
+				} 
+				remove_variable = wrathful 
+			}
+			else_if = {
+				limit = { 
+					has_variable = chaste
+				} 
+				remove_variable = chaste 
+			}
+			else_if = {
+				limit = { 
+					has_variable = lustful
+				} 
+				remove_variable = lustful 
+			}
+			else_if = {
+				limit = { 
+					has_variable = content
+				} 
+				remove_variable = content 
+			}
+			else_if = {
+				limit = { 
+					has_variable = ambitious
+				} 
+				remove_variable = ambitious 
+			}
+			else_if = {
+				limit = { 
+					has_variable = diligent
+				} 
+				remove_variable = diligent 
+			}
+			else_if = {
+				limit = { 
+					has_variable = lazy
+				} 
+				remove_variable = lazy 
+			}
+			else_if = {
+				limit = { 
+					has_variable = fickle
+				} 
+				remove_variable = fickle 
+			}
+			else_if = {
+				limit = { 
+					has_variable = stubborn
+				} 
+				remove_variable = stubborn 
+			}
+			else_if = {
+				limit = { 
+					has_variable = forgiving
+				} 
+				remove_variable = forgiving 
+			}
+			else_if = {
+				limit = { 
+					has_variable = vengeful
+				} 
+				remove_variable = vengeful 
+			}
+			else_if = {
+				limit = { 
+					has_variable = generous
+				} 
+				remove_variable = generous 
+			}
+			else_if = {
+				limit = { 
+					has_variable = greedy
+				} 
+				remove_variable = greedy 
+			}
+			else_if = {
+				limit = { 
+					has_variable = gregarious
+				} 
+				remove_variable = gregarious 
+			}
+			else_if = {
+				limit = { 
+					has_variable = shy
+				} 
+				remove_variable = shy 
+			}
+			else_if = {
+				limit = { 
+					has_variable = honest
+				} 
+				remove_variable = honest 
+			}
+			else_if = {
+				limit = { 
+					has_variable = deceitful
+				} 
+				remove_variable = deceitful 
+			}
+			else_if = {
+				limit = { 
+					has_variable = humble
+				} 
+				remove_variable = humble 
+			}
+			else_if = {
+				limit = { 
+					has_variable = arrogant
+				} 
+				remove_variable = arrogant 
+			}
+			else_if = {
+				limit = { 
+					has_variable = just
+				} 
+				remove_variable = just 
+			}
+			else_if = {
+				limit = { 
+					has_variable = arbitrary
+				} 
+				remove_variable = arbitrary 
+			}
+			else_if = {
+				limit = { 
+					has_variable = patient
+				} 
+				remove_variable = patient 
+			}
+			else_if = {
+				limit = { 
+					has_variable = impatient
+				} 
+				remove_variable = impatient 
+			}
+			else_if = {
+				limit = { 
+					has_variable = temperate
+				} 
+				remove_variable = temperate 
+			}
+			else_if = {
+				limit = { 
+					has_variable = gluttonous
+				} 
+				remove_variable = gluttonous 
+			}
+			else_if = {
+				limit = { 
+					has_variable = trusting
+				} 
+				remove_variable = trusting 
+			}
+			else_if = {
+				limit = { 
+					has_variable = paranoid
+				} 
+				remove_variable = paranoid 
+			}
+			else_if = {
+				limit = { 
+					has_variable = zealous
+				} 
+				remove_variable = zealous 
+			}
+			else_if = {
+				limit = { 
+					has_variable = cynical
+				} 
+				remove_variable = cynical 
+			}
+			else_if = {
+				limit = { 
+					has_variable = compassionate
+				} 
+				remove_variable = compassionate 
+			}
+			else_if = {
+				limit = { 
+					has_variable = callous
+				} 
+				remove_variable = callous 
+			}
+			else_if = {
+				limit = { 
+					has_variable = sadistic
+				} 
+				remove_variable = sadistic 
+			}
 		}
 	}
 }
@@ -677,7 +1961,7 @@ tournament.10 = { #Regular Feast
 
 	immediate = {
 
-		
+
 
 
 
@@ -1814,39 +3098,7 @@ tournament.13 = { # Regular Dance
 					add_character_flag = tournament_duel
 				}
 			}
-		}
 
-
-			# if = { # If we successfully captured our opponent..
-			# 	limit = {
-			# 		has_character_flag = captured_opponent
-			# 	}
-
-			# 	random_list = { # Did the horses run off?
-
-			# 		25 = { # Yes they did
-			# 			add_character_flag = horses_ran_off
-			# 			remove_variable = on_horseback
-
-			# 		}
-
-			# 		75 = { # No they did not
-					
-			# 		}
-			# 	}
-			# }
-
-
-
-	
-
-		option = {
-			name = "capture"
-			trigger = {
-				NOT = {
-					has_character_flag = tournament_duel
-				}
-			}
 
 			if = {
 				limit = {
@@ -1877,6 +3129,44 @@ tournament.13 = { # Regular Dance
 				add_trait = maimed
 				remove_character_flag = maimed_in_fight
 			}
+
+		}
+
+
+			# if = { # If we successfully captured our opponent..
+			# 	limit = {
+			# 		has_character_flag = captured_opponent
+			# 	}
+
+			# 	random_list = { # Did the horses run off?
+
+			# 		25 = { # Yes they did
+			# 			add_character_flag = horses_ran_off
+			# 			remove_variable = on_horseback
+
+			# 		}
+
+			# 		75 = { # No they did not
+					
+			# 		}
+			# 	}
+			# }
+
+
+			
+
+
+	
+
+		option = {
+			name = "capture"
+			trigger = {
+				NOT = {
+					has_character_flag = tournament_duel
+				}
+			}
+
+
 
 
 
@@ -2437,6 +3727,9 @@ tournament.13 = { # Regular Dance
 		}
 		trigger = {
 			exists = scope:activity
+			NOT = {
+				has_character_flag = host_not_fighting
+			}
 		}
 
 		immediate = {
@@ -2457,6 +3750,9 @@ tournament.13 = { # Regular Dance
 		}
 		trigger = {
 			exists = scope:activity
+			NOT = {
+				has_character_flag = host_not_fighting
+			}
 		}
 		immediate = {
 			play_music_cue = "mx_cue_war_declared"
@@ -2971,6 +4267,9 @@ tournament.13 = { # Regular Dance
 	# 	}
 	# }
 
+
+	# Behind the scenes melee duels, pads the scores of every participant, makes the tournament 
+	# feel like it ran on for much longer than the three events you got suggests.
 	tournament.0807 = {
 
 		hidden = yes
@@ -2993,7 +4292,6 @@ tournament.13 = { # Regular Dance
 						NOR = {
 							this = root
 							has_character_flag = host_not_fighting
-							has_character_flag = ready_to_finish_melee		
 						}
 					}
 					save_scope_as = opponent
@@ -3062,7 +4360,7 @@ tournament.13 = { # Regular Dance
 			if = {
 				limit = {
 					AND = {
-						var:EVENT_COUNTER <10
+						var:EVENT_COUNTER < 10
 						NOT = {
 							has_character_flag = host_not_fighting
 						}
@@ -3383,6 +4681,7 @@ tournament.13 = { # Regular Dance
 
 
 
+ # Tournament event controller
 	tournament.0999 = {
 		hidden = yes
 
@@ -3418,6 +4717,8 @@ tournament.13 = { # Regular Dance
 					name = EVENT_COUNTER
 					add = 1
 				}
+
+				# Picks an event from the tournament event pool to fire for a participant(root)
 				random_list = {
 					50 = {
 						modifier = {
@@ -3458,11 +4759,13 @@ tournament.13 = { # Regular Dance
 					}
 				}
 			}
+
+			# If already had three events..
 			else_if = {
 				limit = {
 					AND = {
 						var:EVENT_COUNTER >= 3
-						var:EVENT_COUNTER <9
+						var:EVENT_COUNTER < 10
 					}
 
 				}
@@ -3478,9 +4781,7 @@ tournament.13 = { # Regular Dance
 						}
 					}
 					add_character_flag = ready_to_finish_melee
-				}
-				
-				trigger_event = tournament.0999
+				}			
 			}
 			if = {
 				limit = {
@@ -3499,8 +4800,6 @@ tournament.13 = { # Regular Dance
 						}
 					}
 				}
-
-
 			}
 		}
 	}

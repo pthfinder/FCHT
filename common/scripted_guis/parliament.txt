@@ -1,4 +1,4 @@
-parliament_button_toggle = {  #Displays the GUI when the player clicks the button.
+﻿parliament_button_toggle = {  #Displays the GUI when the player clicks the button.
 	scope = character
 	
 	is_shown = {
